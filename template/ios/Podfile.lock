@@ -328,6 +328,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.10):
     - React
+  - RNDeviceInfo (8.0.6):
+    - React-Core
   - RNGestureHandler (1.10.3):
     - React-Core
   - RNReanimated (2.0.1):
@@ -418,6 +420,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - reactnativemsal (from `../node_modules/react-native-msal`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -502,6 +505,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-msal"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -516,7 +521,7 @@ SPEC CHECKSUMS:
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
-  FBReactNativeSpec: d79291510de6b836aed9cce4bcabc1d7ea6b17a3
+  FBReactNativeSpec: f5367646c1b83fadaf4445b36a3cc0305adb80c3
   Flipper: d3da1aa199aad94455ae725e9f3aa43f3ec17021
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: f7a3caafbd74bda4827954fd7a6e000e36355489
@@ -555,6 +560,7 @@ SPEC CHECKSUMS:
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
   reactnativemsal: 6e0290deb8bf0327bc970dcc13a6eaa76af9c281
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
+  RNDeviceInfo: a91ad51aaf8dc7079f56614045cf6f0a923237bb
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNReanimated: 7d2b97cf2dd7c8c69956080fe911edc08cf0a8c7
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d

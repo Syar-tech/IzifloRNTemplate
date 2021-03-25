@@ -6,14 +6,14 @@
 
     <application
       android:name=".MainApplication"
-      android:label="@string/app_name"
+      android:label="@string/variant_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
-        android:label="@string/app_name"
+        android:label="@string/variant_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize">
@@ -31,7 +31,7 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data
                 android:scheme="msauth"
-                android:host="com.iziflotemplatets"
+                android:host="@string/msal_host"
                 android:path="/MV3kMM62LL+sfRx0LbVU/w5jHC8=" />
         </intent-filter>
     </activity>

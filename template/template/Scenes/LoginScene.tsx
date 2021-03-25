@@ -4,16 +4,18 @@ import Button ,{IziButtonStyle}from '../Components/IziButton'
 import Loader from '../Components/IziLoader'
 import IziTextInput from '../Components/IziTextInput'
 import locales from '../../Locales/locales'
-import {attemptLogin} from '../API/LoginApi'
+import {requestInstances} from '../API/LoginApi'
 import SInfo from 'react-native-sensitive-info';
 import {__SInfoConfig} from '../Tools/Prefs';
 import {getToken, TOKEN_STATE} from '../Tools/TokenTools';
 import {isEmpty} from '../Tools/StringTools';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import PublicClientApplication, { MSALConfiguration,MSALInteractiveParams,MSALResult} from 'react-native-msal';
+import Config from "react-native-config";
 
 //types
 import {User} from "../Types/LoginTypes"
+import { iziflo_blue } from '../Styles/Styles'
 
 
 
@@ -97,7 +99,7 @@ const LoginScene = () => {
     }
 
     const _isLoggedIn = () => {
-        return user != undefined && user.token != null && user.token.state=
+        return user != undefined && user.token != null
     }
 
     /*---------------------------
@@ -145,6 +147,7 @@ const LoginScene = () => {
     }
 
     function _connectToGoogle(){
+        console.log(Config.getConstants());
     }
 
     const  _connectToOffice = async () => {
@@ -179,6 +182,7 @@ const LoginScene = () => {
                     value={email}  onChangeText={(value:string) => {setEmail(value)}}aa/>
                     <IziTextInput style={loginStyles.textinput} title={locales._template.password_input.title} placeholder={locales._template.password_input.placeholder} secureTextEntry={true}
                     value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
+                    <Text style={loginStyles.text}>TOTO  : {Config.DEV_SERVER}</Text>
                     
                     <Button style={loginStyles.button} title={locales._template.connect} iziStyle={_getConnectButtonStyle()} onPress={_connect }/>
                     <Button style={loginStyles.button} title={locales._template.google} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
@@ -236,6 +240,9 @@ const loginStyles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         alignItems:'stretch'
+        
+    },text:{
+        color:iziflo_blue,
         
     }
 })

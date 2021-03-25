@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "r": "./scripts/run.sh",
+    "p": "./scripts/publish.sh"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.10",
@@ -16,7 +18,9 @@
     "react": "17.0.1",
     "react-localization": "^1.0.16",
     "react-native": "0.64.0",
+    "react-native-config": "^1.4.2",
     "react-native-device-info": "^8.0.6",
+    "react-native-env": "^0.0.6",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-msal": "^3.1.0",
     "react-native-reanimated": "^2.0.1",

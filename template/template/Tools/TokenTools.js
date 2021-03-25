@@ -8,8 +8,8 @@ export async function getToken(){
 
 
 export const TOKEN_STATE = {
-    VALID="VALID",
-    INVALID="INVALID",
-    BLOCKED="BLOCKED",
-    OBSOLETE="OBSOLETE",
+    VALID:"VALID",
+    INVALID:"INVALID",
+    BLOCKED:"BLOCKED",
+    OBSOLETE:"OBSOLETE",
 }

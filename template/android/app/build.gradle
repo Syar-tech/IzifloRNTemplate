@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+//react_native_config
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
 
@@ -132,10 +134,15 @@ android {
 
     defaultConfig {
         applicationId "com.iziflotemplatets"
+        applicationIdSuffix project.env.get("PACKAGE_SUFFIX")
+        versionNameSuffix project.env.get("VERSION_SUFFIX")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue "string", "build_config_package", project.env.get("PACKAGE_NAME")
+        resValue "string", "msal_host", ("com.iziflotemplatets"+ project.env.get("PACKAGE_SUFFIX"))
+        resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")
     }
     splits {
         abi {
