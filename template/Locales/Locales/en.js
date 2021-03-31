@@ -2,7 +2,10 @@
 
 export default {
     _template:{
-        connect:'Connection',
+        connect:'CONNECT',
+        disconnect:'LOG OUT',
+        forgotten_pass:'Forgotten password ?',
+        legal_text:'© iziflo - Developped by Syartec',
         google:'Google',
         office_365:'Office 365',
         email_input:{
@@ -13,5 +16,15 @@ export default {
             title: 'PASSWORD',
             placeholder:'Please enter your password'
         },
+        dropdown_server:{
+            placeholder:"-- Choose a server --",
+            empty_placeholder:"-- Enter a valid email --",
+            title:"SERVER",
+        },
+        dropdown_instance:{
+            placeholder:"-- Choose an instance --",
+            empty_placeholder:"-- No instance available --",
+            title:"INSTANCE",
+        }
     }
 }

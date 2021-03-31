@@ -30,6 +30,7 @@
 		00E356EE1AD99517003FC87E /* IzifloTemplateTsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IzifloTemplateTsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* IzifloTemplateTsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IzifloTemplateTsTests.m; sourceTree = "<group>"; };
+		07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* IzifloTemplateTs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IzifloTemplateTs.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = IzifloTemplateTs/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = IzifloTemplateTs/AppDelegate.m; sourceTree = "<group>"; };
@@ -114,7 +115,6 @@
 				8FDA564368FA8EEE55B453C6 /* Pods-IzifloTemplateTs-IzifloTemplateTsTests.debug.xcconfig */,
 				BF2492478362681D4FF89DBC /* Pods-IzifloTemplateTs-IzifloTemplateTsTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -128,6 +128,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */,
 				13B07FAE1A68108700A75B9A /* IzifloTemplateTs */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* IzifloTemplateTsTests */,
@@ -530,6 +531,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -595,6 +597,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

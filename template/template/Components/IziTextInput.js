@@ -30,7 +30,7 @@ export default function IziTextInput(props){
         <View style={getStyle()}>
             <Text style={getStyle().title}>{props.title}</Text>
             <View style={getStyle().textinputContainer}>
-                <TextInput style={getStyle().textinput} placeholder={props.placeholder} defaultValue={props.defaultValue} secureTextEntry={props.secureTextEntry && secureOverride} onChangeText={props.onChangeText} textContentType='username' autoCapitalize={props.autoCapitalize} autoCorrect={props.autoCorrect}/>
+                <TextInput style={getStyle().textinput} placeholder={props.placeholder} placeholderTextColor='gray' defaultValue={props.defaultValue} value={props.value} keyboardType={props.keyboardType} secureTextEntry={props.secureTextEntry && secureOverride} onChangeText={props.onChangeText} textContentType='username' autoCapitalize={props.autoCapitalize} autoCorrect={props.autoCorrect}/>
                 {_displayEye()}
             </View>
 

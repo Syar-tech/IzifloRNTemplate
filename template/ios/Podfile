@@ -12,7 +12,6 @@ target 'IzifloTemplateTs' do
     :hermes_enabled => false
   )
 
-  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   target 'IzifloTemplateTsTests' do
     inherit! :complete

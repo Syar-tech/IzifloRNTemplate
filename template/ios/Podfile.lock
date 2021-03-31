@@ -255,6 +255,10 @@ PODS:
     - React-jsi (= 0.64.0)
     - React-perflogger (= 0.64.0)
   - React-jsinspector (0.64.0)
+  - react-native-config (1.4.2):
+    - react-native-config/App (= 1.4.2)
+  - react-native-config/App (1.4.2):
+    - React-Core
   - react-native-safe-area-context (3.2.0):
     - React-Core
   - react-native-sensitive-info (5.5.8):
@@ -404,6 +408,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-config (from `../node_modules/react-native-config`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -473,6 +478,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-config:
+    :path: "../node_modules/react-native-config"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-sensitive-info:
@@ -544,6 +551,7 @@ SPEC CHECKSUMS:
   React-jsi: 74341196d9547cbcbcfa4b3bbbf03af56431d5a1
   React-jsiexecutor: 06a9c77b56902ae7ffcdd7a4905f664adc5d237b
   React-jsinspector: 0ae35a37b20d5e031eb020a69cc5afdbd6406301
+  react-native-config: c98128a72bc2c3a1ca72caec0b021f0fa944aa29
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-sensitive-info: 400c6e3d27945e15c8cddb5b4b92233c85ee06f8
   React-perflogger: 9c547d8f06b9bf00cb447f2b75e8d7f19b7e02af
@@ -567,6 +575,6 @@ SPEC CHECKSUMS:
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: aa2121ff8a9ff9474b0cd573bd43c59819b7689e
+PODFILE CHECKSUM: 6ffd2bbf54b48c745d8a8f65400045944a54e6be
 
 COCOAPODS: 1.10.1

@@ -1,10 +1,26 @@
-export const iziflo_blue="#0000FF"
+
+import {
+    StyleSheet,
+} from 'react-native'
+
+export const colors={
+    iziflo_blue:"#5483AC",
+    iziflo_back_blue:"#E8EDF5",
+    iziflo_dark_gray:"#606060"
+}
+
+export const sizes = {
+    modal:{
+        close_icon_size:30
+    }
+}
 
 const border_width=3
 
 const textiput_height = 40
 const button_height = 40
-const secureimage_height = textiput_height-10
+const dropdown_height = 40
+const secureimage_height = textiput_height-14
 
 export const loginStyles = {
     textinput:{
@@ -12,13 +28,15 @@ export const loginStyles = {
             fontSize:13,
             marginStart: 15,
             marginBottom: 3,
-            color:iziflo_blue,
+            color:colors.iziflo_blue,
         },
         textinput:{
-            borderColor:iziflo_blue,
+            color:"black",
+            borderColor:colors.iziflo_blue,
             paddingHorizontal:15,
             borderWidth:border_width,
             height:textiput_height,
+            fontFamily: 'OpenSans-Regular',
             borderTopRightRadius:textiput_height/2,
             borderTopLeftRadius:textiput_height/2,
             borderBottomRightRadius:textiput_height/2,
@@ -28,18 +46,18 @@ export const loginStyles = {
             position:'absolute',
             height:secureimage_height,
             width:secureimage_height,
-            right:5,
-            top:5,
-            bottom:5,
+            right:(textiput_height -secureimage_height)/2,
+            top:(textiput_height -secureimage_height)/2,
+            bottom:(textiput_height -secureimage_height)/2,
             borderTopRightRadius:secureimage_height,
             borderTopLeftRadius:secureimage_height,
             borderBottomRightRadius:secureimage_height,
             borderBottomLeftRadius:secureimage_height,
-            backgroundColor:iziflo_blue,
+            backgroundColor:colors.iziflo_blue,
         },
         secureImage:{
-            height:20,
-            width:20,
+            height:secureimage_height,
+            width:secureimage_height,
         }
 
     },
@@ -66,7 +84,7 @@ export const loginStyles = {
             width:20,
         },
         text:{
-            color:'black',
+            color:'white',
             fontSize:16,
             fontWeight:'bold',
         },
@@ -84,18 +102,76 @@ export const loginStyles = {
             backgroundColor:'orange'
         },
         action:{
-            backgroundColor : iziflo_blue
+            backgroundColor : colors.iziflo_blue
         },
         connection:{
             backgroundColor : 'white',
-            borderColor : iziflo_blue,
+            borderColor : colors.iziflo_blue,
             borderWidth : border_width,
+            text:{
+                color:colors.iziflo_dark_gray,
+                fontSize:16,
+                fontWeight:'bold',
+            },
             image :{
                 height:20,
             }
         }
     },
+    dropdown:{
+        title:{
+            fontSize:13,
+            marginStart: 15,
+            marginBottom: 3,
+            color:colors.iziflo_blue,
+        },
+
+        title_disabled:{
+            fontSize:13,
+            marginStart: 15,
+            marginBottom: 3,
+            color:'gray',
+        },
+        container:{
+            height:dropdown_height,
+            marginBottom:20,
+        },
+        dropdown:{
+            borderTopRightRadius:dropdown_height/2,
+            borderTopLeftRadius:dropdown_height/2,
+            borderBottomRightRadius:dropdown_height/2,
+            borderBottomLeftRadius:dropdown_height/2,
+            borderWidth:1,
+            enabled:{
+                borderColor:colors.iziflo_blue,
+            },
+            disabled:{
+                borderColor:'gray',
+            },
+        }
+    },
     
 }
+
+export const ModalStyle = StyleSheet.create({
+    close_button_pressable:{
+        position:'absolute',
+        top:0,
+        end:0,
+        backgroundColor:colors.iziflo_blue,
+        padding:6
+    } ,
+    close_button_image:{
+    } ,
+    title:{
+        textAlign:'center',
+        fontSize:20,
+        fontWeight:'bold',
+        color:colors.iziflo_blue,
+        marginStart:sizes.modal.close_icon_size + 6,
+        marginEnd:sizes.modal.close_icon_size + 6,
+        marginBottom:20
+    } 
+})
 
 export default {}

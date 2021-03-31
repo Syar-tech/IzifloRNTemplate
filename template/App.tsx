@@ -16,7 +16,7 @@ import React from 'react';
    StatusBar,
    StyleSheet,
    Text,
-   useColorScheme,
+   //useColorScheme,
    View,
  } from 'react-native';
 
@@ -31,11 +31,11 @@ import React from 'react';
  import Navigation from './Navigation/Navigation'
 
  const App = () => {
-   const isDarkMode = useColorScheme() === 'dark';
+   /*const isDarkMode = useColorScheme() === 'dark';
 
    const backgroundStyle = {
      backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-   };
+   };*/
 
    return (
      <NavigationContainer>

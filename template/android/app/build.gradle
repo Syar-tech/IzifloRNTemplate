@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 //react_native_config
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
 
@@ -140,8 +141,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resValue "string", "build_config_package", project.env.get("PACKAGE_NAME")
-        resValue "string", "msal_host", ("com.iziflotemplatets"+ project.env.get("PACKAGE_SUFFIX"))
+        resValue "string", "build_config_package", project.android.defaultConfig.applicationId
+        resValue "string", "msal_host", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
         resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")
     }
     splits {
