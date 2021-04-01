@@ -53,7 +53,7 @@ export interface Props{
             <IziDropdown
             items={instances}
             title={locale._template.dropdown_instance.title}
-            placeholder={instances && instances.length > 0 ? locale._template.dropdown_server.placeholder :  locale._template.dropdown_instance.empty_placeholder}
+            placeholder={instances && instances.length > 0 ? locale._template.dropdown_instance.placeholder :  locale._template.dropdown_instance.empty_placeholder}
             disabled={instances== undefined || instances.length == 0 || selectedInstance}
             defaulValue={selectedInstance ? selectedInstance : undefined}
             onChangeItem={(item:InstanceType) => {setInstance(item)}}/>

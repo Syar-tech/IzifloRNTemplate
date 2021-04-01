@@ -31,6 +31,7 @@ export function requestInstances(server, email, password){
     })
     .catch((error) => console.error(error))
 }
+
 export function requestInstancesWithExternal(server, clientId, email, token, tokenType){
 }
 
@@ -45,7 +46,23 @@ export function requestToken( server, email, password, idInstance){
         + "&id_instance="+ idInstance
         + "&client_id="+ izi_api_client_id
         + "&device_id="+getUniqueId()
-        console.log(url);
+  return fetch(url)
+    .then((response) => {
+        return response.json()
+    })
+    .catch((error) => console.error(error))
+}
+
+//check token
+export function checkToken( server, email, password, idInstance, token){
+  const url = server.url + ws_index  
+        + "?module_name=core"
+        + "&module_version="+core_version
+        + "&module_api=check_token"
+        + "&id_instance="+ idInstance
+        + "&token="+ token
+        + "&client_id="+ izi_api_client_id
+        + "&device_id="+getUniqueId()
   return fetch(url)
     .then((response) => {
         return response.json()

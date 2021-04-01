@@ -56,14 +56,9 @@ const RootStackScreen = () =>{
       {_displayCorner(infoModal)}
       <ServerInfoModal ref={infoModal}/>
     </View>
-
     </TouchableWithoutFeedback>
   );
 }
 
-
-
-
-const MainStackNavigator = createStackNavigator()
 export default RootStackScreen
     

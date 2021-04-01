@@ -2,6 +2,7 @@ import React ,{useState, useEffect} from 'react'
 import {
     View, SafeAreaView, Text,Image, StyleSheet, KeyboardAvoidingView, Platform, Alert,BackHandler
 } from 'react-native'
+import { useIsFocused, useFocusEffect} from '@react-navigation/native' 
 import { StackNavigationProp } from '@react-navigation/stack';
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -41,6 +42,7 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
     //local
+    const focused = useIsFocused();
     const [email, setEmail] = useState<string | undefined>(undefined)
     const [password, setPassword] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState(true)
@@ -58,7 +60,8 @@ const LoginScene = ({navigation} : Props) => {
     }, [])
     useEffect(()=>{
         _loadUser()
-    }, [])
+    }, [focused])
+
     
 
 
@@ -144,7 +147,12 @@ const LoginScene = ({navigation} : Props) => {
         try {
             setLoading(true)
             let data : User = await getStoredUser()
+            console.log("user : "+JSON.stringify(data))
             setUser(data)
+            if(!user) {
+                await setServer(undefined)
+                await setInstances(undefined)
+            }
             setLoading(false)
           } catch (error) {
             console.log("Something went wrong", error);
@@ -282,6 +290,7 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
     function _displayContent(){
+        console.log("isLoggedIn : "+JSON.stringify(server))
         if(loading){
             return _displayLoading()
         }else if (! _isLoggedIn()){

@@ -8,13 +8,18 @@ export async function getStoredUser(){
         return JSON.parse(userData);
     }else return undefined;
 }
-export async function deleteStoredUser(){
+export async function deleteStoredUser(navigation){
     await SInfo.deleteItem("loginState", __SInfoConfig);
 }
+
 export async function storeUser(user){
     await SInfo.setItem("loginState",user,  __SInfoConfig);
 }
 
+export async function disconnect(navigation){
+    await deleteStoredUser(navigation);
+    if(navigation) navigation.navigate("Login");
+}
 
 
 export const TOKEN_STATE = {
