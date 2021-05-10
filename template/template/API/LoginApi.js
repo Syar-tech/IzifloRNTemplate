@@ -1,12 +1,12 @@
-import {izi_api_client_id,izi_api_app_code} from "../../config/iziConfig"
-import {getUniqueId} from 'react-native-device-info'
+import {izi_api_app_code} from "../../config/iziConfig"
 import Config from "react-native-config";
+import {getCommonParams,storeUser,TOKEN_STATE} from '../Tools/TokenTools'
+import {disconnect } from "../Tools/TokenTools"
+import {Api, getWSBaseUrl} from '../API/WSApi'
+import { TOKEN_TYPE } from "../Types/LoginTypes";
 
 
-const core_version = '0.0.1.0'
-const server_url = "http://192.168.13.205:96/iziflo_1.5.2_maintenance_cfao/"
-const ws_index = "/mobile_ws/core/"+core_version+"/index.php"
-
+const core_version = Config.CORE_VERSION
 
 export const ProdServer={
   name:"Production",
@@ -15,38 +15,54 @@ export const ProdServer={
   id:0
 }
 
-export function requestInstances(server, email, password){
-  const url = server.url + ws_index  
-        + "?module_name=core"
-        + "&module_version="+core_version
-        + "&module_api=get_instances"
-        + "&email="+email
-        + "&password="+password
-        + "&client_id="+ izi_api_client_id
-        + "&device_id="+getUniqueId()
-        console.log(url);
-  return fetch(url)
+export function searchServers(email){
+  var params = {
+    email:email,
+    app_code:izi_api_app_code,
+    app_type:Config.FLAVOR,
+    core_version:core_version
+  }
+  console.log('response : '+Config.DEV_SERVER+"/ws/get_izi_app.php");
+  return Api.get(Config.DEV_SERVER+"/ws/get_izi_app.php",params)
+      .then((response) => {
+          return response.json()
+      })
+      .catch((error) => console.error(error))
+}
+
+export function requestInstances(server, email, password, token = null, tokenType=null){
+  var params = getCommonParams();
+  params.module_api='get_instances'
+  params.email=email
+  if(token && tokenType){
+    params.external_token=token
+    params.login_type=tokenType
+  }else{
+    params.password=password
+    params.login_type=TOKEN_TYPE.IZIFLO
+  }
+  console.log("instances call :"+ getWSBaseUrl(server) + '\n'+JSON.stringify(params, null, 2))
+  return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
     })
     .catch((error) => console.error(error))
 }
 
-export function requestInstancesWithExternal(server, clientId, email, token, tokenType){
-}
-
 //request token
-export function requestToken( server, email, password, idInstance){
-  const url = server.url + ws_index  
-        + "?module_name=core"
-        + "&module_version="+core_version
-        + "&module_api=request_token"
-        + "&email="+email
-        + "&password="+password
-        + "&id_instance="+ idInstance
-        + "&client_id="+ izi_api_client_id
-        + "&device_id="+getUniqueId()
-  return fetch(url)
+export function requestToken(server, email, password, idInstance, token = null, tokenType=null){
+  var params = getCommonParams();
+  params.module_api='request_token'
+  params.email=email
+  params.id_instance=idInstance
+  if(token && tokenType){
+    params.external_token=token
+    params.login_type=tokenType
+  }else{
+    params.password=password
+     params.login_type=TOKEN_TYPE.IZIFLO
+  }
+  return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
     })
@@ -54,36 +70,107 @@ export function requestToken( server, email, password, idInstance){
 }
 
 //check token
-export function checkToken( server, email, password, idInstance, token){
-  const url = server.url + ws_index  
-        + "?module_name=core"
-        + "&module_version="+core_version
-        + "&module_api=check_token"
-        + "&id_instance="+ idInstance
-        + "&token="+ token
-        + "&client_id="+ izi_api_client_id
-        + "&device_id="+getUniqueId()
-  return fetch(url)
+export async function checkToken( user, navigation, idInstance, token){
+  let params = getCommonParams(user);
+  params.id_instance=idInstance
+  params.module_api="check_token";
+  console.log("server : "+getWSBaseUrl(user.server));
+  var promise = Api.post(getWSBaseUrl(user.server),params)
+    .then((response) => response.json())
+    .then(tokenHandler(navigation, user))
+    .catch((error) => {console.error(error); Promise.reject(error)})
+  return promise;
+}
+
+/**
+ * 
+ * @param {*} navigation 
+ * @param {*} user if not null, handler will try to renew the token.
+ * @returns 
+ */
+ export function tokenHandler(navigation, user = null){
+  return async (json) => {
+      console.log("json : "+ JSON.stringify(json))
+    if(json.token && json.token.state){
+      switch (json.token.state) {
+        case TOKEN_STATE.VALID:
+            return json;
+        case TOKEN_STATE.OBSOLETE:
+            if(user){
+              return refreshToken(user)
+            }else Promise.reject(json)
+          break;
+        default:
+            //TODO 
+          console.log("token invalid : "+ JSON.stringify(json.token))
+          disconnect(navigation)
+          Promise.reject(json);
+          break;
+      }
+    }else {Promise.reject(json)}
+  }
+}
+
+function refreshToken(user){
+  switch (user.token.tokenType) {
+    case TOKEN_TYPE.IZIFLO:
+      return refreshIzifloToken(user)
+        case TOKEN_TYPE.MICROSOFT:
+          //TODO refresh MICROSOFT
+          refreshMicrosoftToken(user)
+          break;
+        case TOKEN_TYPE.GOOGLE:
+          refreshGoogleToken(user)
+          break;
+  
+    default:
+      return Promise.reject(user)
+  }
+}
+
+function refreshIzifloToken(user){
+
+  var params = getCommonParams();
+  params.module_api='refresh_token'
+  params.email=user.email
+  params.id_instance=idInstance
+  params.token=user.token.token
+  params.login_type=user.token.tokenType
+  params.refresh_token=user.token.refreshToken
+  return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
     })
-    .catch((error) => console.error(error))
+    .then((data)=>{
+      console.log("DATA : "+JSON.stringify(data))
+        if(data.success){
+            user.token = {
+              token:data.success.access_token, 
+              refreshToken:data.success.refresh_token, 
+              state:TOKEN_STATE.VALID, 
+              expirationDate:data.success.access_token_expiration_date, 
+              refreshExpirationDate:data.success.refresh_token_expiration_date, 
+              email:user.email
+            }
+            storeUser(JSON.stringify(user))
+            return {token : user.token}
+        }else if(data.error){
+            Promise.reject(json)
+        }else{
+            Promise.reject(json)
+        }
+            
+    })
+        
 }
 
-export function requestTokenWithExternal(server, clientId, email, token, tokenType, idInstance){
 
+function refresMicrosoftToken(user){
+  //TODO refresh Microsoft token
 }
 
-export function searchServers(email){
-  const url = Config.DEV_SERVER+"/ws/get_izi_app.php"
-        + "?email="+email
-        + "&app_code="+ izi_api_app_code
-        + "&app_type="+Config.FLAVOR
-        + "&core_version="+core_version
-        return fetch(url)
-          .then((response) => {
-              return response.json()
-          })
-          .catch((error) => console.error(error))
+function refresGoogleToken(user){
+  //TODO refresh Google token
 }
+
 

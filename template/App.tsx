@@ -28,7 +28,8 @@ import React from 'react';
    ReloadInstructions,
  } from 'react-native/Libraries/NewAppScreen';
 
- import Navigation from './Navigation/Navigation'
+ import BaseNavigation from './Navigation/BaseNavigation'
+import MainScene from './Scenes/MainScene';
 
  const App = () => {
    /*const isDarkMode = useColorScheme() === 'dark';
@@ -39,7 +40,11 @@ import React from 'react';
 
    return (
      <NavigationContainer>
-         <Navigation/>
+         <BaseNavigation/>
+         {
+           // use mainNavigation to put your main navigator 
+           // ex : <BaseNavigation mainNavigation={MainScene}/>
+        }
       </NavigationContainer>
    );
  };

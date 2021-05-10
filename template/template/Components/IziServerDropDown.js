@@ -5,26 +5,24 @@ import {
     StyleSheet,
     TouchableWithoutFeedback, Keyboard,
 } from 'react-native'
-import IziDropDown from './IziDropDown';
 import { loginStyles } from '../Styles/Styles'
 import { isEmailValid } from '../Tools/StringTools'
 import locale from '../../Locales/locales'
 import { searchServers } from '../API/LoginApi';
 import IziDropdown from './IziDropDown';
-import {getStoredUser} from '../Tools/TokenTools';
+import Config from "react-native-config";
 
 
 export default function IziServerDropdown(props){
 
     const [serverList, setServerList] = useState([])
-    let  controller = undefined
+    const [loading, setLoading] = useState(false)
     
     useEffect(
         ()=>{
             if(isEmailValid(props.email)){
                 _searchServers()
             }else{
-                if(controller) controller.close()
                 setServerList([])
             }
         }
@@ -38,24 +36,40 @@ export default function IziServerDropdown(props){
         return loginStyles.dropdown
     }
 
-
     /*---------------------------
     -
     -         functions
     -
     ----------------------------*/
     const _searchServers = async ()=>{
-        searchServers(props.email)
-            .then((data)=>{
-                if(data.length == 0){
-                    if(controller ) controller.close()
-                }
-                data.forEach((item, index)=>{
-                    item.label=item.name
-                    item.value=item.id
-                })
-                setServerList(data)
-            });
+        setLoading(true);
+
+        console.log("server : "+JSON.stringify(props.value) + (serverList.length ==0 && props.value != undefined) )
+        if(serverList.length ==0 && props.value){
+            setServerList([props.value])
+            props.setValue(props.value);
+            setLoading(false)
+        }else{
+            setServerList([])
+            searchServers(props.email)
+                .then((data)=>{
+                    if(data.length == 0){
+                        if(controller ) controller.close()
+                    }
+                    data.forEach((item, _)=>{
+                        item.label=item.name
+                        item.value=item.id
+                    })
+
+                    setServerList(data)
+                    if(data.length == 1 /*&& Config.FLAVOR == 'P'*/){
+                    props.setValue(data[0]);
+                    }
+                    setLoading(false)
+                },
+                ()=>{setLoading(false)}
+            );  
+        }
     }
 
 
@@ -65,15 +79,19 @@ export default function IziServerDropdown(props){
     -
     ----------------------------*/
     return(
-        <View onPress={Keyboard.dismiss}>
+        <View onPress={Keyboard.dismiss}
+        zIndex={props.zIndex}>
             <IziDropdown
-                            controller={(instance)=> controller = instance}
                             title={locale._template.dropdown_server.title}
                             items={serverList}
-                            style={getStyle()}
-                            disabled={!isEmailValid(props.email)}
-                            placeholder={isEmailValid(props.email) && serverList.length > 0  ? locale._template.dropdown_server.placeholder :  locale._template.dropdown_server.empty_placeholder}
-                            onChangeItem={props.onChangeItem}
+                            loading={loading}
+                            style={getStyle()}                            
+                            disabled={!isEmailValid(props.email) || (props.value && serverList.length==1 && Config.FLAVOR == 'P') }
+                            placeholder={isEmailValid(props.email) ? locale._template.dropdown_server.placeholder :  locale._template.dropdown_server.empty_placeholder}
+                            nothingToShow={locale._template.dropdown_server.nothing_to_show}
+                            value={props.value}
+                            setValue={props.setValue}
+                            zIndex={props.zIndex}
                             />
 
         </View>

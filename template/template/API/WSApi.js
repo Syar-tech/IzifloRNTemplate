@@ -1,19 +1,21 @@
 
-import {izi_api_client_id, izi_api_app_code} from "../../config/iziConfig"
+import {izi_api_app_code,izi_api_app_api_version} from "../../config/iziConfig"
+import {getStoredUser, getCommonParams, TOKEN_STATE} from "../Tools/TokenTools"
+import { checkToken} from "./LoginApi";
 import Config from "react-native-config";
-import {getStoredUser} from "../Tools/TokenTools"
-import {getUniqueId} from 'react-native-device-info'
-import { checkToken, requestToken } from "./LoginApi";
 
 //Api Object for post|get promises
 //Api::post(url,data) || Api::get(url,data)
 
-const Api = function(method, url, data, headers = {}){
-    let body = ''
+ export const Api = function(method, url, data, headers = {}){
+    let body = '?'
     for(const prop in data)
-        if(data.hasOwnProperty(prop))
-            body+=`&${prop}=${encodeURIComponent(data[prop])}`
-    
+        if(data.hasOwnProperty(prop)){
+            if(body.length == 0)
+                body +='?'
+            else body += '&'
+            body+=`${prop}=${encodeURIComponent(data[prop])}`
+        }
     const request = {
         method: method.toUpperCase(),
         credentials: Api.credentials,
@@ -26,8 +28,8 @@ const Api = function(method, url, data, headers = {}){
         request.body = body
     
     return fetch(url, request).then(res => res.ok ? res : Promise.reject(res))
-  };
-  (function(){
+};
+(function(){
     Api.credentials = 'same-origin';
     Api.headers = {
         'Accept': 'application/json;application/pdf',
@@ -36,83 +38,59 @@ const Api = function(method, url, data, headers = {}){
     ['get', 'post'].forEach(method => {
         Api[method] = Api.bind(null, method);
     });
-  })();
+})();
 
-  export const queryWS = (context, ws_name, params ) => {
+export function getWSBaseUrl(server){
+    return server.url+`/mobile_ws/core/${Config.CORE_VERSION}/index.php`
+}
+
+export const queryWS = async (navigation, params) => {
 
     const user = await getStoredUser()
 
-    let commonParams = {
-            token,
-            client_id : izi_api_app_code,
-            module_name : 'core',
-            module_version:Config.CORE_VERSION,
-            device_id:getUniqueId()
-        }
+    try{
+        //check token
+        return checkToken(user, navigation, user.server.instance.id_instance,user.token.token)
+        .then(
+            (data)=>{
+                console.log("token : " + JSON.stringify(data));
+                if(data && data.token && data.token.state == TOKEN_STATE.OBSOLETE){
+                    console.log("is token obsolete");
+                    //reload user 
+                    user = getStoredUser()
+                }   
+                let commonParams = getCommonParams(user)
 
-        wsQueryParams = {
-            module_name : izi_api_app_code,
-            module_version : izi_api_app_api_version,
-            id_instance:user.server.instance.id_instance
-        }
-
-        try{
-        checkToken().then((data)=>{
-            if(data.error){
-                
+                let wsQueryParams = {
+                    module_name : izi_api_app_code,
+                    module_version : izi_api_app_api_version,
+                    id_instance:user.server.instance.id_instance
+                }
+                return Api.post(getWSBaseUrl(user.server),{...commonParams, ...wsQueryParams, ...params})
+                    .then((response) =>response.json())
             }
-        })
+        )
 
-            const response = await Api.post(`${user.server.url}/mobile_ws/index.php?m=${ws_name}`,commonParams)
-            json = await response.json()
-        }catch(e){
-            return false
-        }   
-  }
-
+    }catch(e){
+        console.log(e)
+        return Promise.reject("Error while calling ws")
+    }   
+}
   
-  
-  const instance = 2
-  const token = '7126f2be124706195f0fee8aa10b2062e57805c9ef82635e439b9d77fd07aa4bfd660f027912077408158d6db90ea188aef14bbb5f166cbf053572afc9658e0d'
-  const client_id = 'a1922dbbd5dbe51d3b96cf13c7f1fa2a'
-  const module_name = 'zscan'
-  const module_version = '0.0.1.0'
-  const device_id = 'ios_1234'
-  const server_url = `http://192.168.13.205:1082/iziflo_1.5.21m_cfao/mobile_ws/core/${module_version}/index.php`
-  //const email = 'elebon@syartec.com'
-  //const pass = 'elebon'
-  
-  export async function getAttachementTypesWithIdExternal(id_external, context){
-  
+export async function getExampleAttachementTypesWithIdExternal(navigation, context, id_external){
+    
     let json = null
-    let commonParams = await getApiParams();
+    let params = {}
 
     try{
-        commonParams.externalId = id_external
-        commonParams.context = context
-        commonParams.module_api = 'get_attachments'
-
-        const response = await Api.post(`${server_url}?m=attachment`,commonParams)
-        json = await response.json()
+        params.id_external = id_external
+        params.context = context
+        params.module_api = 'get_attachments'
+        
+        let response = await queryWS(navigation, params)
+        return response;
+        //json = await response.json()
     }catch(e){
-        return false
-    }    
-  
-    if(json){
-        if(json.error || (json.token && json.token.state === 'INVALID')){
-            //Error
-            if(json.token.state === 'INVALID'){
-                //Token error
-            }else if(json.error){
-                //Error from the server
-            }
-        }
+       return Promise.reject(e)
     }
-  
-    return json
-    return {"display_data":" hippo Box ","data":[{"id":"40","name":"Bon de commande","code":"Bon de commande","is_mandatory":false,"cpt":0,"items":[]},{"id":"152","name":"Accord Financier \/ Justificatif de paiement","code":"Accord Financier \/ Justificatif de paiement","is_mandatory":false,"cpt":0,"items":[]},{"id":"208","name":"Bon de livraison","code":"Bon de livraison","is_mandatory":false,"cpt":0,"items":[]},{"id":"264","name":"Attestation d'assurance","code":"Attestation d'assurance","is_mandatory":false,"cpt":0,"items":[]},{"id":"376","name":"Documents d'immatriculation","code":"Documents d'immatriculation","is_mandatory":false,"cpt":0,"items":[]},{"id":"924","name":"Accord Financier \/ Justificatif de paiement","code":"Accord Financier \/ Justificatif de paiement","is_mandatory":false,"cpt":0,"items":[]},{"id":"943","name":"Autre","code":"Autre","is_mandatory":false,"cpt":0,"items":[]}]};
-}
-
-export const queryWS = (module, version, wsName) => {
-
 }

@@ -1,29 +1,33 @@
 import React ,{useState, useEffect} from 'react'
 import {
-    View, SafeAreaView, Text,Image, StyleSheet, KeyboardAvoidingView, Platform, Alert,BackHandler
+    View, SafeAreaView, Text,Image, StyleSheet, KeyboardAvoidingView, Platform, Alert,BackHandler,TouchableOpacity
 } from 'react-native'
-import { useIsFocused, useFocusEffect} from '@react-navigation/native' 
-import { StackNavigationProp } from '@react-navigation/stack';
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
 import Loader from '../Components/IziLoader'
 import IziTextInput from '../Components/IziTextInput'
 import IziServerDropDown from '../Components/IziServerDropDown'
-import {requestInstances,requestToken, ProdServer} from '../API/LoginApi'
+//libs
 import SInfo from 'react-native-sensitive-info';
-import {__SInfoConfig} from '../Tools/Prefs';
-import {getStoredUser, deleteStoredUser, storeUser, TOKEN_STATE} from '../Tools/TokenTools';
-import {isEmpty, isEmailValid} from '../Tools/StringTools';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useIsFocused, useFocusEffect} from '@react-navigation/native' 
 import PublicClientApplication, { MSALConfiguration,MSALInteractiveParams,MSALResult} from 'react-native-msal';
 import Config from "react-native-config";
 
 import Styles, { colors } from '../Styles/Styles'
 import locale from '../../Locales/locales'
+
+//Tools
+import {requestInstances,requestToken, ProdServer} from '../API/LoginApi'
+import {__SInfoConfig} from '../Tools/Prefs';
+import {getStoredUser, deleteStoredUser, storeUser, TOKEN_STATE} from '../Tools/TokenTools';
+import {isEmpty, isEmailValid} from '../Tools/StringTools';
 //types
-import {User, Token, ServerType, InstanceType, CompanyType} from "../Types/LoginTypes"
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StackNavigationProp } from '@react-navigation/stack';
+import {User, Token, ServerType, InstanceType, CompanyType, TOKEN_TYPE} from "../Types/LoginTypes"
 import PINCode from '@haskkor/react-native-pincode'
+import MSALConnect from '../API/MSALConnectApi'
+import DropDownPicker from 'react-native-dropdown-picker'
 
 
 type RootStackParamList = {
@@ -46,20 +50,23 @@ const LoginScene = ({navigation} : Props) => {
     const [email, setEmail] = useState<string | undefined>(undefined)
     const [password, setPassword] = useState<string | undefined>(undefined)
     const [loading, setLoading] = useState(true)
-    const [server, setServer] = useState<ServerType | undefined>(Config.FLAVOR =='P' ? ProdServer : undefined)
+    const [server, setServer] = useState<ServerType | undefined>(undefined)
     const [instances, setInstances] = useState<InstanceType[] | undefined>(undefined)
     const [externalToken, setExternalToken] = useState<Token | undefined>(undefined)
-    var pca : PublicClientApplication // MSAL client
+    const [showInstances, setShowInstances] = useState(false)
+    const [msal, setMsal] = useState(new MSALConnect())
+    
     //data
     const [user, setUser] = useState<User | undefined>(undefined)
 
-    //effects
+
     useEffect(()=>{
-        //GoogleSignin.configure()
         _initOffice()
     }, [])
     useEffect(()=>{
-        _loadUser()
+        if(focused)
+            _loadUser()
+        else setUser(undefined)
     }, [focused])
 
     
@@ -68,24 +75,14 @@ const LoginScene = ({navigation} : Props) => {
 
     /*---------------------------
     -
-    -         inits
+    -         inits 
     -
     ----------------------------*/
     const _initOffice = async ()=>{
-        const config  : MSALConfiguration = {
-            auth: {
-              clientId: 'a8c78f9a-1934-4f4c-8115-e684dc693285',
-              // authority: 'default-authority',
-            },
-          };
-
-        // Option 2: Skips init, so you can call it yourself and handle errors
-        pca = new PublicClientApplication(config, false);
-        try {
-            await pca.init();
-        } catch (error) {
-            console.error('Problem in configuration/setup MSAL:', error);
+        if(!msal.isInit()){
+            await msal.init()
         }
+        
     }
 
     /*---------------------------
@@ -122,7 +119,6 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
 
-    // create a function that saves your data asyncronously
     const _resetUser= ( shouldSetUser = true)=>{
         try{
             deleteStoredUser();    
@@ -132,6 +128,7 @@ const LoginScene = ({navigation} : Props) => {
             console.log("Something went wrong", error);
         }
     }
+    // create a function that saves your data asyncronously
     const _storeUser = async (user:User, shouldSetUser = true) => {
         try{
             await storeUser(JSON.stringify(user));    
@@ -145,17 +142,19 @@ const LoginScene = ({navigation} : Props) => {
 
     const _loadUser = async ()=>{
         try {
-            setLoading(true)
+
+            await setLoading(true)
             let data : User = await getStoredUser()
-            console.log("user : "+JSON.stringify(data))
-            setUser(data)
+            await setUser(data)
             if(!user) {
                 await setServer(undefined)
                 await setInstances(undefined)
+                setLoading(false)
+                return undefined
             }
-            setLoading(false)
           } catch (error) {
             console.log("Something went wrong", error);
+            setLoading(false)
           }
       
     }
@@ -163,7 +162,9 @@ const LoginScene = ({navigation} : Props) => {
     const _setPin = (pin?:string)=>{
         console.log("setPin")
         if(user){
-            user.pin= pin
+            console.log("setPin loading true")
+            setLoading(true)
+            user.pin = pin
             _storeUser(user, false)
         }
     }
@@ -177,67 +178,57 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
 
-    const _askForInstancesWithEmpty = ()=>{
-        _askForInstances();
-    }
-    function _askForInstances(externalToken?:Token){
-        setLoading(true);
-        if(externalToken){
-            setExternalToken(externalToken)
-            //TODO load instance from token
-        }else{
-            if(!server || !isEmailValid(email) || !password) {
-                //TODO error message : missing data
-            }else{
-                requestInstances(server, email, password)
-                    .then((data)=>{
-                        data.data.forEach((instance : InstanceType) => {
-                            instance.value=instance.id_instance,
-                            instance.label=instance.instance_code + ' - ' + instance.instance_name
-                            console.log(instance)
-                        });
+    
 
-                        setInstances(data.data);
-                    })
-            }
-
-        }
-        setLoading(false)
-    }
     function _connect(instance : InstanceType){
+
+        console.log("connect loading true")
         setLoading(true);
-        if(instance){
+        if(instance && server){
+            let promise  = null;
             if(externalToken){
-                //TODO connect to instance with external
+                //connect to instance with external
+                promise = requestToken(server, email, null, instance.id_instance, externalToken.token, externalToken.tokenType)
             }else{
-                if(!server || !isEmailValid(email) || !password) {
+                if(!isEmailValid(email) || !password) {
                     //TODO error message : missing data
                 }else{
-                    //TODO connect to instance
+                    //connect to instance
                     //save
-                    requestToken(server, email, password, instance.id_instance)
-                        .then((data)=>{
-                            if(data.success){
-                                server.instance = instance
-                                let usr  : User = {
-                                    email : email!!, 
-                                    token : {token:data.success.token, state:TOKEN_STATE.VALID, expirationDate:data.success.access_token_expiration_date, email:email!!}, 
-                                    server:server
-                                }
-                                _storeUser(usr)
-                                setUser(usr)
-                            
-                            }else if(data.error){
-                                //TODO failed
-                            }else{
-                                //TODO error
-                            }
-                                
-                        })
+                    promise = requestToken(server, email, password, instance.id_instance)
                 }
-
             }
+
+            if(promise)
+                promise.then((data:any)=>{
+                    if(data.success){
+                        server.instance = instance
+                        let usr  : User = {
+                            email : email!!, 
+                            token : {
+                                state:TOKEN_STATE.VALID,
+                                tokenType:TOKEN_TYPE.IZIFLO,
+                                token:data.success.access_token ,
+                                expirationDate:data.success.access_token_expiration_date, 
+                                refreshToken:data.success.refresh_token ,
+                                refreshExpirationDate:data.success.refresh_token_expiration_date, 
+                                email:email!!}, 
+                            server:server
+                        }
+                        _storeUser(usr)
+                        setUser(usr)
+                    
+                    }else if(data.error){
+                        //TODO failed
+                    }else{
+                        //TODO error
+                    }
+                        
+                })
+        }else{
+            //TODO no server 
         }
+        console.log("connect loading false")
         setLoading(false)
     
     }
@@ -249,29 +240,41 @@ const LoginScene = ({navigation} : Props) => {
         setInstances(undefined)
         setPassword(undefined)
         setExternalToken(undefined)
+        setShowInstances(false)
         
     }
 
     function _connectToGoogle(){
     }
 
-    const  _connectToOffice = async () => {
-        if(pca){
+    async function _connectToOffice(){
+        if(msal.isInit()){
         const params: MSALInteractiveParams = {
             scopes: ["User.Read"],
           };
-          console.log(pca)
-          const result: MSALResult = await pca.acquireToken(params);
+          const result: MSALResult = await msal.signIn(params);
           if(result && result.idToken){
+              console.log("MSAL : "+ JSON.stringify(result))
               let externalToken :Token = {
                     email:result.account.username,
                     token : result.accessToken,
-                    state : TOKEN_STATE.VALID
+                    state : TOKEN_STATE.VALID,
+                    tokenType:TOKEN_TYPE.MICROSOFT
               }
-              _askForInstances(externalToken);
+              let usr={
+                  email:externalToken.email,
+                  token:externalToken
+
+              }
+              setUser(usr)
+              setShowInstances(true)
             
             }
         }
+    }
+
+    const _gotoMain = () => {
+        navigation.navigate('Main')
     }
 
 
@@ -284,17 +287,22 @@ const LoginScene = ({navigation} : Props) => {
         _connect(instance)
     }
 
+    const _onPassordForgotten = ()=>{
+    }
+
     /*---------------------------
     -
     -         Display
     -
     ----------------------------*/
     function _displayContent(){
-        console.log("isLoggedIn : "+JSON.stringify(server))
-        if(loading){
+        if(!focused){
+            return undefined
+        }
+        else if(loading ){
             return _displayLoading()
         }else if (! _isLoggedIn()){
-            if(server && instances){
+            if(server && showInstances){
                 return _displayInstanceChoice()
             }else{
                 return _displayLogin()
@@ -303,7 +311,6 @@ const LoginScene = ({navigation} : Props) => {
             return _displayLoggedIn()   
         }
     }
-
     
     function _displayLogin(){
         return  (
@@ -311,22 +318,27 @@ const LoginScene = ({navigation} : Props) => {
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
-                <View style={loginStyles.top_container}>
+            <View style={loginStyles.top_container}>
                 <Image style={loginStyles.logo} source={require(("../res/logo-iziflo-transparent.png"))}/>
                     <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
                     autoCapitalize='none' autoCorrect={false}
-                    value={email}  onChangeText={(value:string) => {setEmail(value)}}/>
+                    value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
                     <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
                     value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
-
-                
-                    {// Only if not in prod
-                        _displayServerPicker()
-                    }
-                    <Button style={loginStyles.connect_button} title={locale._template.connect} iziStyle={_getConnectButtonStyle()} onPress={_askForInstancesWithEmpty }/>
-                    <TouchableOpacity style={loginStyles.forgotten_pass_container}>
-                        <Text style={loginStyles.forgotten_pass}>{locale._template.forgotten_pass}</Text>
+                    <IziServerDropDown 
+                        style={{marginTop:12}} 
+                        zIndex={1000} 
+                        email={email} 
+                        value={server} 
+                        setValue={(item:ServerType)=>{setServer(item)}}
+                        />
+                    
+                    <Button style={loginStyles.connect_button} title={locale._template.connect} iziStyle={_getConnectButtonStyle()} onPress={()=>{setShowInstances(true)} } zIndex={1}/>
+                    <View style={loginStyles.forgotten_pass_outer_container}>
+                        <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
+                            <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
                     </TouchableOpacity>
+                    </View>
                 </View>
                 
                 <View style={loginStyles.bottom_container}>
@@ -345,12 +357,18 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     function _displayInstanceChoice(){
-        return (
-            <View style={loginStyles.login_container} >
-                <View style={loginStyles.top_container}>
-                    <InstanceChoice instances={instances!!}  onInstanceChoosen={_onInstanceChoosen} onLogout={_disconnect}/>
+        console.log(server)
+        if(showInstances)
+            return (
+                <View style={loginStyles.login_container} >
+                    <View style={loginStyles.top_container}>
+                        <InstanceChoice 
+                            user={{email:email!!, server:server, token:externalToken}}
+                            password={password}
+                            onInstanceChoosen={_onInstanceChoosen} 
+                        onLogout={_disconnect}/>
+                    </View>
                 </View>
-            </View>
         )
     }
 
@@ -360,7 +378,7 @@ const LoginScene = ({navigation} : Props) => {
                 status={user?.pin ? 'enter' : 'choose'}
                 storedPin={user?.pin}
                 storePin={(pin?:string)=>_setPin(pin)}
-                finishProcess={()=> navigation.navigate('Main')}
+                finishProcess={()=> _gotoMain()}
                 onClickButtonLockedPage={()=> _disconnect()}
                 textButtonLockedPage={locale._template.disconnect}
                 timeLocked={Config.FLAVOR =='D' ? 10000 : 3*60*1000}
@@ -378,13 +396,6 @@ const LoginScene = ({navigation} : Props) => {
         }else return undefined
     }
 
-    const _displayServerPicker = ()=>{
-        if(Config.FLAVOR != 'P'){
-            return (
-                <IziServerDropDown style={{marginTop:12}} email={email} onChangeItem={(item:ServerType)=>{setServer(item)}}/>
-            )
-        }else return undefined
-    }
 
     const _getConnectButtonStyle = () => {
         return (
@@ -448,13 +459,19 @@ const loginStyles = StyleSheet.create({
        resizeMode:'contain'
     },
     forgotten_pass_container:{
-        paddingTop:20,
-        paddingBottom:20,
-         alignItems:'center'        
+        marginTop:8,
+        marginBottom:8,
+        alignSelf:'center',
+        alignItems:'stretch',
+    },
+    forgotten_pass_outer_container:{
+        alignSelf:'center',
     },
     forgotten_pass:{
-         color:colors.iziflo_blue,
-         fontSize:14,
+        margin:12,
+        color:colors.iziflo_blue,
+        fontSize:14,
+        backgroundColor:'transparent'
     },
     connect_button:{
         alignSelf:'center',

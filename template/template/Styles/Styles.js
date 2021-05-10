@@ -15,7 +15,7 @@ export const sizes = {
     }
 }
 
-const border_width=3
+const border_width=2
 
 const textiput_height = 40
 const button_height = 40
@@ -37,6 +37,7 @@ export const loginStyles = {
             borderWidth:border_width,
             height:textiput_height,
             fontFamily: 'OpenSans-Regular',
+            fontWeight:'normal',
             borderTopRightRadius:textiput_height/2,
             borderTopLeftRadius:textiput_height/2,
             borderBottomRightRadius:textiput_height/2,
@@ -132,21 +133,19 @@ export const loginStyles = {
             marginBottom: 3,
             color:'gray',
         },
-        container:{
-            height:dropdown_height,
-            marginBottom:20,
-        },
         dropdown:{
+            height:dropdown_height,
             borderTopRightRadius:dropdown_height/2,
             borderTopLeftRadius:dropdown_height/2,
             borderBottomRightRadius:dropdown_height/2,
             borderBottomLeftRadius:dropdown_height/2,
-            borderWidth:1,
+            borderWidth:border_width,
+            marginBottom:20,
             enabled:{
                 borderColor:colors.iziflo_blue,
             },
             disabled:{
-                borderColor:'gray',
+                opacity:.3
             },
         }
     },

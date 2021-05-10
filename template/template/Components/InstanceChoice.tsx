@@ -1,4 +1,4 @@
-import React ,{useState} from 'react'
+import React ,{useEffect, useState} from 'react'
 import PropTypes from "prop-types";
 import {
     View, StyleSheet,TouchableOpacity
@@ -6,59 +6,130 @@ import {
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import {__SInfoConfig} from '../Tools/Prefs';
 
-import {InstanceType,CompanyType} from "../Types/LoginTypes"
+import {Token,InstanceType,ServerType, User, TOKEN_TYPE} from "../Types/LoginTypes"
 import locale from '../../Locales/locales'
 //types
 import IziDropdown from './IziDropDown'
+import IziServerDropDown from './IziServerDropDown'
+import { requestInstances } from '../API/LoginApi';
+import {isEmailValid} from '../Tools/StringTools';
 
 export interface Props{
-    instances:InstanceType[],
-    selectedInstance?:InstanceType,
-    displayCompany? : boolean
+    user:User,
+    password?:string
     onLogout():void
-    onInstanceChoosen(instance:InstanceType, company?:CompanyType):void
+    onInstanceChoosen(instance:InstanceType):void
 }
 
- const InstanceChoice : React.FC<Props> = ({instances, selectedInstance, displayCompany, onLogout,onInstanceChoosen}) => {
+interface ServerInfo{
+    server:ServerType,
+    instances?:{
+        list?:InstanceType[],
+        selectedInstance?:InstanceType
+    }
+}
 
-    const [instance, setInstance] = useState<InstanceType | undefined>(selectedInstance)
-    const [company, setCompany] = useState<CompanyType | undefined>(undefined)
+ const InstanceChoice : React.FC<Props> = ({user,password, onLogout, onInstanceChoosen}) => {
 
+    const [serverInfo, setServerInfo] = useState<ServerInfo|undefined>(user.server ? {server:user.server} : undefined)
+    const isExternal = user.token!= undefined && user.token.tokenType != TOKEN_TYPE.IZIFLO
 
-    console.log(JSON.stringify(instances))
+    useEffect(()=>{
+        if(serverInfo?.server && !serverInfo?.instances){
+            _requestInstances(serverInfo.server);
+        }
+    },[serverInfo])
 
     const _onConnect = ()=>{
         console.log("connect")
-        if(instance && (!displayCompany || company))
-            onInstanceChoosen(instance, company)
+        if(serverInfo?.instances?.selectedInstance) onInstanceChoosen(serverInfo.instances.selectedInstance)
 
     }
+
     const _getConnectButtonStyle = () => {
-        return (instance && (!displayCompany || company))
+        return (serverInfo?.instances?.selectedInstance)
             ?  IziButtonStyle.green 
             : IziButtonStyle.disabled
     }
 
+    const onServerSelected = (server:ServerType)=>{
+        if(server)  {
+            setServerInfo({server:server});
+        }else setServerInfo(undefined)
 
-    const _displayCompanyChoice= ()=>{
-        if( displayCompany){
-            <IziDropdown
-            items={instances}
-            title="Comp"/>
+    }
+
+    const _requestInstances = async (server:ServerType)=>{
+        //TODO load instance
+        if(server){
+            let promise = null;
+            if(isExternal){
+                promise = requestInstances(server, user.token!!.email, false, user.token!!.token, user.token!!.tokenType)
+                //TODO load instance from token
+            }else{
+                if(!server || !isEmailValid(user.email) || !password) {
+                    //TODO error message : missing data
+                }else{
+                    promise = requestInstances(server, user.email, password)
+                }
+            }
+            if(promise)
+                promise.then((data:any)=>{
+                    data.data.forEach((instance : InstanceType) => {
+                        instance.value=instance.id_instance,
+                        instance.label=instance.instance_code + ' - ' + instance.instance_name
+                    });
+                    setServerInfo({server:server,instances:{list:data.data}});
+                })
+        }else{
+            //TODO no server message
+        }
+    }
+
+    const _onInstanceSelected = (instance:InstanceType) => {
+        if(!serverInfo?.server) setServerInfo(undefined)
+        else{
+            let info :ServerInfo = {server:serverInfo?.server}
+            if(serverInfo.instances?.list) info.instances = {list : serverInfo.instances.list, selectedInstance:instance}
+            setServerInfo(info)
+        }
+    }
+
+
+    /*----------------------
+    *
+    *       Display
+    *
+    *----------------------*/
+    const _displayServers= ()=>{
+        if(true){
+            return (
+                <IziServerDropDown 
+                        style={{marginTop:12}} 
+                        email={user.email ? user.email : user.token?.email} 
+                        value={serverInfo?.server} 
+                        setValue={(item:ServerType)=>{onServerSelected(item)}}
+                        zIndex={2000}
+                        />
+            )
         }else return undefined
     }
+    
 
     return (
         <View>
+            {_displayServers()}
             <IziDropdown
-            items={instances}
-            title={locale._template.dropdown_instance.title}
-            placeholder={instances && instances.length > 0 ? locale._template.dropdown_instance.placeholder :  locale._template.dropdown_instance.empty_placeholder}
-            disabled={instances== undefined || instances.length == 0 || selectedInstance}
-            defaulValue={selectedInstance ? selectedInstance : undefined}
-            onChangeItem={(item:InstanceType) => {setInstance(item)}}/>
-            {_displayCompanyChoice()}
-                <Button style={loginStyles.button} title={locale._template.connect} iziStyle={_getConnectButtonStyle()} onPress={_onConnect }/>
+                items={serverInfo?.instances?.list ? serverInfo.instances.list : []}
+                title={locale._template.dropdown_instance.title}
+                placeholder={serverInfo?.instances?.list && serverInfo.instances.list.length > 0 ? locale._template.dropdown_instance.placeholder :  locale._template.dropdown_instance.empty_placeholder}
+                nothingToShow={locale._template.dropdown_instance.nothing_to_show}
+                disabled={serverInfo?.instances?.list == undefined || serverInfo.instances.list.length == 0}
+                value={serverInfo?.instances?.selectedInstance}
+                setValue={(value:InstanceType)=>{_onInstanceSelected(value)}}
+                zIndex={1000}/>
+                
+            <Button style={loginStyles.button} title={locale._template.connect} iziStyle={_getConnectButtonStyle()} onPress={_onConnect }/>
             <Button title={locale._template.disconnect} iziStyle={IziButtonStyle.orange} onPress={onLogout}/>
         </View>
     )

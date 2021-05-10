@@ -16,7 +16,13 @@ const RootStack = createStackNavigator();
 function MainStackScreen() {
   return (
       <MainStack.Navigator>
-        <MainStack.Screen name="Main" component={MainScene} />
+        <MainStack.Screen name="Example" component={MainScene} 
+        options={
+          {
+            headerLeft: ()=> null, // Note: using just `null` instead of a function should also work but could trigger a TS error
+          }
+        }
+      />
       </MainStack.Navigator>
   );
 }
@@ -35,22 +41,22 @@ const _displayCorner= (infoModalRef)=>{
     else return undefined
 }
 
-const RootStackScreen = () =>{
+const RootStackScreen = (props) =>{
   const infoModal = useRef(undefined)
 
   return (
     <TouchableWithoutFeedback style={{flex:1}} onPress={Keyboard.dismiss}>
       <View  style={{flex:1}}>
-      <RootStack.Navigator>
+      <RootStack.Navigator navOptions={{ headerShown: true }}>
 
-          <RootStack.Screen 
-              name="Login" 
-              component={LoginScene}
-              options={{ headerShown: false }}/>
+        <RootStack.Screen 
+            name="Login" 
+            component={LoginScene}
+            options={{ headerShown: false }}/>
         <RootStack.Screen
-              name="Main"
-              component={MainStackScreen}
-              options={{ headerShown: false }}
+            name="Main"
+            component={props.mainNavigation ? props.mainNavigation :  MainStackScreen}
+            options={{ headerShown: false }}
         />
       </RootStack.Navigator>
       {_displayCorner(infoModal)}

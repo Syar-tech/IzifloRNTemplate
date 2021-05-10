@@ -1,5 +1,6 @@
 #!/bin/bash
 # run  apk with env
+# example of use 'yarn r dev android'
 
 
 source ./scripts/apply_config.sh $1

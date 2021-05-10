@@ -9,10 +9,19 @@ export interface User{
     }
 
 export interface Token{
-    email:string
-    token : string
+    email:string,
+    token : string,
+    refreshToken? : string,
     state:string,
-    expirationDate?:string
+    tokenType:TOKEN_TYPE,
+    expirationDate?:string,
+    refreshExpirationDate? : string,
+}
+
+export enum TOKEN_TYPE {
+    IZIFLO="I",
+    MICROSOFT="M",
+    GOOGLE="G"
 }
 
 export interface ServerType{
