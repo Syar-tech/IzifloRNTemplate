@@ -8,12 +8,6 @@ import { TOKEN_TYPE } from "../Types/LoginTypes";
 
 const core_version = Config.CORE_VERSION
 
-export const ProdServer={
-  name:"Production",
-  code:'PROD',
-  url:'https://cfao.iziflo.com',
-  id:0
-}
 
 export function searchServers(email){
   var params = {
@@ -22,7 +16,6 @@ export function searchServers(email){
     app_type:Config.FLAVOR,
     core_version:core_version
   }
-  console.log('response : '+Config.DEV_SERVER+"/ws/get_izi_app.php");
   return Api.get(Config.DEV_SERVER+"/ws/get_izi_app.php",params)
       .then((response) => {
           return response.json()
@@ -30,17 +23,13 @@ export function searchServers(email){
       .catch((error) => console.error(error))
 }
 
-export function requestInstances(server, email, password, token = null, tokenType=null){
+export function requestInstances(server, email, token, tokenType){
   var params = getCommonParams();
   params.module_api='get_instances'
   params.email=email
-  if(token && tokenType){
-    params.external_token=token
-    params.login_type=tokenType
-  }else{
-    params.password=password
-    params.login_type=TOKEN_TYPE.IZIFLO
-  }
+  params.token=token
+  params.login_type=tokenType
+  
   console.log("instances call :"+ getWSBaseUrl(server) + '\n'+JSON.stringify(params, null, 2))
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
@@ -50,18 +39,13 @@ export function requestInstances(server, email, password, token = null, tokenTyp
 }
 
 //request token
-export function requestToken(server, email, password, idInstance, token = null, tokenType=null){
+export function requestToken(server, email, password){
   var params = getCommonParams();
   params.module_api='request_token'
   params.email=email
-  params.id_instance=idInstance
-  if(token && tokenType){
-    params.external_token=token
-    params.login_type=tokenType
-  }else{
-    params.password=password
-     params.login_type=TOKEN_TYPE.IZIFLO
-  }
+  params.password=password
+
+  console.log('params login : '+JSON.stringify(params));
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
@@ -70,11 +54,10 @@ export function requestToken(server, email, password, idInstance, token = null, 
 }
 
 //check token
-export async function checkToken( user, navigation, idInstance, token){
-  let params = getCommonParams(user);
-  params.id_instance=idInstance
+export async function checkToken( user, navigation){
+  let params = getCommonParams(user, true);
   params.module_api="check_token";
-  console.log("server : "+getWSBaseUrl(user.server));
+
   var promise = Api.post(getWSBaseUrl(user.server),params)
     .then((response) => response.json())
     .then(tokenHandler(navigation, user))
@@ -90,7 +73,6 @@ export async function checkToken( user, navigation, idInstance, token){
  */
  export function tokenHandler(navigation, user = null){
   return async (json) => {
-      console.log("json : "+ JSON.stringify(json))
     if(json.token && json.token.state){
       switch (json.token.state) {
         case TOKEN_STATE.VALID:
@@ -117,10 +99,10 @@ function refreshToken(user){
       return refreshIzifloToken(user)
         case TOKEN_TYPE.MICROSOFT:
           //TODO refresh MICROSOFT
-          refreshMicrosoftToken(user)
+          return refreshMicrosoftToken(user)
           break;
         case TOKEN_TYPE.GOOGLE:
-          refreshGoogleToken(user)
+          return refreshGoogleToken(user)
           break;
   
     default:
@@ -130,12 +112,8 @@ function refreshToken(user){
 
 function refreshIzifloToken(user){
 
-  var params = getCommonParams();
+  var params = getCommonParams(user);
   params.module_api='refresh_token'
-  params.email=user.email
-  params.id_instance=idInstance
-  params.token=user.token.token
-  params.login_type=user.token.tokenType
   params.refresh_token=user.token.refreshToken
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {

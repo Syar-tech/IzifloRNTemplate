@@ -17,6 +17,7 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
+    "@types/react": "^17",
     "move": "^0.4.9",
     "prop-types": "^15.7.2",
     "react": "17.0.1",

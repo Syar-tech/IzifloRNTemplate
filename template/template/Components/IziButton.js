@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text, TouchableOpacity} from 'react-native'
+import {View,Text, Image, TouchableOpacity} from 'react-native'
 import {loginStyles as styles} from '../Styles/Styles'
 
 export const IziButtonStyle = {

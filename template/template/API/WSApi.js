@@ -50,21 +50,19 @@ export const queryWS = async (navigation, params) => {
 
     try{
         //check token
-        return checkToken(user, navigation, user.server.instance.id_instance,user.token.token)
+        return checkToken(user, navigation, user.server.instance.id_instance)
         .then(
             (data)=>{
-                console.log("token : " + JSON.stringify(data));
                 if(data && data.token && data.token.state == TOKEN_STATE.OBSOLETE){
                     console.log("is token obsolete");
-                    //reload user 
+                    //user updated and should be reloaded 
                     user = getStoredUser()
                 }   
                 let commonParams = getCommonParams(user)
 
                 let wsQueryParams = {
                     module_name : izi_api_app_code,
-                    module_version : izi_api_app_api_version,
-                    id_instance:user.server.instance.id_instance
+                    module_version : izi_api_app_api_version
                 }
                 return Api.post(getWSBaseUrl(user.server),{...commonParams, ...wsQueryParams, ...params})
                     .then((response) =>response.json())

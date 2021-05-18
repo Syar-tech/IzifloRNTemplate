@@ -9,18 +9,25 @@ export const colors={
     iziflo_dark_gray:"#606060"
 }
 
+const border_width=2
+
+const textinput_height = 40
+const button_height = 40
+const dropdown_height = 40
+const secureimage_height = textinput_height-10
+
+
 export const sizes = {
     modal:{
         close_icon_size:30
+    },
+    password:{
+        image:{
+            height:secureimage_height-8
+        }
     }
 }
 
-const border_width=2
-
-const textiput_height = 40
-const button_height = 40
-const dropdown_height = 40
-const secureimage_height = textiput_height-14
 
 export const loginStyles = {
     textinput:{
@@ -35,30 +42,30 @@ export const loginStyles = {
             borderColor:colors.iziflo_blue,
             paddingHorizontal:15,
             borderWidth:border_width,
-            height:textiput_height,
+            height:textinput_height,
             fontFamily: 'OpenSans-Regular',
             fontWeight:'normal',
-            borderTopRightRadius:textiput_height/2,
-            borderTopLeftRadius:textiput_height/2,
-            borderBottomRightRadius:textiput_height/2,
-            borderBottomLeftRadius:textiput_height/2,
+            borderTopRightRadius:textinput_height/2,
+            borderTopLeftRadius:textinput_height/2,
+            borderBottomRightRadius:textinput_height/2,
+            borderBottomLeftRadius:textinput_height/2,
         },
         secureImageContainer:{
             position:'absolute',
             height:secureimage_height,
             width:secureimage_height,
-            right:(textiput_height -secureimage_height)/2,
-            top:(textiput_height -secureimage_height)/2,
-            bottom:(textiput_height -secureimage_height)/2,
+            right:(textinput_height -secureimage_height)/2,
+            top:(textinput_height -secureimage_height)/2,
+            bottom:(textinput_height -secureimage_height)/2,
             borderTopRightRadius:secureimage_height,
             borderTopLeftRadius:secureimage_height,
             borderBottomRightRadius:secureimage_height,
             borderBottomLeftRadius:secureimage_height,
             backgroundColor:colors.iziflo_blue,
+            alignItems:'center',
+            justifyContent:'center',
         },
         secureImage:{
-            height:secureimage_height,
-            width:secureimage_height,
         }
 
     },
@@ -81,8 +88,11 @@ export const loginStyles = {
             alignItems:'center',
         },
         image:{
-            height:20,
-            width:20,
+            marginTop:2,
+            height:25,
+            width:200,
+            resizeMode:'contain',
+            alignSelf:'center',
         },
         text:{
             color:'white',
@@ -113,9 +123,6 @@ export const loginStyles = {
                 color:colors.iziflo_dark_gray,
                 fontSize:16,
                 fontWeight:'bold',
-            },
-            image :{
-                height:20,
             }
         }
     },
@@ -148,8 +155,7 @@ export const loginStyles = {
                 opacity:.3
             },
         }
-    },
-    
+    },    
 }
 
 export const ModalStyle = StyleSheet.create({

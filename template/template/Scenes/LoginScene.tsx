@@ -18,16 +18,18 @@ import Styles, { colors } from '../Styles/Styles'
 import locale from '../../Locales/locales'
 
 //Tools
-import {requestInstances,requestToken, ProdServer} from '../API/LoginApi'
+import {requestToken} from '../API/LoginApi'
 import {__SInfoConfig} from '../Tools/Prefs';
 import {getStoredUser, deleteStoredUser, storeUser, TOKEN_STATE} from '../Tools/TokenTools';
 import {isEmpty, isEmailValid} from '../Tools/StringTools';
 //types
 import { StackNavigationProp } from '@react-navigation/stack';
-import {User, Token, ServerType, InstanceType, CompanyType, TOKEN_TYPE} from "../Types/LoginTypes"
+import {User, Token, ServerType, InstanceType, TOKEN_TYPE} from "../Types/LoginTypes"
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
 import DropDownPicker from 'react-native-dropdown-picker'
+import { getBundleId } from 'react-native-device-info'
+import { resetInternalStates } from '@haskkor/react-native-pincode/dist/src/utils'
 
 
 type RootStackParamList = {
@@ -39,7 +41,6 @@ type Props = {
 }
 const LoginScene = ({navigation} : Props) => {
 
-    
     /*---------------------------
     -
     -         State
@@ -52,7 +53,6 @@ const LoginScene = ({navigation} : Props) => {
     const [loading, setLoading] = useState(true)
     const [server, setServer] = useState<ServerType | undefined>(undefined)
     const [instances, setInstances] = useState<InstanceType[] | undefined>(undefined)
-    const [externalToken, setExternalToken] = useState<Token | undefined>(undefined)
     const [showInstances, setShowInstances] = useState(false)
     const [msal, setMsal] = useState(new MSALConnect())
     
@@ -170,7 +170,7 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     const _isLoggedIn = () => {
-        return user != undefined && user.token != null &&  user.server && user.server.instance
+        return user?.server?.instance && user?.token
     }
     /*---------------------------
     -
@@ -180,29 +180,25 @@ const LoginScene = ({navigation} : Props) => {
 
     
 
-    function _connect(instance : InstanceType){
+    function _connect(){
 
         console.log("connect loading true")
         setLoading(true);
-        if(instance && server){
+        if(server){
             let promise  = null;
-            if(externalToken){
-                //connect to instance with external
-                promise = requestToken(server, email, null, instance.id_instance, externalToken.token, externalToken.tokenType)
+            
+            if(!isEmailValid(email) || !password) {
+                //TODO error message : missing data
             }else{
-                if(!isEmailValid(email) || !password) {
-                    //TODO error message : missing data
-                }else{
-                    //connect to instance
-                    //save
-                    promise = requestToken(server, email, password, instance.id_instance)
-                }
+                //connect to instance
+                //save
+                console.log("promise")
+                promise = requestToken(server, email, password)
             }
 
             if(promise)
                 promise.then((data:any)=>{
-                    if(data.success){
-                        server.instance = instance
+                    if(data?.success){
                         let usr  : User = {
                             email : email!!, 
                             token : {
@@ -215,18 +211,22 @@ const LoginScene = ({navigation} : Props) => {
                                 email:email!!}, 
                             server:server
                         }
-                        _storeUser(usr)
                         setUser(usr)
+                        setShowInstances(true)
+                        console.log("showIntance")
                     
-                    }else if(data.error){
+                    }else if(data?.error){
                         //TODO failed
+                console.log("data.error : " +JSON.stringify(data))
                     }else{
                         //TODO error
+                console.log("data unknown : " +JSON.stringify(data))
                     }
                         
                 })
         }else{
             //TODO no server 
+                console.log("no server ")
         }
         console.log("connect loading false")
         setLoading(false)
@@ -239,7 +239,6 @@ const LoginScene = ({navigation} : Props) => {
         setServer(undefined)
         setInstances(undefined)
         setPassword(undefined)
-        setExternalToken(undefined)
         setShowInstances(false)
         
     }
@@ -252,9 +251,10 @@ const LoginScene = ({navigation} : Props) => {
         const params: MSALInteractiveParams = {
             scopes: ["User.Read"],
           };
-          const result: MSALResult = await msal.signIn(params);
+          const result: MSALResult = await msal.signIn(params)
+          .catch((e)=>{console.log("msal : "+ JSON.stringify(e, null, 2)); return e});
+          
           if(result && result.idToken){
-              console.log("MSAL : "+ JSON.stringify(result))
               let externalToken :Token = {
                     email:result.account.username,
                     token : result.accessToken,
@@ -268,6 +268,8 @@ const LoginScene = ({navigation} : Props) => {
               }
               setUser(usr)
               setShowInstances(true)
+
+              console.log("connect office : "+JSON.stringify(usr));
             
             }
         }
@@ -283,8 +285,11 @@ const LoginScene = ({navigation} : Props) => {
     -         Callbacks
     -
     ----------------------------*/
-    const _onInstanceChoosen= (instance : InstanceType, company? : CompanyType)=>{
-        _connect(instance)
+    const _onInstanceChoosen= ( server : ServerType)=>{
+        if(user && user.token){
+            let usr = {email:user.email, token:user.token, server:server}
+            _storeUser(usr, true)
+        }
     }
 
     const _onPassordForgotten = ()=>{
@@ -302,7 +307,9 @@ const LoginScene = ({navigation} : Props) => {
         else if(loading ){
             return _displayLoading()
         }else if (! _isLoggedIn()){
-            if(server && showInstances){
+            if(user?.token?.tokenType 
+                && (server || ( user.token.tokenType != TOKEN_TYPE.IZIFLO)) 
+                && showInstances){
                 return _displayInstanceChoice()
             }else{
                 return _displayLogin()
@@ -319,7 +326,7 @@ const LoginScene = ({navigation} : Props) => {
             keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
             <View style={loginStyles.top_container}>
-                <Image style={loginStyles.logo} source={require(("../res/logo-iziflo-transparent.png"))}/>
+                <Image style={loginStyles.logo} source={require(("../res/logo-iziflo.png"))}/>
                     <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
                     autoCapitalize='none' autoCorrect={false}
                     value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
@@ -333,7 +340,12 @@ const LoginScene = ({navigation} : Props) => {
                         setValue={(item:ServerType)=>{setServer(item)}}
                         />
                     
-                    <Button style={loginStyles.connect_button} title={locale._template.connect} iziStyle={_getConnectButtonStyle()} onPress={()=>{setShowInstances(true)} } zIndex={1}/>
+                    <Button 
+                        style={loginStyles.connect_button} 
+                        title={locale._template.connect} 
+                        iziStyle={_getConnectButtonStyle()} 
+                        onPress={_connect } 
+                        zIndex={1}/>
                     <View style={loginStyles.forgotten_pass_outer_container}>
                         <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
                             <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
@@ -347,8 +359,8 @@ const LoginScene = ({navigation} : Props) => {
                             <View style={loginStyles.connect_with_line}/>
                             <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
                         </View>
-                        <Button style={{marginBottom:20}} title={locale._template.google} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
-                        <Button style={{}} title={locale._template.office_365} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
+                        <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
+                        <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
                     </View>
                     <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
                 </View>
@@ -357,13 +369,13 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     function _displayInstanceChoice(){
-        console.log(server)
+        console.log("show instance : "+user)
         if(showInstances)
             return (
                 <View style={loginStyles.login_container} >
                     <View style={loginStyles.top_container}>
                         <InstanceChoice 
-                            user={{email:email!!, server:server, token:externalToken}}
+                            user={user!!}
                             password={password}
                             onInstanceChoosen={_onInstanceChoosen} 
                         onLogout={_disconnect}/>
@@ -456,7 +468,9 @@ const loginStyles = StyleSheet.create({
     logo:{
        height:200 ,
        width:300,
-       resizeMode:'contain'
+       resizeMode:'contain',
+       alignSelf:'center',
+       
     },
     forgotten_pass_container:{
         marginTop:8,

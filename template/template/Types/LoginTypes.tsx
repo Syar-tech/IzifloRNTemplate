@@ -1,8 +1,7 @@
 
 export interface User{
         email : string,
-        token? : Token, 
-        externalToken? : Token, 
+        token? : Token,
         extra? : object
         server?:ServerType
         pin?:string
@@ -44,4 +43,18 @@ export interface CompanyType{
     id:Number,
     value?:string,
     label?:string
+}
+
+export interface ErrorType{
+    title:string,
+    message:string,
+    action_button?:{
+        title:string,
+        link:string,
+    }
+}
+
+export enum ERROR_CODE{
+    NO_INSTANCE='NO_INSTANCE',
+    UNKNOWN_USER='UNKNOWN_USER',
 }

@@ -15,7 +15,7 @@ import Config from "react-native-config";
 
 export default function IziServerDropdown(props){
 
-    const [serverList, setServerList] = useState([])
+    const [servers, setServers] = useState({servers:[]})
     const [loading, setLoading] = useState(false)
     
     useEffect(
@@ -23,7 +23,7 @@ export default function IziServerDropdown(props){
             if(isEmailValid(props.email)){
                 _searchServers()
             }else{
-                setServerList([])
+                setServers({servers:[]})
             }
         }
         ,[props.email])
@@ -44,32 +44,39 @@ export default function IziServerDropdown(props){
     const _searchServers = async ()=>{
         setLoading(true);
 
-        console.log("server : "+JSON.stringify(props.value) + (serverList.length ==0 && props.value != undefined) )
-        if(serverList.length ==0 && props.value){
-            setServerList([props.value])
-            props.setValue(props.value);
+        if(servers.servers.length ==0 && props.value){
+            setServers({servers:[props.value], selected:props.value})
+            
             setLoading(false)
         }else{
-            setServerList([])
+            setServers({servers:[]})
             searchServers(props.email)
                 .then((data)=>{
-                    if(data.length == 0){
-                        if(controller ) controller.close()
-                    }
+                    if(data === undefined )data = []
+
                     data.forEach((item, _)=>{
                         item.label=item.name
                         item.value=item.id
                     })
 
-                    setServerList(data)
-                    if(data.length == 1 /*&& Config.FLAVOR == 'P'*/){
-                    props.setValue(data[0]);
+                    let servs = {servers:data}
+                    if(data.length == 1 && Config.FLAVOR == 'P'){
+                        servs.selected=data[0]
+                        props.setValue(servs.selected)
                     }
+                    setServers(servs)
                     setLoading(false)
                 },
                 ()=>{setLoading(false)}
             );  
         }
+    }
+
+    function _setValue(value){
+        let servs = servers;
+        servs.selected = value
+        props.setValue(value)
+        setServers(servs)
     }
 
 
@@ -82,17 +89,17 @@ export default function IziServerDropdown(props){
         <View onPress={Keyboard.dismiss}
         zIndex={props.zIndex}>
             <IziDropdown
-                            title={locale._template.dropdown_server.title}
-                            items={serverList}
-                            loading={loading}
-                            style={getStyle()}                            
-                            disabled={!isEmailValid(props.email) || (props.value && serverList.length==1 && Config.FLAVOR == 'P') }
-                            placeholder={isEmailValid(props.email) ? locale._template.dropdown_server.placeholder :  locale._template.dropdown_server.empty_placeholder}
-                            nothingToShow={locale._template.dropdown_server.nothing_to_show}
-                            value={props.value}
-                            setValue={props.setValue}
-                            zIndex={props.zIndex}
-                            />
+                title={locale._template.dropdown_server.title}
+                items={servers.servers}
+                loading={loading}
+                style={getStyle()}                            
+                disabled={!isEmailValid(props.email) || (servers.selected && servers.servers.length==1 && Config.FLAVOR == 'P') }
+                placeholder={isEmailValid(props.email) ? locale._template.dropdown_server.placeholder :  locale._template.dropdown_server.empty_placeholder}
+                nothingToShow={locale._template.dropdown_server.nothing_to_show}
+                value={servers.selected}
+                setValue={_setValue}
+                zIndex={props.zIndex}
+                />
 
         </View>
     )

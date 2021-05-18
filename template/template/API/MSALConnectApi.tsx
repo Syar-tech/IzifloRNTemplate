@@ -1,3 +1,4 @@
+import Config from "react-native-config";
 import { getBundleId } from "react-native-device-info";
 import PublicClientApplication, { MSALAccount, MSALConfiguration, MSALInteractiveParams, MSALResult, MSALSilentParams } from "react-native-msal"
 
@@ -7,8 +8,8 @@ const sMSAL_AUTHORITY = 'IZI_MSAL_SIGNIN'
 export default class MSALConnect {
     private static  config  : MSALConfiguration = {
         auth: {
-          clientId: 'a8c78f9a-1934-4f4c-8115-e684dc693285',
-          authority: getBundleId()+"/default_msal_authority"
+          clientId: Config.MICROSOFT_CLIENT_ID,
+          //authority: getBundleId()+"/default_msal_authority"
         },
       };
 
@@ -32,9 +33,10 @@ export default class MSALConnect {
    *  was provided to the client, it will initiate the password reset flow
    */
   public async signIn(params: MSALSignInParams): Promise<MSALResult> {
-      if(!this.pca) throw Error("MSAL not init")
-    
-      const isSignedIn = await this.isSignedIn();
+
+    if(!this.pca) throw Error("MSAL not init")
+
+    const isSignedIn = await this.isSignedIn()
     if (isSignedIn) {
       throw Error('A user is already signed in');
     }
@@ -83,9 +85,16 @@ export default class MSALConnect {
     return true;
   }
 
-
-  private async getAccount(): Promise<MSALAccount | undefined> {
+  public async getAccounts(): Promise<MSALAccount[] | undefined> {
     if(!this.pca) throw Error("MSAL not init")
-    return await this.pca.getAccount(MSALConnect.config.auth.authority!!);
+    return await this.pca.getAccounts();
   }
+
+  public async getAccount(): Promise<MSALAccount | undefined> {
+    if(!this.pca) throw Error("MSAL not init")
+    console.log("accounts : "+JSON.stringify(await this.pca.getAccounts()));
+    return undefined
+    //return await this.pca.getAccount(MSALConnect.config.auth.authority!!);
+  }
+
 }

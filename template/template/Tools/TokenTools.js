@@ -32,7 +32,7 @@ export const TOKEN_STATE = {
     OBSOLETE:"OBSOLETE",
 }
 
-export const getCommonParams = (user = null) =>  {
+export const getCommonParams = (user = null, addInstance = true) =>  {
     let params =  {
         client_id : izi_api_client_id,
         module_name : 'core',
@@ -40,8 +40,10 @@ export const getCommonParams = (user = null) =>  {
         device_id:getUniqueId()
     }
     if(user){
+        params.email = user.email
         params.token = user.token.token
         params.login_type = user.token.tokenType
+        if(addInstance) params.id_instance = user.server.instance.id_instance
     }
     return params;
 }

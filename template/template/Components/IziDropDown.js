@@ -42,7 +42,7 @@ export default function IziDropdown(props){
 
     return(
         <View style={getStyle()}
-        zIndex={2000}>
+        zIndex={props.zIndex}>
             <Text style={ getStyle().title }>{props.title}</Text>
             <View zIndex={props.zIndex}>
                 <DropDownPicker
@@ -57,17 +57,11 @@ export default function IziDropdown(props){
                             containerStyle={getStyle().container}
                             style={{...getStyle().dropdown, ...getStyle().dropdown.enabled}}
                             disabledStyle={getStyle().dropdown.disabled}
-                            itemStyle={{
-                                zIndex:50,
-                                justifyContent: 'flex-start',
-                                borderColor:colors.iziflo_blue,
-                            }}
                             disabled={props.disabled}
                             translation={{
                                 PLACEHOLDER : props.placeholder,
                                 NOTHING_TO_SHOW : props.nothingToShow,
                             }}
-                            dropDownStyle={{backgroundColor: '#fafafa'}}
                             />
             </View>
         </View>

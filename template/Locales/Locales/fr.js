@@ -4,10 +4,14 @@ export default {
     _template:{
         connect:'SE CONNECTER',
         disconnect:'SE DÉCONNECTER',
+        back:'RETOUR',
         forgotten_pass:'Mot de passe oublié ?',
         legal_text:'© iziflo - Développé par Syartec',
-        unknown_external_account_title:'Compte %s non reconnu sur iziflo',
-        unknown_external_account_message:'Veuillez vous connecter une première dois avec %s sur iziflo.com',
+        unknown_external_account_title:'Compte {0} non reconnu sur iziflo.',
+        unknown_external_account_message:'Veuillez vous connecter une première fois avec {0} sur le site web.',
+        unknown_external_account_link:'ALLER',
+        unknown_error_title:'Une erreur est survenue.',
+        unknown_error_message:'Veuillez réessayer ultérieurement.',
         google:'Google',
         office_365:'Office 365',
         email_input:{
@@ -29,6 +33,8 @@ export default {
             empty_placeholder:"-- Aucune instance disponible --",
             nothing_to_show:"Aucun instance disponible",
             title:"INSTANCE",
+            no_instance_title:"Aucune instance disponible.",
+            no_instance_message:"Veuillez-vous assurer d'avoir bien accès à cette instance sur ce serveur.",
         },
         
     }

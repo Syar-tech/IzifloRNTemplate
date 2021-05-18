@@ -1,6 +1,7 @@
 import React , {useState} from 'react'
 import {View,Text, TextInput,Image,TouchableOpacity} from 'react-native'
-import {loginStyles as styles} from '../Styles/Styles'
+import {loginStyles as styles, sizes} from '../Styles/Styles'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 export default function IziTextInput(props){
@@ -21,7 +22,7 @@ export default function IziTextInput(props){
         if(props.secureTextEntry == true){
             return (
                 <TouchableOpacity style={getStyle().secureImageContainer} onPress={()=>setSecureOverride(!secureOverride)}>
-                    <Image style={getStyle().secureImage}/>
+                    <Icon style={getStyle().secureImage} name={secureOverride ? "eye-outline" : "eye-off-outline"} size={sizes.password.image.height} color='white'/>
                 </TouchableOpacity>
             )   
         }
