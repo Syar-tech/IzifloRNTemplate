@@ -8,6 +8,7 @@ import LoginScene from '../template/Scenes/LoginScene'
 import ServerInfoModal from '../template/Modal/ServerInfoModal'
 import MainScene from '../Scenes/MainScene'
 import Config from "react-native-config";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const MainStack = createStackNavigator();
@@ -45,23 +46,26 @@ const RootStackScreen = (props) =>{
   const infoModal = useRef(undefined)
 
   return (
+    
     <TouchableWithoutFeedback style={{flex:1}} onPress={Keyboard.dismiss}>
-      <View  style={{flex:1}}>
-      <RootStack.Navigator navOptions={{ headerShown: true }}>
+      <SafeAreaView style={{flex:1, overflow:'hidden'}}>
+        <View  style={{flex:1, overflow:'hidden'}}>
+          <RootStack.Navigator navOptions={{ headerShown: true }}>
 
-        <RootStack.Screen 
-            name="Login" 
-            component={LoginScene}
-            options={{ headerShown: false }}/>
-        <RootStack.Screen
-            name="Main"
-            component={props.mainNavigation ? props.mainNavigation :  MainStackScreen}
-            options={{ headerShown: false }}
-        />
-      </RootStack.Navigator>
-      {_displayCorner(infoModal)}
-      <ServerInfoModal ref={infoModal}/>
-    </View>
+            <RootStack.Screen 
+                name="Login" 
+                component={LoginScene}
+                options={{ headerShown: false }}/>
+            <RootStack.Screen
+                name="Main"
+                component={props.mainNavigation ? props.mainNavigation :  MainStackScreen}
+                options={{ headerShown: false }}
+            />
+          </RootStack.Navigator>
+          {_displayCorner(infoModal)}
+        <ServerInfoModal ref={infoModal}/>
+      </View>
+    </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 }

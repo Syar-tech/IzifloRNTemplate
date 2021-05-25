@@ -15,15 +15,18 @@ case $1 in
         IZI_ENV="recette2"
         ;;
     formation | form)
-        ENV="formation"
+        IZI_ENV="formation"
         SUFFIX_PARAMS="--appIdSuffix \"form\"";
         ;;
-
     local | sprint)
         IZI_ENV="sprint"
         SUFFIX_PARAMS="--appIdSuffix \"local\"";
         ;;
-     *)
+    *)
         IZI_ENV="dev"
         ;;
 esac
+if [[ $2 = "ios" ]];
+then
+    SUFFIX_PARAMS='--device';
+fi

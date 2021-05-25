@@ -18,7 +18,7 @@ const MainScene=({navigation} :Props)=>{
     const [attachments,setAttachments] = useState<string|undefined>(undefined)
 
     const getAttachments = () =>{
-        getExampleAttachementTypesWithIdExternal(navigation, 'document', 569496)
+        getExampleAttachementTypesWithIdExternal(navigation, 'document', 510809)
         .then((data) =>setAttachments(data));
     }
 

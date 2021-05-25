@@ -37,14 +37,13 @@ export default function IziDropdown(props){
     ----------------------------*/
 
     const _setValue=(val)=>{
-        props.setValue(props.items.find((item)=>item.value = val()))
+        props.setValue(props.items.find((item)=>item.value == val()))
     }
-
+    console.log('servers / '+JSON.stringify(props.value))
     return(
-        <View style={getStyle()}
-        zIndex={props.zIndex}>
+        <View style={getStyle()} >
             <Text style={ getStyle().title }>{props.title}</Text>
-            <View zIndex={props.zIndex}>
+            <View>
                 <DropDownPicker
                             open={open}
                             setOpen={setOpen}
@@ -54,9 +53,8 @@ export default function IziDropdown(props){
                             setValue={_setValue}
                             searchable={false}
                             onOpen={Keyboard.dismiss}
-                            containerStyle={getStyle().container}
-                            style={{...getStyle().dropdown, ...getStyle().dropdown.enabled}}
-                            disabledStyle={getStyle().dropdown.disabled}
+                            style={{...getStyle().dropdown, ...(props.disabled ? getStyle().dropdown.disabled : getStyle().dropdown.enabled)}}
+                            textStyle={props.disabled ? getStyle().dropdown.label_disabled : getStyle().dropdown.label}
                             disabled={props.disabled}
                             translation={{
                                 PLACEHOLDER : props.placeholder,
@@ -64,6 +62,7 @@ export default function IziDropdown(props){
                             }}
                             />
             </View>
+            {/*props.disabled &&<View style={{backgroundColor:'white', opacity:0.6, position:'absolute', width:'100%', height:'100%', }} />*/}
         </View>
     )
 }

@@ -44,7 +44,7 @@ export default function IziTextInput(props){
                 autoCapitalize={props.autoCapitalize} 
                 autoCorrect={props.autoCorrect}
                 //fix for font family issue on passwords
-                ref={ref => ref && ref.setNativeProps({ style: { fontFamily: 'FONT_NAME' }})} />
+                ref={ref => ref && ref.setNativeProps({ style: { fontFamily: Platform.OS === 'android' ? 'OpenSans-Regular' : undefined }})} />
                 {_displayEye()}
             </View>
 

@@ -4,6 +4,8 @@ import {getCommonParams,storeUser,TOKEN_STATE} from '../Tools/TokenTools'
 import {disconnect } from "../Tools/TokenTools"
 import {Api, getWSBaseUrl} from '../API/WSApi'
 import { TOKEN_TYPE } from "../Types/LoginTypes";
+import MSALConnect from '../API/MSALConnectApi'
+import { MSALInteractiveParams,MSALResult} from 'react-native-msal';
 
 
 const core_version = Config.CORE_VERSION
@@ -55,14 +57,56 @@ export function requestToken(server, email, password){
 
 //check token
 export async function checkToken( user, navigation){
-  let params = getCommonParams(user, true);
-  params.module_api="check_token";
+  switch (user.token.tokenType) {
+    case TOKEN_TYPE.IZIFLO:
+      {
 
-  var promise = Api.post(getWSBaseUrl(user.server),params)
-    .then((response) => response.json())
-    .then(tokenHandler(navigation, user))
-    .catch((error) => {console.error(error); Promise.reject(error)})
-  return promise;
+        let params = getCommonParams(user, true);
+        params.module_api="check_token";
+
+        var promise = Api.post(getWSBaseUrl(user.server),params)
+          .then((response) => response.json())
+          .then(tokenHandler(navigation, user))
+          .catch((error) => {console.error(error); Promise.reject(error)})
+        return promise;
+      }
+      case TOKEN_TYPE.MICROSOFT:
+        let msal = await getMSALConnect();
+        console.log(msal);
+        if(msal.isInit()){
+          const params = {
+              scopes: ["User.Read"],
+            };
+            const result = await msal.acquireTokenSilent(params)
+            .catch((e)=>{console.log("msal : "+ JSON.stringify(e, null, 2)); return e});
+            
+            if(result && result.idToken){
+                let externalToken = {
+                      email:result.account.username,
+                      token : result.accessToken,
+                      state : TOKEN_STATE.VALID,
+                      tokenType:TOKEN_TYPE.MICROSOFT
+                }
+                let usr={
+                    email:externalToken.email,
+                    token:externalToken
+  
+                }
+                setUser(usr)
+                setShowInstances(true)
+  
+                console.log("connect office : "+JSON.stringify(usr));
+              
+              }
+          }
+        break;
+      case TOKEN_TYPE.GOOGLE:
+        return user.token;
+        break;
+  
+    default:
+      return Promise.reject(user)
+  }
 }
 
 /**
@@ -97,13 +141,13 @@ function refreshToken(user){
   switch (user.token.tokenType) {
     case TOKEN_TYPE.IZIFLO:
       return refreshIzifloToken(user)
-        case TOKEN_TYPE.MICROSOFT:
-          //TODO refresh MICROSOFT
-          return refreshMicrosoftToken(user)
-          break;
-        case TOKEN_TYPE.GOOGLE:
-          return refreshGoogleToken(user)
-          break;
+    case TOKEN_TYPE.MICROSOFT:
+      //TODO refresh MICROSOFT
+      return refreshMicrosoftToken(user)
+      break;
+    case TOKEN_TYPE.GOOGLE:
+      return refreshGoogleToken(user)
+      break;
   
     default:
       return Promise.reject(user)
@@ -115,31 +159,40 @@ function refreshIzifloToken(user){
   var params = getCommonParams(user);
   params.module_api='refresh_token'
   params.refresh_token=user.token.refreshToken
-  return Api.post(getWSBaseUrl(server),params)
+  return Api.post(getWSBaseUrl(user.server),params)
     .then((response) => {
         return response.json()
     })
     .then((data)=>{
       console.log("DATA : "+JSON.stringify(data))
         if(data.success){
-            user.token = {
+          let usr = user;
+          usr.token = {
               token:data.success.access_token, 
               refreshToken:data.success.refresh_token, 
               state:TOKEN_STATE.VALID, 
+              tokenType:TOKEN_TYPE.IZIFLO, 
               expirationDate:data.success.access_token_expiration_date, 
               refreshExpirationDate:data.success.refresh_token_expiration_date, 
               email:user.email
             }
-            storeUser(JSON.stringify(user))
-            return {token : user.token}
+            storeUser(JSON.stringify(usr))
+            return {token : data.success}
         }else if(data.error){
-            Promise.reject(json)
+            Promise.reject(data)
         }else{
-            Promise.reject(json)
+            Promise.reject(data)
         }
             
     })
         
+}
+
+async function getMSALConnect(){
+  let msal = new MSALConnect()
+  await msal.init()
+  return msal
+
 }
 
 

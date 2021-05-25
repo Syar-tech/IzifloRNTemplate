@@ -8,13 +8,12 @@ import Loader from '../Components/IziLoader'
 import IziTextInput from '../Components/IziTextInput'
 import IziServerDropDown from '../Components/IziServerDropDown'
 //libs
-import SInfo from 'react-native-sensitive-info';
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useIsFocused, useFocusEffect} from '@react-navigation/native' 
-import PublicClientApplication, { MSALConfiguration,MSALInteractiveParams,MSALResult} from 'react-native-msal';
+import { useIsFocused} from '@react-navigation/native' 
+import  { MSALInteractiveParams,MSALResult} from 'react-native-msal';
 import Config from "react-native-config";
 
-import Styles, { colors } from '../Styles/Styles'
+import { colors } from '../Styles/Styles'
 import locale from '../../Locales/locales'
 
 //Tools
@@ -27,9 +26,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import {User, Token, ServerType, InstanceType, TOKEN_TYPE} from "../Types/LoginTypes"
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
-import DropDownPicker from 'react-native-dropdown-picker'
-import { getBundleId } from 'react-native-device-info'
-import { resetInternalStates } from '@haskkor/react-native-pincode/dist/src/utils'
 
 
 type RootStackParamList = {
@@ -54,7 +50,7 @@ const LoginScene = ({navigation} : Props) => {
     const [server, setServer] = useState<ServerType | undefined>(undefined)
     const [instances, setInstances] = useState<InstanceType[] | undefined>(undefined)
     const [showInstances, setShowInstances] = useState(false)
-    const [msal, setMsal] = useState(new MSALConnect())
+    const [msal] = useState(new MSALConnect())
     
     //data
     const [user, setUser] = useState<User | undefined>(undefined)
@@ -325,32 +321,34 @@ const LoginScene = ({navigation} : Props) => {
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
-            <View style={loginStyles.top_container}>
-                <Image style={loginStyles.logo} source={require(("../res/logo-iziflo.png"))}/>
-                    <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
-                    autoCapitalize='none' autoCorrect={false}
-                    value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
-                    <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
-                    value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
-                    <IziServerDropDown 
+            <View style={loginStyles.top_container_reverse}>
+                <View style={loginStyles.forgotten_pass_outer_container}>
+                    <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
+                        <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
+                    </TouchableOpacity>
+                </View>
+                <Button 
+                        style={{...loginStyles.connect_button}} 
+                        title={locale._template.connect} 
+                        iziStyle={_getConnectButtonStyle()}
+                        onPress={_connect }/><IziServerDropDown 
                         style={{marginTop:12}} 
-                        zIndex={1000} 
                         email={email} 
                         value={server} 
+                        zIndex={1000}
                         setValue={(item:ServerType)=>{setServer(item)}}
                         />
                     
-                    <Button 
-                        style={loginStyles.connect_button} 
-                        title={locale._template.connect} 
-                        iziStyle={_getConnectButtonStyle()} 
-                        onPress={_connect } 
-                        zIndex={1}/>
-                    <View style={loginStyles.forgotten_pass_outer_container}>
-                        <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
-                            <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
-                    </TouchableOpacity>
-                    </View>
+                <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
+                value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
+
+                <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
+                autoCapitalize='none' autoCorrect={false}
+                value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
+                   
+                <Image style={loginStyles.logo} source={require(("../res/logo-iziflo.png"))}/> 
+                 
+                    
                 </View>
                 
                 <View style={loginStyles.bottom_container}>
@@ -439,12 +437,13 @@ const loginStyles = StyleSheet.create({
         backgroundColor:'white'
         
     },
-    top_container:{
+    top_container_reverse:{
         flex:1,
         justifyContent:'center',
         alignItems:'stretch',
         paddingEnd:40,
         paddingStart:40,
+        flexDirection:'column-reverse'
         
     },
     bottom_container:{

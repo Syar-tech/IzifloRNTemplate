@@ -3,6 +3,7 @@ import {izi_api_app_code,izi_api_app_api_version} from "../../config/iziConfig"
 import {getStoredUser, getCommonParams, TOKEN_STATE} from "../Tools/TokenTools"
 import { checkToken} from "./LoginApi";
 import Config from "react-native-config";
+import { getUniqueId } from "react-native-device-info";
 
 //Api Object for post|get promises
 //Api::post(url,data) || Api::get(url,data)
@@ -48,23 +49,26 @@ export const queryWS = async (navigation, params) => {
 
     const user = await getStoredUser()
 
+    console.log(JSON.stringify(user.token, null, 2))
     try{
         //check token
         return checkToken(user, navigation, user.server.instance.id_instance)
         .then(
             (data)=>{
-                if(data && data.token && data.token.state == TOKEN_STATE.OBSOLETE){
-                    console.log("is token obsolete");
+                let usr = undefined;
+                if(data && data.token && data.token.access_token != user.token.token){
+                    console.log("token has been replaced"); 
                     //user updated and should be reloaded 
-                    user = getStoredUser()
-                }   
-                let commonParams = getCommonParams(user)
+                    usr = getStoredUser()
+                }else  usr = user     
+                console.log(JSON.stringify(user.token, null, 2))
+                let commonParams = getCommonParams(usr)
 
                 let wsQueryParams = {
                     module_name : izi_api_app_code,
                     module_version : izi_api_app_api_version
                 }
-                return Api.post(getWSBaseUrl(user.server),{...commonParams, ...wsQueryParams, ...params})
+                return Api.post(getWSBaseUrl(usr.server),{...commonParams, ...wsQueryParams, ...params})
                     .then((response) =>response.json())
             }
         )

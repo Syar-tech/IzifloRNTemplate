@@ -1,5 +1,6 @@
 
 import {
+    Platform,
     StyleSheet,
 } from 'react-native'
 
@@ -43,7 +44,7 @@ export const loginStyles = {
             paddingHorizontal:15,
             borderWidth:border_width,
             height:textinput_height,
-            fontFamily: 'OpenSans-Regular',
+            fontFamily: Platform.OS === 'android' ? 'OpenSans-Regular' : undefined ,
             fontWeight:'normal',
             borderTopRightRadius:textinput_height/2,
             borderTopLeftRadius:textinput_height/2,
@@ -152,7 +153,14 @@ export const loginStyles = {
                 borderColor:colors.iziflo_blue,
             },
             disabled:{
-                opacity:.3
+                borderColor:'lightgray',
+            },
+            label:{
+                color:'black',
+            },
+    
+            label_disabled:{
+                color:'lightgray',
             },
         }
     },    

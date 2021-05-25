@@ -152,13 +152,11 @@ interface ServerInfo{
     const _displayServers= ()=>{
         if(isExternal){
             return (
-                <IziServerDropDown 
-                        style={{marginTop:12}} 
-                        email={user.email ? user.email : user.token?.email} 
-                        value={serverInfo?.server} 
-                        setValue={(item:ServerType)=>{onServerSelected(item)}}
-                        zIndex={2000}
-                        />
+                    <IziServerDropDown 
+                            style={{marginTop:12}} 
+                            email={user.email ? user.email : user.token?.email} 
+                            value={serverInfo?.server} 
+                            setValue={(item:ServerType)=>{onServerSelected(item)}}/>
             )
         }else return undefined
     }
@@ -172,6 +170,7 @@ interface ServerInfo{
             </View>)
         }else{
             return (
+                <View style={{ width:'100%'}}>
                 <IziDropdown
                     items={serverInfo?.instances?.list ? serverInfo.instances.list : []}
                     title={locale._template.dropdown_instance.title}
@@ -180,18 +179,18 @@ interface ServerInfo{
                     disabled={serverInfo?.instances?.list == undefined || serverInfo.instances.list.length == 0}
                     value={serverInfo?.instances?.selectedInstance}
                     setValue={(value:InstanceType)=>{_onInstanceSelected(value)}}
-                    zIndex={1000}/>
+                    zIndex={500}/>
+                    </View>
             )
         }
     }
     
 
     return (
-        <View style={{width:'100%',alignItems:'stretch'}}>
-            {_displayServers()}
-            {_displayInstancesOrError()}
+        <View style={{width:'100%',alignItems:'stretch', flexDirection:'column-reverse'}}>
             
                 
+            <Button style={loginStyles.button} title={errorMessage ? locale._template.back : locale._template.disconnect} iziStyle={IziButtonStyle.orange} onPress={_onLogout}/>
             <Button 
                 style={loginStyles.button} 
                 title={errorMessage?.action_button ? errorMessage.action_button.title : locale._template.connect} 
@@ -203,7 +202,8 @@ interface ServerInfo{
                     }
                 }
                 />
-            <Button style={loginStyles.button} title={errorMessage ? locale._template.back : locale._template.disconnect} iziStyle={IziButtonStyle.orange} onPress={_onLogout}/>
+                {_displayInstancesOrError()}
+                {_displayServers()}
         </View>
     )
 }

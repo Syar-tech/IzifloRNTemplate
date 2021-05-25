@@ -1,5 +1,5 @@
 
-source ./scripts/init.sh $1
+source ./scripts/init.sh $1 $2
 
 echo "Apply config : ${IZI_ENV}"
 echo "   msal_config"
