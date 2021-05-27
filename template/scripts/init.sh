@@ -28,5 +28,5 @@ case $1 in
 esac
 if [[ $2 = "ios" ]];
 then
-    SUFFIX_PARAMS='--device';
+    SUFFIX_PARAMS='' #'--device';
 fi

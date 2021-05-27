@@ -18,6 +18,28 @@ const dropdown_height = 40
 const secureimage_height = textinput_height-10
 
 
+const dimensions = {
+    qdef:{
+
+    },
+    q450sw:{
+
+    },
+    q600sw:{},
+    q720sw:{},
+    qdef_land:{
+
+    },
+    q450sw_land:{
+
+    },
+    q600sw_land:{},
+    q720sw_land:{},
+
+   
+}
+
+
 export const sizes = {
     modal:{
         close_icon_size:30

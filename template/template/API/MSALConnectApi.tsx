@@ -1,5 +1,4 @@
 import Config from "react-native-config";
-import { getBundleId } from "react-native-device-info";
 import PublicClientApplication, { MSALAccount, MSALConfiguration, MSALInteractiveParams, MSALResult, MSALSilentParams } from "react-native-msal"
 
 export type MSALSignInParams = Omit<MSALInteractiveParams, 'authority'>;

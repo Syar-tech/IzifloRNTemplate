@@ -338,7 +338,7 @@ PODS:
     - React-cxxreact (= 0.64.0)
     - React-jsi (= 0.64.0)
     - React-perflogger (= 0.64.0)
-  - reactnativemsal (3.1.0):
+  - reactnativemsal (3.1.1):
     - MSAL
     - React-Core
   - RNCAsyncStorage (1.12.1):
@@ -597,7 +597,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: 0fd6b21751a33cb72fce1a4a33ab9678416d307a
   React-runtimeexecutor: cad74a1eaa53ee6e7a3620231939d8fe2c6afcf0
   ReactCommon: cfe2b7fd20e0dbd2d1185cd7d8f99633fbc5ff05
-  reactnativemsal: 6e0290deb8bf0327bc970dcc13a6eaa76af9c281
+  reactnativemsal: 3ef9acfa71ba4c510441834ba9df5d489f210740
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNDeviceInfo: 8d3a29207835f972bce883723882980143270d55

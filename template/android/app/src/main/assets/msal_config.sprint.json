@@ -2,7 +2,7 @@
     "account_mode" : "MULTIPLE",
     "client_id" : "1346ca34-3b22-4287-a764-7456b3742bda",
     "authorization_user_agent" : "DEFAULT",
-    "redirect_uri" : "msauth://com.iziflotemplatets.local/MV3kMM62LL%2BsfRx0LbVU%2Fw5jHC8%3D",
+    "redirect_uri" : "msauth://com.iziflotemplatets.sprint/MV3kMM62LL%2BsfRx0LbVU%2Fw5jHC8%3D",
     "authorities" : [
       {
         "type": "AAD",

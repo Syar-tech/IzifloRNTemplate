@@ -321,6 +321,18 @@ const LoginScene = ({navigation} : Props) => {
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
             >
+                {/* Bottom part*/ }
+                <View style={loginStyles.bottom_container}>
+                    <View style={loginStyles.buttons_container}>
+                        <View style={{marginBottom:20}}>
+                            <View style={loginStyles.connect_with_line}/>
+                            <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
+                        </View>
+                        <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
+                        <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
+                    </View>
+                    <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
+                </View>
             <View style={loginStyles.top_container_reverse}>
                 <View style={loginStyles.forgotten_pass_outer_container}>
                     <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
@@ -351,17 +363,6 @@ const LoginScene = ({navigation} : Props) => {
                     
                 </View>
                 
-                <View style={loginStyles.bottom_container}>
-                    <View style={loginStyles.buttons_container}>
-                        <View style={{marginBottom:20}}>
-                            <View style={loginStyles.connect_with_line}/>
-                            <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
-                        </View>
-                        <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
-                        <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
-                    </View>
-                    <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
-                </View>
             </KeyboardAvoidingView>
         )
     }
@@ -432,6 +433,7 @@ const LoginScene = ({navigation} : Props) => {
 const loginStyles = StyleSheet.create({
     login_container:{
         flex:1,
+        flexDirection:'column-reverse',
         justifyContent:'center',
         alignItems:'stretch',
         backgroundColor:'white'
