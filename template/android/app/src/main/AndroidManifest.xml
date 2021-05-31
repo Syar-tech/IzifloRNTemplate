@@ -9,9 +9,9 @@
       android:name=".MainApplication"
       android:label="@string/variant_name"
       android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:usesCleartextTraffic="@string/CLEARTEXT">
       <activity
         android:name=".MainActivity"
         android:label="@string/variant_name"
@@ -33,7 +33,7 @@
             <data
                 android:scheme="msauth"
                 android:host="@string/msal_host"
-                android:path="/MV3kMM62LL+sfRx0LbVU/w5jHC8=" />
+                android:path="@string/SIGNATURE_HASH" />
         </intent-filter>
     </activity>
     </application>

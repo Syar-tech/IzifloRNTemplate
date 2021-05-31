@@ -139,8 +139,8 @@ android {
         versionNameSuffix project.env.get("VERSION_SUFFIX")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 13
+        versionName "1.0.0.3"
         resValue "string", "build_config_package", project.android.defaultConfig.applicationId
         resValue "string", "msal_host", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
         resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")

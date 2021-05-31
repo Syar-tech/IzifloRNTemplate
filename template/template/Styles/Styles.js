@@ -10,7 +10,7 @@ export const colors={
     iziflo_dark_gray:"#606060"
 }
 
-const border_width=2
+const border_width=1
 
 const textinput_height = 40
 const button_height = 40

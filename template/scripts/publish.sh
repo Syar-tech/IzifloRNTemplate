@@ -3,7 +3,7 @@
 # example of use 'yarn p dev android'
 
 
-source ./scripts/apply_config.sh $1 $2
+source ./scripts/apply_config.sh $1 $2 'p.'
 
 case $2 in
 

@@ -1,10 +1,10 @@
 import React ,{useState, useEffect} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
 import { StackNavigationProp } from '@react-navigation/stack';
-import Button ,{IziButtonStyle} from "../template/Components/IziButton"
-import {disconnect} from "../template/Tools/TokenTools"
+import Button ,{IziButtonStyle} from "../Components/IziButton"
+import {disconnect} from "../Tools/TokenTools"
 import locale from "../Locales/locales"
-import {getExampleAttachementTypesWithIdExternal} from '../template/API/WSApi'
+import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
 
 
 type RootStackParamList = {

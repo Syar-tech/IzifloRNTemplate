@@ -8,28 +8,13 @@
  * @format
  */
 
- import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
  import {
-   SafeAreaView,
-   ScrollView,
-   StatusBar,
    StyleSheet,
-   Text,
-   //useColorScheme,
-   View,
  } from 'react-native';
 
- import {
-   Colors,
-   DebugInstructions,
-   Header,
-   LearnMoreLinks,
-   ReloadInstructions,
- } from 'react-native/Libraries/NewAppScreen';
-
- import BaseNavigation from './Navigation/BaseNavigation'
-import MainScene from './Scenes/MainScene';
+ import BaseNavigation from './template/Navigation/BaseNavigation'
 
  const App = () => {
    /*const isDarkMode = useColorScheme() === 'dark';

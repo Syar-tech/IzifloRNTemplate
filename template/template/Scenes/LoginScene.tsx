@@ -10,11 +10,12 @@ import IziServerDropDown from '../Components/IziServerDropDown'
 //libs
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useIsFocused} from '@react-navigation/native' 
+import { useWindowDimensions } from 'react-native'
 import  { MSALInteractiveParams,MSALResult} from 'react-native-msal';
 import Config from "react-native-config";
 
 import { colors } from '../Styles/Styles'
-import locale from '../../Locales/locales'
+import locale from '../Locales/locales'
 
 //Tools
 import {requestToken} from '../API/LoginApi'
@@ -26,6 +27,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import {User, Token, ServerType, InstanceType, TOKEN_TYPE} from "../Types/LoginTypes"
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
+import {IziDimensions} from '../Tools/Dimensions'
 
 
 type RootStackParamList = {
@@ -43,6 +45,7 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
     //local
+    const window = useWindowDimensions()
     const focused = useIsFocused();
     const [email, setEmail] = useState<string | undefined>(undefined)
     const [password, setPassword] = useState<string | undefined>(undefined)
@@ -188,8 +191,12 @@ const LoginScene = ({navigation} : Props) => {
             }else{
                 //connect to instance
                 //save
-                console.log("promise")
-                promise = requestToken(server, email, password)
+                if(email =="demo@syartec.com"){
+                    _connectToDemo();
+                }else{
+                    console.log("promise")
+                    promise = requestToken(server, email, password)
+                }
             }
 
             if(promise)
@@ -226,7 +233,22 @@ const LoginScene = ({navigation} : Props) => {
         }
         console.log("connect loading false")
         setLoading(false)
-    
+    }
+
+    const _connectToDemo = () => {
+        if(email == "demo@syartec.com" && password == "demo"){
+            let usr  : User = {
+                email : email!!, 
+                token : {
+                    state:TOKEN_STATE.VALID,
+                    tokenType:TOKEN_TYPE.DEMO,
+                    token:"abc",
+                    email:email!!}, 
+                server:server
+            }
+            setUser(usr);
+            navigation.navigate('Demo')
+        }
     }
 
     function _disconnect(){
@@ -317,22 +339,19 @@ const LoginScene = ({navigation} : Props) => {
     
     function _displayLogin(){
         return  (
-            <KeyboardAvoidingView style={loginStyles.login_container} 
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
-            >
-                {/* Bottom part*/ }
-                <View style={loginStyles.bottom_container}>
-                    <View style={loginStyles.buttons_container}>
-                        <View style={{marginBottom:20}}>
-                            <View style={loginStyles.connect_with_line}/>
-                            <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
-                        </View>
-                        <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
-                        <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
+            <View style={loginStyles.login_container}>
+            {/* Bottom part*/ }
+            <View style={IziDimensions.getDimension(window,loginStyles.bottom_container)}>
+                <View style={IziDimensions.getDimension(window,loginStyles.buttons_container)}>
+                    <View style={{marginBottom:20}}>
+                        <View style={loginStyles.connect_with_line}/>
+                        <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
                     </View>
-                    <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
+                    <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
+                    <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
                 </View>
+                <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
+            </View>
             <View style={loginStyles.top_container_reverse}>
                 <View style={loginStyles.forgotten_pass_outer_container}>
                     <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
@@ -340,16 +359,18 @@ const LoginScene = ({navigation} : Props) => {
                     </TouchableOpacity>
                 </View>
                 <Button 
-                        style={{...loginStyles.connect_button}} 
-                        title={locale._template.connect} 
-                        iziStyle={_getConnectButtonStyle()}
-                        onPress={_connect }/><IziServerDropDown 
-                        style={{marginTop:12}} 
-                        email={email} 
-                        value={server} 
-                        zIndex={1000}
-                        setValue={(item:ServerType)=>{setServer(item)}}
-                        />
+                    style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
+                    title={locale._template.connect} 
+                    iziStyle={_getConnectButtonStyle()}
+                    onPress={_connect }/>
+
+                <IziServerDropDown 
+                    style={{marginTop:12}} 
+                    email={email} 
+                    value={server} 
+                    zIndex={1000}
+                    setValue={(item:ServerType)=>{setServer(item)}}
+                    />
                     
                 <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
                 value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
@@ -358,12 +379,12 @@ const LoginScene = ({navigation} : Props) => {
                 autoCapitalize='none' autoCorrect={false}
                 value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
                    
-                <Image style={loginStyles.logo} source={require(("../res/logo-iziflo.png"))}/> 
+                <Image style={IziDimensions.getDimension(window,loginStyles.logo)} source={require(("../res/logo-iziflo.png"))}/> 
                  
                     
                 </View>
                 
-            </KeyboardAvoidingView>
+            </View>
         )
     }
 
@@ -430,7 +451,28 @@ const LoginScene = ({navigation} : Props) => {
     )
 }
 
-const loginStyles = StyleSheet.create({
+const dimensions = {
+    qdef:{
+        bottomHeight:200
+    },
+    q450sw:{
+        bottomHeight:200
+    },
+    q600sw:{},
+    q720sw:{},
+    qdef_land:{
+
+    },
+    q450sw_land:{
+
+    },
+    q600sw_land:{},
+    q720sw_land:{},
+
+   
+}
+
+const loginStyles = {
     login_container:{
         flex:1,
         flexDirection:'column-reverse',
@@ -449,28 +491,42 @@ const loginStyles = StyleSheet.create({
         
     },
     bottom_container:{
-        height:250,
-        backgroundColor: colors.iziflo_back_blue,
-        justifyContent:'center',
-        alignItems:'center',
-        paddingEnd:40,
-        paddingStart:40,
-        
+        qdef:{
+            height:200,
+            backgroundColor: colors.iziflo_back_blue,
+            justifyContent:'center',
+            alignItems:'center',
+            paddingEnd:40,
+            paddingStart:40,
+        },
+        q450sw:{
+            height:250
+        }
     },
     buttons_container:{
-        flex:0,
-        width:250,
-        justifyContent:'center',
-        alignItems:'stretch',
-        paddingTop:40,
-        paddingBottom:40,
-        
+        qdef:{
+            flex:0,
+            width:250,
+            justifyContent:'center',
+            alignItems:'stretch',
+            paddingTop:20,
+            paddingBottom:0,
+        },
+        q450sw:{
+            paddingTop:40,
+            paddingBottom:40,
+        }
     },
     logo:{
-       height:200 ,
-       width:300,
-       resizeMode:'contain',
-       alignSelf:'center',
+        qdef:{
+            height:120 ,
+            width:300,
+            resizeMode:'contain',
+            alignSelf:'center',
+        },
+        q450sw:{
+            height:200 ,
+        }
        
     },
     forgotten_pass_container:{
@@ -489,9 +545,14 @@ const loginStyles = StyleSheet.create({
         backgroundColor:'transparent'
     },
     connect_button:{
-        alignSelf:'center',
-        width:250,
-        marginTop:10,
+        qdef:{
+            alignSelf:'center',
+            width:250,
+            marginTop:0,
+        },
+        q450sw:{
+            marginTop:10,
+        }
     },
     connect_with:{
         flex:0,
@@ -516,7 +577,7 @@ const loginStyles = StyleSheet.create({
          marginBottom:10,
          marginTop:20,
     },
-})
+}
 
 
 export default LoginScene

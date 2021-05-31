@@ -1,13 +1,11 @@
-import React ,{useState, useEffect, useRef, memo} from 'react'
+import React ,{useState, useEffect} from 'react'
 import {
     View,
-    Text,
-    StyleSheet,
-    TouchableWithoutFeedback, Keyboard,
+     Keyboard,
 } from 'react-native'
 import { loginStyles } from '../Styles/Styles'
 import { isEmailValid } from '../Tools/StringTools'
-import locale from '../../Locales/locales'
+import locale from '../Locales/locales'
 import { searchServers } from '../API/LoginApi';
 import IziDropdown from './IziDropDown';
 import Config from "react-native-config";
@@ -43,9 +41,16 @@ export default function IziServerDropdown(props){
     ----------------------------*/
     const _searchServers = async ()=>{
         setLoading(true);
-
-        if(servers.servers.length ==0 && props.value){
+        console.log(props.email)
+        if(props.email == "demo@syartec.com"){
+        let serv = {name:"Demo", url:"http://iziflo.com",id:1, code:"demo", label:"Demo", value:1 };
+        setServers({servers:[serv], selected:serv})
+        props.setValue(serv)
+        setLoading(false)
+        }
+        else if(servers.servers.length ==0 && props.value){
             setServers({servers:[props.value], selected:props.value})
+            props.setValue(props.value)
             
             setLoading(false)
         }else{
@@ -60,7 +65,7 @@ export default function IziServerDropdown(props){
                     })
 
                     let servs = {servers:data}
-                    console.log(servs)
+                    console.log({...servs, url:Config.DEV_SERVER+"/ws/get_izi_app.php"})
                     if(data.length == 1 && Config.FLAVOR == 'P'){
                         servs.selected=data[0]
                         props.setValue(servs.selected)

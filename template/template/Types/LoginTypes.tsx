@@ -20,7 +20,8 @@ export interface Token{
 export enum TOKEN_TYPE {
     IZIFLO="I",
     MICROSOFT="M",
-    GOOGLE="G"
+    GOOGLE="G",
+    DEMO="D"
 }
 
 export interface ServerType{

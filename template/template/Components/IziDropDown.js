@@ -6,8 +6,6 @@ import {
 } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { loginStyles, colors } from '../Styles/Styles'
-import locale from '../../Locales/locales'
-import IziLoader from './IziLoader';
 
 
 export default function IziDropdown(props){

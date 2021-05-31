@@ -1,5 +1,5 @@
 import React , {useState} from 'react'
-import {View,Text, TextInput,Image,TouchableOpacity} from 'react-native'
+import {View,Text, TextInput,TouchableOpacity} from 'react-native'
 import {loginStyles as styles, sizes} from '../Styles/Styles'
 import Icon from 'react-native-vector-icons/Ionicons'
 

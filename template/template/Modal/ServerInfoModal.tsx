@@ -6,10 +6,9 @@ import {__SInfoConfig} from '../Tools/Prefs';
 import {getStoredUser} from '../Tools/TokenTools';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Config from "react-native-config";
-import { getBundleId } from "react-native-device-info";
+import { getBundleId, getReadableVersion } from "react-native-device-info";
 
 import { sizes, ModalStyle } from '../Styles/Styles'
-import locale from '../../Locales/locales'
 //types
 import {User} from "../Types/LoginTypes"
 
@@ -53,7 +52,7 @@ const ServerInfoModal = React.forwardRef((props, ref ) => {
                 <Icon style={ModalStyle.close_button_image} name="close" size={sizes.modal.close_icon_size} color='white'/>
             </Pressable>
             <Text style={ModalStyle.title}>App info</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>App</Text> : {getBundleId()}</Text>
+            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>App</Text> : {getBundleId()} ({getReadableVersion()})</Text>
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Environment</Text> : {Config.FLAVOR_NAME}</Text>
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Server</Text> : {user?.server?.name}</Text>
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : {user?.server?.instance?.instance_name}</Text>

@@ -8,7 +8,7 @@ import {__SInfoConfig} from '../Tools/Prefs';
 
 import {InstanceType,ServerType, User, TOKEN_TYPE, ERROR_CODE, ErrorType} from "../Types/LoginTypes"
 import {colors} from "../Styles/Styles"
-import locale from '../../Locales/locales'
+import locale from '../Locales/locales'
 //types
 import IziDropdown from './IziDropDown'
 import IziServerDropDown from './IziServerDropDown'
