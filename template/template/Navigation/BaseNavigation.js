@@ -93,10 +93,10 @@ const DrawerScreen = (props)=>{
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
   return (
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
-        <View  style={{flex:1, overflow:'hidden'}}>
-          <Drawer.Navigator drawerContentOptions={{showModal:showModal}} drawerContent={CustomDrawerContent}>
+        <View style={{flex:1, overflow:'hidden'}}>
+          <Drawer.Navigator drawerContentOptions={{showModal:showModal}} drawerContent={CustomDrawerContent} screenOptions={{ gestureEnabled: false }}>
               {props.children}
-              <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{showModal:showModal}}/>
+              <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{showModal:showModal}} />
           </Drawer.Navigator>
         <ServerInfoModal ref={infoModal}/>
       </View>
