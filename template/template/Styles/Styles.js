@@ -7,7 +7,9 @@ import {
 export const colors={
     iziflo_blue:"#5483AC",
     iziflo_back_blue:"#E8EDF5",
-    iziflo_dark_gray:"#606060"
+    iziflo_dark_gray:"#606060",
+    iziflo_green:"#A9D14E",
+    iziflo_orange:"#E58B3E",
 }
 
 const border_width=1
@@ -130,10 +132,10 @@ export const loginStyles = {
             }
         },
         green:{
-            backgroundColor:'green'
+            backgroundColor:colors.iziflo_green
         },
         orange:{
-            backgroundColor:'orange'
+            backgroundColor:colors.iziflo_orange
         },
         action:{
             backgroundColor : colors.iziflo_blue
