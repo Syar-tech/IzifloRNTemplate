@@ -1,7 +1,7 @@
 // Navigation/Navigations.js
 
 import React, {useRef} from 'react';
-import  { View , TouchableWithoutFeedback, Keyboard, TouchableOpacity} from 'react-native';
+import  { View , TouchableWithoutFeedback, Keyboard, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList} from '@react-navigation/drawer'
 import Corner from '../Components/CornerLabel'
@@ -13,6 +13,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DemoScene from '../Scenes/DemoScene';
 import { disconnect } from '../Tools/TokenTools';
 import Icon from 'react-native-vector-icons/Ionicons'
+import AboutScene from '../Scenes/AboutScene';
+import locale from '../Locales/locales';
+import { colors } from '../Styles/Styles';
 
 
 const MainStack = createStackNavigator();
@@ -80,6 +83,13 @@ const RootStackScreen = (props) =>{
                 component={DemoScene}
                 options={{ headerShown: false }}
             />
+            <RootStack.Screen
+                name="About"
+                component={AboutScene}
+                options={{
+                  headerTitle:locale._template.aboutIziflo
+                }}
+            />
           </RootStack.Navigator>
            {_displayCorner(props.route.params?.showModal)}
       </View>
@@ -97,6 +107,14 @@ const DrawerScreen = (props)=>{
           <Drawer.Navigator drawerContentOptions={{showModal:showModal}} drawerContent={CustomDrawerContent} screenOptions={{ gestureEnabled: false }}>
               {props.children}
               <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{showModal:showModal}} />
+              <Drawer.Screen name="About" component={AboutScene} options={{ 
+                drawerLabel:() =>  <View style={styles.drawerView}>
+                {
+                //<SvgXml xml={icon_about} fill={colors.iziflo_dark_gray} height={25} width={25} style={styles.drawerImage} />
+                }
+              <Text style={styles.drawerText} >{locale._template.aboutIziflo}</Text></View>,
+            headerShown:true,
+            title:locale._template.aboutIziflo }} />
           </Drawer.Navigator>
         <ServerInfoModal ref={infoModal}/>
       </View>
@@ -108,16 +126,26 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} onPress/>
-      <DrawerItem label="About" onPress={() =>{
-        if(props.showModal) {
-          props.navigation.closeDrawer()
-          props.showModal()
-      }
-        }} />
+      
       <DrawerItem label="Logout" onPress={() => disconnect(props.navigation)} />
     </DrawerContentScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  drawerImage:{
+      marginRight:10
+  },
+  drawerText:{
+      color:colors.iziflo_dark_gray
+  },
+  drawerView:{
+      flex:1,
+      justifyContent:'flex-start',
+      flexDirection:'row',
+      alignItems:'center'
+  }
+})
 
 export default DrawerScreen//RootStackScreen
     

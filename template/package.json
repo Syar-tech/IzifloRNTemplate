@@ -28,6 +28,7 @@
     "react-native-device-info": "^8.0.6",
     "react-native-dropdown-picker": "^5.1.4",
     "react-native-env": "^0.0.6",
+    "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-keychain": "^6.2.0",
     "react-native-msal": "^3.1.0",

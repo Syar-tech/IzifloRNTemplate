@@ -13,6 +13,7 @@ export default {
         unknown_error_title:'Une erreur est survenue.',
         unknown_error_message:'Veuillez réessayer ultérieurement.',
         google:'Google',
+        clearCache:'Vider le cache',
         office_365:'Office 365',
         email_input:{
             title: 'VOTRE EMAIL',
@@ -36,6 +37,6 @@ export default {
             no_instance_title:"Aucune instance disponible.",
             no_instance_message:"Veuillez-vous assurer d'avoir bien accès à cette instance sur ce serveur.",
         },
-        
+        aboutIziflo:"A propos d'Iziflo",
     }
 }
