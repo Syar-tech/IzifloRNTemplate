@@ -392,14 +392,12 @@ const LoginScene = ({navigation} : Props) => {
         console.log("show instance : "+user)
         if(showInstances)
             return (
-                <View style={loginStyles.login_container} >
-                    <View style={loginStyles.top_container}>
+                <View style={{...loginStyles.login_container, padding:40}} >
                         <InstanceChoice 
                             user={user!!}
                             password={password}
                             onInstanceChoosen={_onInstanceChoosen} 
                         onLogout={_disconnect}/>
-                    </View>
                 </View>
         )
     }
