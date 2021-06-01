@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import Button ,{IziButtonStyle} from "../Components/IziButton"
 import { getBundleId, getReadableVersion } from 'react-native-device-info'
 import { getStoredUser } from '../Tools/TokenTools'
 import Config from "react-native-config"
 import { User } from '../Types/LoginTypes'
 import locale from '../Locales/locales'
 import RNFS from 'react-native-fs'
+import { colors } from '../Styles/Styles'
 
 export default function AboutScene(){
 
@@ -26,25 +28,70 @@ export default function AboutScene(){
         }
     }
 
+    const onDisconnect = () => {
+
+    }
+
     useEffect(()=>{
         _loadUser()
     },[])
 
-    return <View>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>App</Text> : {getBundleId()} ({getReadableVersion()})</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Environment</Text> : {Config.FLAVOR_NAME}</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Server</Text> : {user?.server?.name}</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : {user?.server?.instance?.instance_name}</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>User</Text> : {user?.email}</Text>
-            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Token expires on</Text> : {user?.token?.expirationDate}</Text>
-            <TouchableOpacity onPress={onCacheReset} style={styles.modalText}><Text style={{fontWeight:'bold'}}>{locale._template.clearCache}</Text></TouchableOpacity>
-    </View>
+    return (
+        <View style={styles.container}>
+            <View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>App</Text> : {getBundleId()} ({getReadableVersion()})</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>Environment</Text> : {Config.FLAVOR_NAME}</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>Server</Text> : {user?.server?.name}</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>Instance</Text> : {user?.server?.instance?.instance_name}</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>User</Text> : {user?.email}</Text>
+                </View>
+                <View style={[styles.textContainer,{borderBottomWidth:0}]}>
+                    <Text style={styles.modalText}><Text style={styles.title}>Token expires on</Text> : {user?.token?.expirationDate}</Text>
+                </View>
+            </View>
+            <View>
+                <Button style={styles.button} title={locale._template.clearCache} iziStyle={IziButtonStyle.connection} onPress={onCacheReset} />
+                <Button style={styles.button} title={locale._template.disconnect} iziStyle={IziButtonStyle.connection} onPress={onDisconnect} />
+                <Text style={{textAlign:'center'}}>{locale._template.legal_text}</Text>
+            </View>
+
+        </View>
+    )
 
 }
 
 const styles = StyleSheet.create({
+    container:{
+        padding:20,
+        flex:1,
+        justifyContent:'space-between'
+    },
     modalText: {
-      marginBottom: 15,
-      textAlign: "left"
+      marginBottom: 10,
+      textAlign: "left",
+      marginTop:10
+    },
+    title:{
+        fontSize:16,
+        fontWeight:'bold'
+    },
+    button:{
+        width:'50%',
+        alignSelf:'center',
+        marginBottom:20
+    },
+    textContainer:{
+        borderBottomColor:colors.iziflo_dark_gray,
+        borderStyle:'solid',
+        borderBottomWidth:1
     }
-  });
+});
