@@ -25,7 +25,7 @@ import React from 'react';
 
    return (
      <NavigationContainer>
-         <BaseNavigation/>
+         <BaseNavigation useExample={true}/>
          {
            // use mainNavigation to put your main navigator 
            // ex : <BaseNavigation mainNavigation={MainScene}/>

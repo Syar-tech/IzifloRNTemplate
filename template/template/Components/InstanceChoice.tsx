@@ -13,7 +13,6 @@ import locale from '../Locales/locales'
 import IziDropdown from './IziDropDown'
 import IziServerDropDown from './IziServerDropDown'
 import { requestInstances } from '../API/LoginApi';
-import {isEmailValid} from '../Tools/StringTools';
 
 export interface Props{
     user:User,

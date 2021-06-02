@@ -13,8 +13,26 @@ export default {
         unknown_error_title:'Une erreur est survenue.',
         unknown_error_message:'Veuillez réessayer ultérieurement.',
         google:'Google',
-        clearCache:'Vider le cache',
         office_365:'Office 365',
+        clearCache:'Vider le cache',
+        aboutIziflo:"A propos d'Iziflo",
+        disconnect:'Déconnexion',
+        home:'Accueil',
+        pincode:{
+            title_choose:"1 - Entrez un code PIN",
+            title_confirm:"2 - Confirmez votre code PIN",
+            title_enter:"Entrez votre code PIN",
+            title_confirm_failed:"Vos PIN ne correspondent pas",
+            title_attempt_failed:"Code PIN incorrect",
+            text_title_locked_page:"Nombre maximum de tentatives atteint",
+            text_sub_description_locked_page:"Veuillez réessayer plus tard.",
+            text_description_locked_page:"L'accès a été vérouillé pour {timeLocked} minutes",
+            subtitle_error:'Veuillez réessayer',
+            subtitle_choose:'pour sécuriser vos informations',
+            touch_id_title:"Identification requise",
+            touch_id_cancel:"Annuler",
+            touch_id_sentence:"Dévérrouillez votre application",
+        },
         email_input:{
             title: 'VOTRE EMAIL',
             placeholder:'Saisissez votre email'
@@ -37,6 +55,5 @@ export default {
             no_instance_title:"Aucune instance disponible.",
             no_instance_message:"Veuillez-vous assurer d'avoir bien accès à cette instance sur ce serveur.",
         },
-        aboutIziflo:"A propos d'Iziflo",
     }
 }

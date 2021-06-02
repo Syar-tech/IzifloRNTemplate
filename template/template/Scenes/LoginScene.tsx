@@ -1,6 +1,6 @@
 import React ,{useState, useEffect} from 'react'
 import {
-    View, SafeAreaView, Text,Image, StyleSheet, KeyboardAvoidingView, Platform, Alert,BackHandler,TouchableOpacity
+    View, Text,Image, TouchableWithoutFeedback, Keyboard, Alert,BackHandler,TouchableOpacity
 } from 'react-native'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -220,10 +220,12 @@ const LoginScene = ({navigation} : Props) => {
                     
                     }else if(data?.error){
                         //TODO failed
-                console.log("data.error : " +JSON.stringify(data))
+                        Alert.alert("Impossible de se connecter. Veuillez vérifier vos identifiants") 
+                        console.log("data.error : " +JSON.stringify(data))
                     }else{
                         //TODO error
-                console.log("data unknown : " +JSON.stringify(data))
+                        Alert.alert("Impossible de se connecter. Veuillez réessayer") 
+                        console.log("data unknown : " +JSON.stringify(data))
                     }
                         
                 })
@@ -403,15 +405,29 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     function _displayLoggedIn(){
+        const lockTime = Config.FLAVOR =='D' ? 10000 : 3*60*1000
         return (
             <PINCode 
-                status={user?.pin ? 'enter' : 'choose'}
-                storedPin={user?.pin}
-                storePin={(pin?:string)=>_setPin(pin)}
-                finishProcess={()=> _gotoMain()}
-                onClickButtonLockedPage={()=> _disconnect()}
-                textButtonLockedPage={locale._template.disconnect}
-                timeLocked={Config.FLAVOR =='D' ? 10000 : 3*60*1000}
+            status={user?.pin ? 'enter' : 'choose'}
+            storedPin={user?.pin}
+            storePin={(pin?:string)=>_setPin(pin)}
+            finishProcess={()=> _gotoMain()}
+            onClickButtonLockedPage={()=> _disconnect()}
+            timeLocked={lockTime}
+            textButtonLockedPage={locale._template.disconnect}
+            titleChoose={locale._template.pincode.title_choose}
+            titleConfirm={locale._template.pincode.title_confirm}
+            titleEnter={locale._template.pincode.title_enter}
+            titleConfirmFailed={locale._template.pincode.title_confirm_failed}
+            titleAttemptFailed={locale._template.pincode.title_attempt_failed}
+            textTitleLockedPage={locale._template.pincode.text_title_locked_page}
+            textSubDescriptionLockedPage={locale._template.pincode.text_sub_description_locked_page}
+            textDescriptionLockedPage={locale.formatString(locale._template.pincode.text_description_locked_page, {timeLocked:(lockTime/60000)})}
+            subtitleError={locale._template.pincode.subtitle_error}
+            subtitleChoose={locale._template.pincode.subtitle_choose}
+            touchIDTitle={locale._template.pincode.touch_id_title}
+            textCancelButtonTouchID={locale._template.pincode.touch_id_cancel}
+            touchIDSentence={locale._template.pincode.touch_id_sentence}
             />
         )
     }
@@ -443,9 +459,9 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
     return(
-        <SafeAreaView style={{flex:1}}>
+        <TouchableWithoutFeedback style={{height:'100%', width:'100%'}} onPress={()=>Keyboard.dismiss()}>
             {_displayContent()}
-        </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }
 

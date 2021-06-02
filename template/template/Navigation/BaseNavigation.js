@@ -1,7 +1,7 @@
 // Navigation/Navigations.js
 
 import React, {useRef} from 'react';
-import  { View , TouchableWithoutFeedback, Keyboard, TouchableOpacity, StyleSheet, Text} from 'react-native';
+import  { View , TouchableOpacity, StyleSheet, Text} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList} from '@react-navigation/drawer'
 import Corner from '../Components/CornerLabel'
@@ -11,6 +11,7 @@ import MainScene from '../Scenes/MainScene'
 import Config from "react-native-config";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DemoScene from '../Scenes/DemoScene';
+import Navigation from '../Navigation/Navigation';
 import { disconnect } from '../Tools/TokenTools';
 import Icon from 'react-native-vector-icons/Ionicons'
 import AboutScene from '../Scenes/AboutScene';
@@ -22,11 +23,7 @@ const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const DummyScreen = ()=> <View style={{flex:1}}/>
-
 function MainStackScreen({navigation}) {
-
-
 const hamburgerMenu = navigation => (
     <TouchableOpacity onPress={() => {
         navigation.toggleDrawer()
@@ -48,34 +45,33 @@ const hamburgerMenu = navigation => (
 }
 
 
-const _displayCorner= (showModal)=>{
-  if(Config.FLAVOR != 'P')
-    return (
-      <Corner cornerRadius={60}
-              alignment={'right'}
-              style={{backgroundColor: Config.FLAVOR_COLOR, height: 24,}}
-              textStyle={{color: '#fff', fontSize: 12,}}
-              onPress={()=>{if(showModal) showModal()}}>
-              {Config.FLAVOR_NAME}
-              </Corner>)
-    else return undefined
-}
-
 const RootStackScreen = (props) =>{
 
-  return (
 
-    <TouchableWithoutFeedback style={{flex:1}} onPress={Keyboard.dismiss}>
+  const _displayCorner= ()=>{
+    if(Config.FLAVOR != 'P')
+      return (
+        <Corner cornerRadius={60}
+                alignment={'right'}
+                style={{backgroundColor: Config.FLAVOR_COLOR, height: 24,}}
+                textStyle={{color: '#fff', fontSize: 12,}}
+                onPress={()=>{DeviceEventEmitter.emit("izi.event.showBoutModal")}}>
+                {Config.FLAVOR_NAME}
+                </Corner>)
+      else return undefined
+  }
+
+  return (
       <View style={{flex:1}}>
           <RootStack.Navigator navOptions={{ headerShown: true }}>
 
-            <RootStack.Screen 
+            <RootStack.Screen
                 name="Login" 
                 component={LoginScene}
                 options={{ headerShown: false }}/>
             <RootStack.Screen
                 name="Main"
-                component={props.mainNavigation ? props.mainNavigation :  MainStackScreen}
+                component={props.route.params?.useExample ? MainStackScreen : Navigation}
                 options={{ headerShown: false }}
             />
             <RootStack.Screen
@@ -91,9 +87,8 @@ const RootStackScreen = (props) =>{
                 }}
             />
           </RootStack.Navigator>
-           {_displayCorner(props.route.params?.showModal)}
+           {_displayCorner()}
       </View>
-    </TouchableWithoutFeedback>
          
   );
 }
@@ -101,17 +96,23 @@ const RootStackScreen = (props) =>{
 const DrawerScreen = (props)=>{
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
+  useEffect(
+    ()=> DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal()),
+    []
+  )
   return (
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator drawerContentOptions={{showModal:showModal}} drawerContent={CustomDrawerContent} screenOptions={{ gestureEnabled: false }}>
               {props.children}
-              <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{showModal:showModal}} />
+              <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{useExample:props.useExample}} 
+              options={{ 
+                drawerLabel:() =>  <View style={styles.drawerView}>
+              <Text style={styles.drawerText} >{locale._template.home}</Text></View>,
+            headerShown:false,
+            title:locale._template.aboutIziflo }}  />
               <Drawer.Screen name="About" component={AboutScene} options={{ 
                 drawerLabel:() =>  <View style={styles.drawerView}>
-                {
-                //<SvgXml xml={icon_about} fill={colors.iziflo_dark_gray} height={25} width={25} style={styles.drawerImage} />
-                }
               <Text style={styles.drawerText} >{locale._template.aboutIziflo}</Text></View>,
             headerShown:true,
             title:locale._template.aboutIziflo }} />
@@ -127,7 +128,7 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} onPress/>
       
-      <DrawerItem label="Logout" onPress={() => disconnect(props.navigation)} />
+      <DrawerItem label={locale._template.disconnect} onPress={() => disconnect(props.navigation)}/>
     </DrawerContentScrollView>
   );
 }
