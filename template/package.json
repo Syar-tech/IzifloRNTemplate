@@ -9,7 +9,8 @@
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "r": "./scripts/run.sh",
-    "p": "./scripts/publish.sh"
+    "p": "./scripts/publish.sh",
+    "pod": "cd ios && pod install && cd ../"
   },
   "dependencies": {
     "@haskkor/react-native-pincode": "^1.22.6",
