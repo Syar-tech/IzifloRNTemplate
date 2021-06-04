@@ -1,29 +1,26 @@
 #!/bin/bash
 # load conf for run and publish
-IZI_ENV="$3dev";
+IZI_ENV="$1";
 SUFFIX_PARAMS="--appIdSuffix \"$1\"";
 case $1 in
 
-    prod)
-        IZI_ENV="$3prod"
+    prod | "p.dev")
         SUFFIX_PARAMS="";
         ;;
-    recette | recette1)
-        IZI_ENV="$3recette"
+    recette | "p.recette")
+        SUFFIX_PARAMS="--appIdSuffix \"recette\"";
         ;;
-    recette2)
-        IZI_ENV="$3recette2"
+    recette2 | p.recette2)
+        SUFFIX_PARAMS="--appIdSuffix \"recette2\"";
         ;;
-    formation | form)
-        IZI_ENV="$3formation"
+    form | "p.form")
         SUFFIX_PARAMS="--appIdSuffix \"form\"";
         ;;
-    local | sprint)
-        IZI_ENV="$3sprint"
-        SUFFIX_PARAMS="--appIdSuffix \"local\"";
+    sprint | "p.sprint")
+        SUFFIX_PARAMS="--appIdSuffix \"sprint\"";
         ;;
     *)
-        IZI_ENV="$3dev"
+        IZI_ENV="dev"
         ;;
 esac
 if [[ $2 = "ios" ]];

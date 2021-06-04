@@ -55,7 +55,6 @@ export default function IziServerDropdown(props){
             setLoading(false)
         }else{
             setServers({servers:[]})
-            console.log("email : "+props.email);
             searchServers(props.email)
                 .then((data)=>{
                     if(data === undefined )data = []
@@ -65,7 +64,6 @@ export default function IziServerDropdown(props){
                     })
 
                     let servs = {servers:data}
-                    console.log({...servs, url:Config.DEV_SERVER+"/ws/get_izi_app.php"})
                     if(data.length == 1 && Config.FLAVOR == 'P'){
                         servs.selected=data[0]
                         props.setValue(servs.selected)
@@ -79,7 +77,6 @@ export default function IziServerDropdown(props){
     }
 
     function _setValue(value){
-        console.log(value);
         let servs = servers;
         servs.selected = value
         props.setValue(value)

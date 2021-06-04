@@ -8,8 +8,9 @@ import { User } from '../Types/LoginTypes'
 import locale from '../Locales/locales'
 import RNFS from 'react-native-fs'
 import { colors } from '../Styles/Styles'
+import {disconnect } from "../Tools/TokenTools"
 
-export default function AboutScene(){
+export default function AboutScene({navigation}){
 
     const [user, setUser] = useState<User|undefined>(undefined);
 
@@ -29,7 +30,7 @@ export default function AboutScene(){
     }
 
     const onDisconnect = () => {
-
+        disconnect(navigation)
     }
 
     useEffect(()=>{
