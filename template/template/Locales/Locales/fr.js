@@ -2,8 +2,8 @@
 
 export default {
     _template:{
-        connect:'SE CONNECTER',
-        disconnect:'SE DÉCONNECTER',
+        connect_upper:'SE CONNECTER',
+        disconnect_upper:'SE DÉCONNECTER',
         back:'RETOUR',
         forgotten_pass:'Mot de passe oublié ?',
         legal_text:'© iziflo - Développé par Syartec',

@@ -1,11 +1,10 @@
 import React from 'react'
-import { Text ,View,StyleSheet, Platform, Image } from 'react-native'
+import { View,StyleSheet, Platform, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import icon_hamburger_menu from '../res/img/icon_hamburger_menu'
+import icon_hamburger_menu from '../template/res/img/icon_hamburger_menu'
 import { createStackNavigator } from '@react-navigation/stack';
-import icon_about from '../res/img/icon_about'
-import icon_logout from '../res/img/icon_logout'
 import DemoScene from '../template/Scenes/DemoScene';
+import colors from '../template/Styles/Styles'
 
 const Stack = createStackNavigator();
 

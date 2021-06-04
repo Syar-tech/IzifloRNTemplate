@@ -41,7 +41,7 @@ const DemoScene=({navigation} :Props)=>{
                 <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : Demo</Text>
                 <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>User</Text> : {user?.email}</Text>
             </View>
-            <Button style={styles.button_disconnect} title={locale._template.disconnect} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
+            <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
         </SafeAreaView>
     )
 }

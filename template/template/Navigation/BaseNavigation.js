@@ -1,7 +1,7 @@
 // Navigation/Navigations.js
 
-import React, {useRef} from 'react';
-import  { View , TouchableOpacity, StyleSheet, Text} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import  { View , TouchableOpacity, StyleSheet, Text,DeviceEventEmitter} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList} from '@react-navigation/drawer'
 import Corner from '../Components/CornerLabel'
@@ -11,12 +11,16 @@ import MainScene from '../Scenes/MainScene'
 import Config from "react-native-config";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DemoScene from '../Scenes/DemoScene';
-import Navigation from '../Navigation/Navigation';
+import Navigation from '../../Navigation/Navigation';
 import { disconnect } from '../Tools/TokenTools';
 import Icon from 'react-native-vector-icons/Ionicons'
 import AboutScene from '../Scenes/AboutScene';
 import locale from '../Locales/locales';
 import { colors } from '../Styles/Styles';
+import { SvgXml } from 'react-native-svg';
+import icon_about from '../res/img/icon_about'
+import icon_logout from '../res/img/icon_logout'
+import icon_home from '../res/img/icon_home'
 
 
 const MainStack = createStackNavigator();
@@ -107,13 +111,19 @@ const DrawerScreen = (props)=>{
               {props.children}
               <Drawer.Screen name='Home' component={RootStackScreen} initialParams={{useExample:props.useExample}} 
               options={{ 
-                drawerLabel:() =>  <View style={styles.drawerView}>
-              <Text style={styles.drawerText} >{locale._template.home}</Text></View>,
+                drawerLabel:() =>  
+                  <View style={styles.drawerView}>
+                    <SvgXml xml={props.homeIcon ? props.homeIcon : icon_home} fill={colors.lightBlack} height={25} width={25} style={styles.drawerImage} />
+                    <Text style={styles.drawerText} >{locale._template.home}</Text>
+                  </View>,
             headerShown:false,
             title:locale._template.aboutIziflo }}  />
               <Drawer.Screen name="About" component={AboutScene} options={{ 
-                drawerLabel:() =>  <View style={styles.drawerView}>
-              <Text style={styles.drawerText} >{locale._template.aboutIziflo}</Text></View>,
+                drawerLabel:() =>  
+                  <View style={styles.drawerView}>
+                    <SvgXml xml={icon_about} fill={colors.lightBlack} height={25} width={25} style={styles.drawerImage} />
+                    <Text style={styles.drawerText} >{locale._template.aboutIziflo}</Text>
+                  </View>,
             headerShown:true,
             title:locale._template.aboutIziflo }} />
           </Drawer.Navigator>
@@ -128,14 +138,17 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} onPress/>
       
-      <DrawerItem label={locale._template.disconnect} onPress={() => disconnect(props.navigation)}/>
+      <DrawerItem 
+        label={locale._template.disconnect} 
+        icon={() => <SvgXml xml={icon_logout} fill={colors.lightBlack} height={25} width={25}/>}
+              onPress={() => disconnect(props.navigation)}/>
     </DrawerContentScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   drawerImage:{
-      marginRight:10
+    marginRight:32
   },
   drawerText:{
       color:colors.iziflo_dark_gray

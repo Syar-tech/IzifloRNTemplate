@@ -96,6 +96,9 @@ export default function IziServerDropdown(props){
     return(
         <View onPress={Keyboard.dismiss}>
             <IziDropdown
+                open={props.open? props.open : undefined}
+                setOpen={props.setOpen ? props.setOpen : undefined}
+                onOpen={props.onOpen ? props.onOpen : undefined}
                 title={locale._template.dropdown_server.title}
                 items={servers.servers}
                 loading={loading}

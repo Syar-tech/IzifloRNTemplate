@@ -32,7 +32,7 @@ const MainScene=({navigation} :Props)=>{
                 <View style={{width:20}}/>
                 <Button style={styles.button} title="Clear" iziStyle={IziButtonStyle.connection} onPress={()=> setAttachments(undefined) }/>
             </View>
-            <Button style={styles.button_disconnect} title={locale._template.disconnect} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
+            <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
         </SafeAreaView>
     )
 }

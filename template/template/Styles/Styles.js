@@ -10,6 +10,7 @@ export const colors={
     iziflo_dark_gray:"#606060",
     iziflo_green:"#A9D14E",
     iziflo_orange:"#E58B3E",
+    lightBlack:'#272727'
 }
 
 const border_width=1

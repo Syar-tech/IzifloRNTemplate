@@ -1,6 +1,6 @@
-import React ,{useState, useEffect} from 'react'
+import React ,{useState, useEffect, useReducer} from 'react'
 import {
-    View, Text,Image, TouchableWithoutFeedback, Keyboard, Alert,BackHandler,TouchableOpacity
+    View, SafeAreaView, Text,Image, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Alert,BackHandler,TouchableOpacity, Keyboard
 } from 'react-native'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -37,6 +37,12 @@ type RootStackParamList = {
 type Props = {
     navigation : StackNavigationProp<RootStackParamList, 'Login'>
 }
+
+type DropdownOpenType = {
+    server:boolean
+    server2:boolean
+    isntances:boolean
+}
 const LoginScene = ({navigation} : Props) => {
 
     /*---------------------------
@@ -54,6 +60,7 @@ const LoginScene = ({navigation} : Props) => {
     const [instances, setInstances] = useState<InstanceType[] | undefined>(undefined)
     const [showInstances, setShowInstances] = useState(false)
     const [msal] = useState(new MSALConnect())
+    const [dropdownOpen, setDropdownOpen] = useReducer((state:DropdownOpenType, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
     
     //data
     const [user, setUser] = useState<User | undefined>(undefined)
@@ -312,7 +319,12 @@ const LoginScene = ({navigation} : Props) => {
         }
     }
 
-    const _onPassordForgotten = ()=>{
+    const _onPasswordForgotten = ()=>{
+    }
+
+    const _closeAll = (omit= {server:false, server2:false, instances:false})=>{
+        if(!!omit?.keyboard) Keyboard.dismiss()
+        setDropdownOpen({...{server:false, server2:false, instances:false}, ...omit})
     }
 
     /*---------------------------
@@ -356,7 +368,7 @@ const LoginScene = ({navigation} : Props) => {
             </View>
             <View style={loginStyles.top_container_reverse}>
                 <View style={loginStyles.forgotten_pass_outer_container}>
-                    <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPassordForgotten()}>
+                    <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPasswordForgotten()}>
                         <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
                     </TouchableOpacity>
                 </View>
@@ -368,6 +380,9 @@ const LoginScene = ({navigation} : Props) => {
 
                 <IziServerDropDown 
                     style={{marginTop:12}} 
+                    open={dropdownOpen.server}
+                    setOpen={(value:Boolean)=>{setDropdownOpen({server:value})}}
+                    onOpen={() => _closeAll({server:true})}
                     email={email} 
                     value={server} 
                     zIndex={1000}
@@ -391,14 +406,18 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     function _displayInstanceChoice(){
-        console.log("show instance : "+user)
         if(showInstances)
             return (
                 <View style={{...loginStyles.login_container, padding:40}} >
                         <InstanceChoice 
                             user={user!!}
                             password={password}
-                            onInstanceChoosen={_onInstanceChoosen} 
+                            onInstanceChoosen={_onInstanceChoosen}
+                            serverOpen={dropdownOpen.server2} 
+                            setServerOpen={(value)=>setDropdownOpen({server2:value})} 
+                            instancesOpen={dropdownOpen.instances} 
+                            setInstancesOpen={(value)=>setDropdownOpen({instances:value})} 
+                            onOpen={_closeAll}
                         onLogout={_disconnect}/>
                 </View>
         )
@@ -459,8 +478,10 @@ const LoginScene = ({navigation} : Props) => {
     -
     ----------------------------*/
     return(
-        <TouchableWithoutFeedback style={{height:'100%', width:'100%'}} onPress={()=>Keyboard.dismiss()}>
-            {_displayContent()}
+        <TouchableWithoutFeedback style={{flex:1}} onPress={()=>{_closeAll()}}>
+            <View style={{flex:1}}>
+                {_displayContent()}
+            </View>
         </TouchableWithoutFeedback>
     )
 }
