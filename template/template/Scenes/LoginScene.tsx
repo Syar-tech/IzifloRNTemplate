@@ -323,7 +323,8 @@ const LoginScene = ({navigation} : Props) => {
     }
 
     const _closeAll = (omit= {server:false, server2:false, instances:false})=>{
-        if(!!omit?.keyboard) Keyboard.dismiss()
+        console.log(!!!omit?.keyboard)
+        if(!!!omit?.keyboard) Keyboard.dismiss()
         setDropdownOpen({...{server:false, server2:false, instances:false}, ...omit})
     }
 
@@ -374,7 +375,7 @@ const LoginScene = ({navigation} : Props) => {
                 </View>
                 <Button 
                     style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
-                    title={locale._template.connect} 
+                    title={locale._template.connect_upper} 
                     iziStyle={_getConnectButtonStyle()}
                     onPress={_connect }/>
 
