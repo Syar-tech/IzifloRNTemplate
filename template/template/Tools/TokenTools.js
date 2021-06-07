@@ -36,6 +36,7 @@ export const getCommonParams = (user = null, addInstance = true) =>  {
     let params =  {
         client_id : izi_api_client_id,
         module_name : 'core',
+        core_version : Config.CORE_VERSION,
         module_version:Config.CORE_VERSION,
         device_id:Platform.OS+"_"+getUniqueId()
     }

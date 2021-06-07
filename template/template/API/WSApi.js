@@ -42,7 +42,7 @@ import { getUniqueId } from "react-native-device-info";
 })();
 
 export function getWSBaseUrl(server){
-    return server.url+`/mobile_ws/core/${Config.CORE_VERSION}/index.php`
+    return server.url+`/mobile_ws.php`
 }
 
 export const queryWS = async (navigation, params) => {
