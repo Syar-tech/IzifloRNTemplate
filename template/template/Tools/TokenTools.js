@@ -37,7 +37,7 @@ export const getCommonParams = (user = null, addInstance = true) =>  {
         client_id : izi_api_client_id,
         module_name : 'core',
         module_version:Config.CORE_VERSION,
-        device_id:getUniqueId()
+        device_id:Platform.OS+"_"+getUniqueId()
     }
     if(user){
         params.email = user.email
