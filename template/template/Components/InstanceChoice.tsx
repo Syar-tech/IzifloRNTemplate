@@ -202,7 +202,7 @@ interface ServerInfo{
     
 
     return (
-        <View style={{width:'100%',alignItems:'stretch', flexDirection:'column-reverse'}}>
+        <View style={{width:'100%',alignItems:'stretch', flexDirection:'column-reverse',maxWidth:500, alignSelf:'center'}}>
             
                 
             <Button style={loginStyles.button} title={errorMessage ? locale._template.back : locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={_onLogout}/>

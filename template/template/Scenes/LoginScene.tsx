@@ -1,6 +1,6 @@
 import React ,{useState, useEffect, useReducer} from 'react'
 import {
-    View, SafeAreaView, Text,Image, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Platform, Alert,BackHandler,TouchableOpacity, Keyboard
+    View, Text,Image, TouchableWithoutFeedback, Alert,BackHandler,TouchableOpacity, Keyboard
 } from 'react-native'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -434,6 +434,7 @@ const LoginScene = ({navigation} : Props) => {
             finishProcess={()=> _gotoMain()}
             onClickButtonLockedPage={()=> _disconnect()}
             timeLocked={lockTime}
+            //text
             textButtonLockedPage={locale._template.disconnect}
             titleChoose={locale._template.pincode.title_choose}
             titleConfirm={locale._template.pincode.title_confirm}
@@ -448,6 +449,15 @@ const LoginScene = ({navigation} : Props) => {
             touchIDTitle={locale._template.pincode.touch_id_title}
             textCancelButtonTouchID={locale._template.pincode.touch_id_cancel}
             touchIDSentence={locale._template.pincode.touch_id_sentence}
+            //style
+            stylePinCodeButtonNumber={colors.iziflo_blue}
+            stylePinCodeColorSubtitle={colors.iziflo_blue}
+            stylePinCodeColorTitle={colors.iziflo_blue}
+            colorPassword={colors.iziflo_blue}
+            colorPasswordEmpty={colors.iziflo_blue}
+            stylePinCodeDeleteButtonSize={40}
+            stylePinCodeDeleteButtonText={{display:'none'}}
+            stylePinCodeColumnDeleteButton={{ height:'100%'}}
             />
         )
     }
@@ -519,11 +529,14 @@ const loginStyles = {
     },
     top_container_reverse:{
         flex:1,
+        width:'100%',
         justifyContent:'center',
         alignItems:'stretch',
         paddingEnd:40,
         paddingStart:40,
+        alignSelf:'center',
         flexDirection:'column-reverse',
+        maxWidth:500
         
     },
     bottom_container:{
