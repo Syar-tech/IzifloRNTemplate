@@ -523,7 +523,7 @@ const loginStyles = {
         alignItems:'stretch',
         paddingEnd:40,
         paddingStart:40,
-        flexDirection:'column-reverse'
+        flexDirection:'column-reverse',
         
     },
     bottom_container:{
