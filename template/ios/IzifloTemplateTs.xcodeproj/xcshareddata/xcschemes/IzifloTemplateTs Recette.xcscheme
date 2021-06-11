@@ -56,6 +56,16 @@
                ReferencedContainer = "container:IzifloTemplateTs.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "073C637C26720F9E00DE3926"
+               BuildableName = "IziTempUITests.xctest"
+               BlueprintName = "IziTempUITests"
+               ReferencedContainer = "container:IzifloTemplateTs.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

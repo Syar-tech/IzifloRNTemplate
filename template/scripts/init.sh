@@ -19,6 +19,9 @@ case $1 in
     sprint | "p.sprint")
         SUFFIX_PARAMS="--appIdSuffix \"sprint\"";
         ;;
+    "dev.screen")
+        #nothing to do
+        ;;
     *)
         IZI_ENV="dev"
         ;;

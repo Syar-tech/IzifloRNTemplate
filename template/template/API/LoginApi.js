@@ -32,7 +32,6 @@ export function requestInstances(server, email, token, tokenType){
   params.token=token
   params.login_type=tokenType
   
-  console.log("instances call :"+ getWSBaseUrl(server) + '\n'+JSON.stringify(params, null, 2))
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
@@ -47,7 +46,6 @@ export function requestToken(server, email, password){
   params.email=email
   params.password=password
 
-  console.log('params login : '+JSON.stringify(params));
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
         return response.json()
@@ -94,8 +92,6 @@ export async function checkToken( user, navigation){
                 }
                 setUser(usr)
                 setShowInstances(true)
-  
-                console.log("connect office : "+JSON.stringify(usr));
               
               }
           }
@@ -164,7 +160,6 @@ function refreshIzifloToken(user){
         return response.json()
     })
     .then((data)=>{
-      console.log("DATA : "+JSON.stringify(data))
         if(data.success){
           let usr = user;
           usr.token = {

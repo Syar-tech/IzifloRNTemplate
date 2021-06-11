@@ -1,10 +1,9 @@
 import React from 'react'
 import { View,StyleSheet, Platform, Image } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
-import icon_hamburger_menu from '../template/res/img/icon_hamburger_menu'
 import { createStackNavigator } from '@react-navigation/stack';
 import DemoScene from '../template/Scenes/DemoScene';
 import colors from '../template/Styles/Styles'
+import {hamburgerMenu} from '../template/Navigation/BaseNavigation'
 
 const Stack = createStackNavigator();
 
@@ -28,9 +27,6 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center'
     },
-    hamburgerMenu:{
-        marginLeft:20
-    },
     headerContainer:{
         flex:1,
         flexDirection:'row',
@@ -47,14 +43,6 @@ const styles = StyleSheet.create({
         textAlign:'center'
     }
 })
-
-const hamburgerMenu = navigation => (
-    <TouchableOpacity onPress={() => {
-        navigation.toggleDrawer()
-    }} style={styles.hamburgerMenu}>
-        <SvgXml xml={icon_hamburger_menu} height={20} width={20} fill={colors.lightBlack} />
-    </TouchableOpacity>
-)
 
 function RootStack() {
     return (

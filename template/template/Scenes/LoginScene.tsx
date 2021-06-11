@@ -43,7 +43,7 @@ type DropdownOpenType = {
     server2:boolean
     isntances:boolean
 }
-const LoginScene = ({navigation} : Props) => {
+const LoginScene = ({navigation, route} : Props) => {
 
     /*---------------------------
     -
@@ -99,16 +99,20 @@ const LoginScene = ({navigation} : Props) => {
 
     useEffect(() => {
         const backAction = () => {
-          Alert.alert("Hold on!", "Are you sure you want to go back?", [
-            {
-              text: "Cancel",
-              onPress: () => null,
-              style: "cancel",
-            },
-            { text: "YES", onPress: () => BackHandler.exitApp() }
-          ],
-          {cancelable:true});
-          return true;
+            if(route.name == "Login"){
+                Alert.alert("Hold on!", "Are you sure you want to go back?", [
+                    {
+                    text: "Cancel",
+                    onPress: () => null,
+                    style: "cancel",
+                    },
+                    { text: "YES", onPress: () => BackHandler.exitApp() }
+                ],
+                {cancelable:true});
+                return true
+            }else{
+                return false
+            }
         };
     
         const backHandler = BackHandler.addEventListener(
@@ -390,7 +394,7 @@ const LoginScene = ({navigation} : Props) => {
                     setValue={(item:ServerType)=>{setServer(item)}}
                     />
                     
-                <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
+                <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' autoCapitalize='none' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
                 value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
 
                 <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 

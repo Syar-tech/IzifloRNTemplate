@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DemoScene from '../Scenes/DemoScene';
 import Navigation from '../../Navigation/Navigation';
 import { disconnect } from '../Tools/TokenTools';
-import Icon from 'react-native-vector-icons/Ionicons'
+import icon_hamburger_menu from '../res/img/icon_hamburger_menu'
 import AboutScene from '../Scenes/AboutScene';
 import locale from '../Locales/locales';
 import { colors } from '../Styles/Styles';
@@ -27,14 +27,16 @@ const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+export const hamburgerMenu = navigation => (
+  <TouchableOpacity onPress={() => {
+      navigation.toggleDrawer()
+  }} style={{marginLeft:20}}>
+      <Icon name='menu' size={30} color='black'/>
+    <SvgXml xml={icon_hamburger_menu} height={20} width={20} fill={colors.lightBlack} />
+  </TouchableOpacity>
+)
+
 function MainStackScreen({navigation}) {
-const hamburgerMenu = navigation => (
-    <TouchableOpacity onPress={() => {
-        navigation.toggleDrawer()
-    }} style={{marginLeft:20}}>
-        <Icon name='menu' size={30} color='black'/>
-    </TouchableOpacity>
-  )
   return (
       <MainStack.Navigator>
         <MainStack.Screen name="Example" component={MainScene} 
@@ -53,7 +55,7 @@ const RootStackScreen = (props) =>{
 
 
   const _displayCorner= ()=>{
-    if(Config.FLAVOR != 'P')
+    if(Config.FLAVOR != 'P' && !!!Config.IS_SCREENSHOT)
       return (
         <Corner cornerRadius={60}
                 alignment={'right'}
@@ -118,14 +120,15 @@ const DrawerScreen = (props)=>{
                   </View>,
             headerShown:false,
             title:locale._template.aboutIziflo }}  />
-              <Drawer.Screen name="About" component={AboutScene} options={{ 
-                drawerLabel:() =>  
+              <Drawer.Screen name="About" component={AboutScene} options={({navigation}) =>({ 
+            headerLeft:() => hamburgerMenu(navigation), // Note: using just `null` instead of a function should also work but could trigger a TS error
+            drawerLabel:() =>  
                   <View style={styles.drawerView}>
                     <SvgXml xml={icon_about} fill={colors.lightBlack} height={25} width={25} style={styles.drawerImage} />
                     <Text style={styles.drawerText} >{locale._template.aboutIziflo}</Text>
                   </View>,
             headerShown:true,
-            title:locale._template.aboutIziflo }} />
+            title:locale._template.aboutIziflo })} />
           </Drawer.Navigator>
         <ServerInfoModal ref={infoModal}/>
       </View>

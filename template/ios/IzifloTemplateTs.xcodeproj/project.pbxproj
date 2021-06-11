@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* IzifloTemplateTsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IzifloTemplateTsTests.m */; };
+		073C638026720F9E00DE3926 /* IziTempUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073C637F26720F9E00DE3926 /* IziTempUITests.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -24,12 +25,22 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = IzifloTemplateTs;
 		};
+		073C638226720F9E00DE3926 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = IzifloTemplateTs;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* IzifloTemplateTsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IzifloTemplateTsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* IzifloTemplateTsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IzifloTemplateTsTests.m; sourceTree = "<group>"; };
+		073C637D26720F9E00DE3926 /* IziTempUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IziTempUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		073C637F26720F9E00DE3926 /* IziTempUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IziTempUITests.swift; sourceTree = "<group>"; };
+		073C638126720F9E00DE3926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		07CE4A7D2657E5EB003B32CE /* IzifloTemplateTs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = IzifloTemplateTs.entitlements; path = IzifloTemplateTs/IzifloTemplateTs.entitlements; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* IzifloTemplateTs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IzifloTemplateTs.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +72,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		073C637A26720F9E00DE3926 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -87,6 +105,15 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		073C637E26720F9E00DE3926 /* IziTempUITests */ = {
+			isa = PBXGroup;
+			children = (
+				073C637F26720F9E00DE3926 /* IziTempUITests.swift */,
+				073C638126720F9E00DE3926 /* Info.plist */,
+			);
+			path = IziTempUITests;
 			sourceTree = "<group>";
 		};
 		13B07FAE1A68108700A75B9A /* IzifloTemplateTs */ = {
@@ -142,6 +169,7 @@
 				13B07FAE1A68108700A75B9A /* IzifloTemplateTs */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* IzifloTemplateTsTests */,
+				073C637E26720F9E00DE3926 /* IziTempUITests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				3D84B2962CE58233764E2AFA /* Pods */,
@@ -156,6 +184,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* IzifloTemplateTs.app */,
 				00E356EE1AD99517003FC87E /* IzifloTemplateTsTests.xctest */,
+				073C637D26720F9E00DE3926 /* IziTempUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,6 +212,24 @@
 			productName = IzifloTemplateTsTests;
 			productReference = 00E356EE1AD99517003FC87E /* IzifloTemplateTsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		073C637C26720F9E00DE3926 /* IziTempUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 073C638826720F9E00DE3926 /* Build configuration list for PBXNativeTarget "IziTempUITests" */;
+			buildPhases = (
+				073C637926720F9E00DE3926 /* Sources */,
+				073C637A26720F9E00DE3926 /* Frameworks */,
+				073C637B26720F9E00DE3926 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				073C638326720F9E00DE3926 /* PBXTargetDependency */,
+			);
+			name = IziTempUITests;
+			productName = IziTempUITests;
+			productReference = 073C637D26720F9E00DE3926 /* IziTempUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		13B07F861A680F5B00A75B9A /* IzifloTemplateTs */ = {
 			isa = PBXNativeTarget;
@@ -212,10 +259,15 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1210;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					073C637C26720F9E00DE3926 = {
+						CreatedOnToolsVersion = 12.5;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
@@ -238,12 +290,20 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* IzifloTemplateTs */,
 				00E356ED1AD99517003FC87E /* IzifloTemplateTsTests */,
+				073C637C26720F9E00DE3926 /* IziTempUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		073C637B26720F9E00DE3926 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -418,6 +478,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		073C637926720F9E00DE3926 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				073C638026720F9E00DE3926 /* IziTempUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,6 +502,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* IzifloTemplateTs */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		073C638326720F9E00DE3926 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* IzifloTemplateTs */;
+			targetProxy = 073C638226720F9E00DE3926 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -490,6 +563,134 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IzifloTemplateTs.app/IzifloTemplateTs";
 			};
 			name = Release;
+		};
+		073C638426720F9E00DE3926 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 5ND2X5WSPX;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = IziTempUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syartec.IziTempUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IzifloTemplateTs;
+			};
+			name = Debug;
+		};
+		073C638526720F9E00DE3926 /* Dev.Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 5ND2X5WSPX;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = IziTempUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syartec.IziTempUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IzifloTemplateTs;
+			};
+			name = Dev.Debug;
+		};
+		073C638626720F9E00DE3926 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 5ND2X5WSPX;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = IziTempUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syartec.IziTempUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IzifloTemplateTs;
+			};
+			name = Release;
+		};
+		073C638726720F9E00DE3926 /* Dev.Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 5ND2X5WSPX;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = IziTempUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syartec.IziTempUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = IzifloTemplateTs;
+			};
+			name = Dev.Release;
 		};
 		075FC8742656A14200080E0B /* Dev.Debug */ = {
 			isa = XCBuildConfiguration;
@@ -916,6 +1117,17 @@
 				075FC8762656A14200080E0B /* Dev.Debug */,
 				00E356F71AD99517003FC87E /* Release */,
 				075FC8792656A14C00080E0B /* Dev.Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		073C638826720F9E00DE3926 /* Build configuration list for PBXNativeTarget "IziTempUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				073C638426720F9E00DE3926 /* Debug */,
+				073C638526720F9E00DE3926 /* Dev.Debug */,
+				073C638626720F9E00DE3926 /* Release */,
+				073C638726720F9E00DE3926 /* Dev.Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
