@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* IzifloTemplateTsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* IzifloTemplateTsTests.m */; };
 		073C638026720F9E00DE3926 /* IziTempUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073C637F26720F9E00DE3926 /* IziTempUITests.swift */; };
+		073C638A2673ABF500DE3926 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073C63892673ABF500DE3926 /* SnapshotHelper.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -41,6 +42,7 @@
 		073C637D26720F9E00DE3926 /* IziTempUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IziTempUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		073C637F26720F9E00DE3926 /* IziTempUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IziTempUITests.swift; sourceTree = "<group>"; };
 		073C638126720F9E00DE3926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		073C63892673ABF500DE3926 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		07CE4A7D2657E5EB003B32CE /* IzifloTemplateTs.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = IzifloTemplateTs.entitlements; path = IzifloTemplateTs/IzifloTemplateTs.entitlements; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* IzifloTemplateTs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IzifloTemplateTs.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,6 +112,7 @@
 		073C637E26720F9E00DE3926 /* IziTempUITests */ = {
 			isa = PBXGroup;
 			children = (
+				073C63892673ABF500DE3926 /* SnapshotHelper.swift */,
 				073C637F26720F9E00DE3926 /* IziTempUITests.swift */,
 				073C638126720F9E00DE3926 /* Info.plist */,
 			);
@@ -483,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				073C638026720F9E00DE3926 /* IziTempUITests.swift in Sources */,
+				073C638A2673ABF500DE3926 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

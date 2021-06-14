@@ -30,8 +30,7 @@ const Drawer = createDrawerNavigator();
 export const hamburgerMenu = navigation => (
   <TouchableOpacity onPress={() => {
       navigation.toggleDrawer()
-  }} style={{marginLeft:20}}>
-      <Icon name='menu' size={30} color='black'/>
+  }} style={{marginLeft:20}}>0000
     <SvgXml xml={icon_hamburger_menu} height={20} width={20} fill={colors.lightBlack} />
   </TouchableOpacity>
 )
