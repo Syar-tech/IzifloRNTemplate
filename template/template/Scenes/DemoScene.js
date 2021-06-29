@@ -9,7 +9,7 @@ import Config from 'react-native-config';
 
 
 const DemoScene=({navigation})=>{
-    const [user, setUser] = useState<User|undefined>(undefined);
+    const [user, setUser] = useState(undefined);
     useEffect(
         ()=>{ _loadUser()
         }
