@@ -133,10 +133,10 @@ const DrawerScreen = (props)=>{
              initialParams={{useExample:props.useExample}}
             />
 
-            <Drawer.Screen name="About" component={AboutScene} options={{
+            <Drawer.Screen name="About" component={AboutScene} options={({navigation})=> ({
               headerShown:true,
-              headerLeft:() => hamburgerMenu(props.navigation),
-            }}/>
+              headerLeft:() => hamburgerMenu(navigation),
+            })}/>
           </Drawer.Navigator>
         <ServerInfoModal ref={infoModal}/>
       </View>
