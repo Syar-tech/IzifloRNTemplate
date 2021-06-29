@@ -4,7 +4,7 @@ IZI_ENV="$1";
 SUFFIX_PARAMS="--appIdSuffix \"$1\"";
 case $1 in
 
-    prod | "p.dev")
+    prod | "p.prod")
         SUFFIX_PARAMS="";
         ;;
     recette | "p.recette")

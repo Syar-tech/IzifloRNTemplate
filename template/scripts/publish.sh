@@ -7,21 +7,30 @@ source ./scripts/apply_config.sh $1 $2
 
 case $2 in
 
-    a-android)
+    apk)
         echo 'Assemble sur Android'
         
-        cd android && ENVFILE=".env.${IZI_ENV}" ./gradlew assembleRelease && cd ../
+        cd android
+        ./gradlew incrementVersionCode 
+        ENVFILE=".env.${IZI_ENV}" ./gradlew assembleRelease 
+        cd ../
+        open android/app/build/outputs/apk/release
         ;;
-    b-android)
+    store)
         echo 'bundle sur Android'
         
-        cd android && ENVFILE=".env.${IZI_ENV}" ./gradlew bundleRelease && cd ../
+        cd android 
+        ./gradlew incrementVersionCode 
+        ENVFILE=".env.p.${IZI_ENV}" ./gradlew bundleRelease 
+        cd ../
+
+        open android/app/build/outputs/bundle/release
         ;;
     ios)
         echo 'Publication sur iOS'
         ;;
     *)
-        echo 'OS non reconnu, essayez parmis : a-android, b-android, ios'
+        echo 'OS non reconnu, essayez parmis : apk , store, ios'
         ;;
 esac
 

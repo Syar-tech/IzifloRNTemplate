@@ -1,11 +1,10 @@
-import {izi_api_app_code} from "../../config/iziConfig"
+import {demo_flavor, isDemo, izi_api_app_code} from "../../config/iziConfig"
 import Config from "react-native-config";
 import {getCommonParams,storeUser,TOKEN_STATE} from '../Tools/TokenTools'
 import {disconnect } from "../Tools/TokenTools"
 import {Api, getWSBaseUrl} from '../API/WSApi'
 import { TOKEN_TYPE } from "../Types/LoginTypes";
 import MSALConnect from '../API/MSALConnectApi'
-import { MSALInteractiveParams,MSALResult} from 'react-native-msal';
 
 
 const core_version = Config.CORE_VERSION
@@ -15,8 +14,8 @@ export function searchServers(email){
   var params = {
     email:email,
     app_code:izi_api_app_code,
-    app_type:Config.FLAVOR,
-    core_version:core_version
+    app_type:isDemo(email) ? demo_flavor :  Config.FLAVOR,
+    core_version:Config.CORE_VERSION
   }
   return Api.get(Config.DEV_SERVER+"/ws/get_izi_app.php",params)
       .then((response) => {
@@ -37,6 +36,22 @@ export function requestInstances(server, email, token, tokenType){
         return response.json()
     })
     .catch((error) => console.error(error))
+}
+
+export async function resetPassword(server, email){
+  const params = getCommonParams()
+  params.module_api = 'forgot_password'
+  params.email = email
+
+  try{
+    return await Api.post(getWSBaseUrl(server),params).then(response => response.json())
+    
+    
+  }catch(e){
+    console.log('error',e)
+    return false
+  }
+
 }
 
 //request token

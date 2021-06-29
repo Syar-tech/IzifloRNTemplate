@@ -9,7 +9,9 @@ import locale from '../Locales/locales'
 import { searchServers } from '../API/LoginApi';
 import IziDropdown from './IziDropDown';
 import Config from "react-native-config";
+import { isDemo } from '../../config/iziConfig'
 
+let searchTimeout = null
 
 export default function IziServerDropdown(props){
 
@@ -41,38 +43,35 @@ export default function IziServerDropdown(props){
     ----------------------------*/
     const _searchServers = async ()=>{
         setLoading(true);
-        console.log(props.email)
-        if(props.email == "demo@syartec.com"){
-        let serv = {name:"Demo", url:"http://iziflo.com",id:1, code:"demo", label:"Demo", value:1 };
-        setServers({servers:[serv], selected:serv})
-        props.setValue(serv)
-        setLoading(false)
-        }
-        else if(servers.servers.length ==0 && props.value){
+        if(servers.servers.length ==0 && props.value){
             setServers({servers:[props.value], selected:props.value})
             props.setValue(props.value)
             
             setLoading(false)
         }else{
             setServers({servers:[]})
-            searchServers(props.email)
-                .then((data)=>{
-                    if(data === undefined )data = []
-                    data.forEach((item, _)=>{
-                        item.label=item.name
-                        item.value=item.id
-                    })
+            if(searchTimeout)
+                clearTimeout(searchTimeout)
+        
+            searchTimeout = setTimeout(async () => {
+                searchServers(props.email)
+                    .then((data)=>{
+                        if(data === undefined )data = []
+                        data.forEach((item, _)=>{
+                            item.label=item.name
+                            item.value=item.id
+                        })
 
-                    let servs = {servers:data}
-                    if(data.length == 1 && Config.FLAVOR == 'P'){
-                        servs.selected=data[0]
-                        props.setValue(servs.selected)
-                    }
-                    setServers(servs)
-                    setLoading(false)
-                },
-                ()=>{setLoading(false)}
-            );  
+                        let servs = {servers:data}
+                        if(data.length == 1 && (Config.FLAVOR == 'P' || isDemo(props.email))){
+                            servs.selected=data[0]
+                            props.setValue(servs.selected)
+                        }
+                        setServers(servs)
+                        setLoading(false)
+                    },
+                ()=>{setLoading(false)});
+            },500)
         }
     }
 

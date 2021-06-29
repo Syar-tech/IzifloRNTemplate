@@ -6,6 +6,9 @@ export default {
         disconnect_upper:'SE DÉCONNECTER',
         back:'RETOUR',
         forgotten_pass:'Mot de passe oublié ?',
+        forgotten_pass_title:'Mot de passe oublié',
+        an_email_was_sent_with_a_new_password:'Un email contenant votre nouveau mot de passe vous a été envoyé',
+        user_not_found:'Utilisateur inconnu',
         legal_text:'© iziflo - Développé par Syartec',
         unknown_external_account_title:'Compte {0} non reconnu sur iziflo.',
         unknown_external_account_message:'Veuillez vous connecter une première fois avec {0} sur le site web.',
@@ -18,6 +21,7 @@ export default {
         aboutIziflo:"A propos d'Iziflo",
         disconnect:'Déconnexion',
         home:'Accueil',
+        cacheHasBeenCleared:'Le cache a été vidé.',
         pincode:{
             title_choose:"1 - Entrez un code PIN",
             title_confirm:"2 - Confirmez votre code PIN",

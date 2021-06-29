@@ -1,6 +1,6 @@
 import React ,{useState, useEffect, useReducer} from 'react'
 import {
-    View, Text,Image, TouchableWithoutFeedback, Alert,BackHandler,TouchableOpacity, Keyboard
+    View, Text,Image,  TouchableWithoutFeedback,  Alert,BackHandler,TouchableOpacity, Keyboard
 } from 'react-native'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -11,7 +11,6 @@ import IziServerDropDown from '../Components/IziServerDropDown'
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useIsFocused} from '@react-navigation/native' 
 import { useWindowDimensions } from 'react-native'
-import  { MSALInteractiveParams,MSALResult} from 'react-native-msal';
 import Config from "react-native-config";
 
 import { colors } from '../Styles/Styles'
@@ -23,27 +22,13 @@ import {__SInfoConfig} from '../Tools/Prefs';
 import {getStoredUser, deleteStoredUser, storeUser, TOKEN_STATE} from '../Tools/TokenTools';
 import {isEmpty, isEmailValid} from '../Tools/StringTools';
 //types
-import { StackNavigationProp } from '@react-navigation/stack';
-import {User, Token, ServerType, InstanceType, TOKEN_TYPE} from "../Types/LoginTypes"
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
-import {IziDimensions} from '../Tools/Dimensions'
+import { IziDimensions } from '../Tools/Dimensions';
+import { TOKEN_TYPE } from "../Types/LoginTypes";
 
 
-type RootStackParamList = {
-    Main: undefined;
-    Login: undefined;
-  };
-type Props = {
-    navigation : StackNavigationProp<RootStackParamList, 'Login'>
-}
-
-type DropdownOpenType = {
-    server:boolean
-    server2:boolean
-    isntances:boolean
-}
-const LoginScene = ({navigation, route} : Props) => {
+const LoginScene = ({navigation, route}) => {
 
     /*---------------------------
     -
@@ -53,17 +38,16 @@ const LoginScene = ({navigation, route} : Props) => {
     //local
     const window = useWindowDimensions()
     const focused = useIsFocused();
-    const [email, setEmail] = useState<string | undefined>(undefined)
-    const [password, setPassword] = useState<string | undefined>(undefined)
+    const [email, setEmail] = useState(undefined)
+    const [password, setPassword] = useState(undefined)
     const [loading, setLoading] = useState(true)
-    const [server, setServer] = useState<ServerType | undefined>(undefined)
-    const [instances, setInstances] = useState<InstanceType[] | undefined>(undefined)
+    const [server, setServer] = useState(undefined)
     const [showInstances, setShowInstances] = useState(false)
     const [msal] = useState(new MSALConnect())
-    const [dropdownOpen, setDropdownOpen] = useReducer((state:DropdownOpenType, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
+    const [dropdownOpen, setDropdownOpen] = useReducer((state, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
     
     //data
-    const [user, setUser] = useState<User | undefined>(undefined)
+    const [user, setUser] = useState(undefined)
 
 
     useEffect(()=>{
@@ -120,7 +104,7 @@ const LoginScene = ({navigation, route} : Props) => {
           backAction
         );
     
-        return () => backHandler.remove();
+        return () => {backHandler.remove();}
       }, []);
 
     /*---------------------------
@@ -139,7 +123,7 @@ const LoginScene = ({navigation, route} : Props) => {
         }
     }
     // create a function that saves your data asyncronously
-    const _storeUser = async (user:User, shouldSetUser = true) => {
+    const _storeUser = async (user, shouldSetUser = true) => {
         try{
             await storeUser(JSON.stringify(user));    
             if(shouldSetUser)
@@ -154,11 +138,10 @@ const LoginScene = ({navigation, route} : Props) => {
         try {
 
             await setLoading(true)
-            let data : User = await getStoredUser()
+            let data = await getStoredUser()
             await setUser(data)
             if(!user) {
                 await setServer(undefined)
-                await setInstances(undefined)
                 setLoading(false)
                 return undefined
             }
@@ -169,7 +152,7 @@ const LoginScene = ({navigation, route} : Props) => {
       
     }
 
-    const _setPin = (pin?:string)=>{
+    const _setPin = (pin)=>{
         console.log("setPin")
         if(user){
             console.log("setPin loading true")
@@ -201,20 +184,15 @@ const LoginScene = ({navigation, route} : Props) => {
                 //TODO error message : missing data
             }else{
                 //connect to instance
-                //save
-                if(email =="demo@syartec.com"){
-                    _connectToDemo();
-                }else{
-                    console.log("promise")
-                    promise = requestToken(server, email, password)
-                }
+                console.log("promise")
+                promise = requestToken(server, email, password)
             }
 
             if(promise)
-                promise.then((data:any)=>{
+                promise.then((data)=>{
                     if(data?.success){
-                        let usr  : User = {
-                            email : email!!, 
+                        let usr = {
+                            email : email, 
                             token : {
                                 state:TOKEN_STATE.VALID,
                                 tokenType:TOKEN_TYPE.IZIFLO,
@@ -222,7 +200,7 @@ const LoginScene = ({navigation, route} : Props) => {
                                 expirationDate:data.success.access_token_expiration_date, 
                                 refreshToken:data.success.refresh_token ,
                                 refreshExpirationDate:data.success.refresh_token_expiration_date, 
-                                email:email!!}, 
+                                email:email}, 
                             server:server
                         }
                         setUser(usr)
@@ -248,45 +226,30 @@ const LoginScene = ({navigation, route} : Props) => {
         setLoading(false)
     }
 
-    const _connectToDemo = () => {
-        if(email == "demo@syartec.com" && password == "demo"){
-            let usr  : User = {
-                email : email!!, 
-                token : {
-                    state:TOKEN_STATE.VALID,
-                    tokenType:TOKEN_TYPE.DEMO,
-                    token:"abc",
-                    email:email!!}, 
-                server:server
-            }
-            setUser(usr);
-            navigation.navigate('Demo')
-        }
-    }
 
     function _disconnect(){
         console.log("logout");
         _resetUser()
         setServer(undefined)
-        setInstances(undefined)
         setPassword(undefined)
         setShowInstances(false)
         
     }
 
     function _connectToGoogle(){
+        msal.signOut();
     }
 
     async function _connectToOffice(){
         if(msal.isInit()){
-        const params: MSALInteractiveParams = {
+        const params = {
             scopes: ["User.Read"],
           };
-          const result: MSALResult = await msal.signIn(params)
+          const result = await msal.signIn(params)
           .catch((e)=>{console.log("msal : "+ JSON.stringify(e, null, 2)); return e});
           
           if(result && result.idToken){
-              let externalToken :Token = {
+              let externalToken = {
                     email:result.account.username,
                     token : result.accessToken,
                     state : TOKEN_STATE.VALID,
@@ -297,6 +260,8 @@ const LoginScene = ({navigation, route} : Props) => {
                   token:externalToken
 
               }
+
+              console.log(result);
               setUser(usr)
               setShowInstances(true)
 
@@ -316,18 +281,17 @@ const LoginScene = ({navigation, route} : Props) => {
     -         Callbacks
     -
     ----------------------------*/
-    const _onInstanceChoosen= ( server : ServerType)=>{
+    const _onInstanceChoosen= ( server )=>{
         if(user && user.token){
             let usr = {email:user.email, token:user.token, server:server}
             _storeUser(usr, true)
         }
     }
 
-    const _onPasswordForgotten = ()=>{
-    }
+    const _onPasswordForgotten = ()=> navigation.navigate('ForgotPassword')
+
 
     const _closeAll = (omit= {server:false, server2:false, instances:false})=>{
-        console.log(!!!omit?.keyboard)
         if(!!!omit?.keyboard) Keyboard.dismiss()
         setDropdownOpen({...{server:false, server2:false, instances:false}, ...omit})
     }
@@ -362,18 +326,18 @@ const LoginScene = ({navigation, route} : Props) => {
             {/* Bottom part*/ }
             <View style={IziDimensions.getDimension(window,loginStyles.bottom_container)}>
                 <View style={IziDimensions.getDimension(window,loginStyles.buttons_container)}>
-                    <View style={{marginBottom:20}}>
+                    <View style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)}>
                         <View style={loginStyles.connect_with_line}/>
                         <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
                     </View>
-                    <Button style={{marginBottom:20}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
-                    <Button style={{}} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
+                    <Button style={{...IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin), display:'none'}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
+                    <Button style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
                 </View>
                 <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
             </View>
             <View style={loginStyles.top_container_reverse}>
                 <View style={loginStyles.forgotten_pass_outer_container}>
-                    <TouchableOpacity style={loginStyles.forgotten_pass_container} onPress={() =>_onPasswordForgotten()}>
+                    <TouchableOpacity style={IziDimensions.getDimension(window, loginStyles.forgotten_pass_container)} onPress={() =>_onPasswordForgotten()}>
                         <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
                     </TouchableOpacity>
                 </View>
@@ -384,22 +348,22 @@ const LoginScene = ({navigation, route} : Props) => {
                     onPress={_connect }/>
 
                 <IziServerDropDown 
-                    style={{marginTop:12}} 
                     open={dropdownOpen.server}
-                    setOpen={(value:Boolean)=>{setDropdownOpen({server:value})}}
+                    setOpen={(value)=>{setDropdownOpen({server:value})}}
                     onOpen={() => _closeAll({server:true})}
+                    style={{marginTop:12}} 
                     email={email} 
                     value={server} 
                     zIndex={1000}
-                    setValue={(item:ServerType)=>{setServer(item)}}
+                    setValue={(item)=>{setServer(item)}}
                     />
                     
                 <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' autoCapitalize='none' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
-                value={password}  onChangeText={(value:string) => {setPassword(value)}} textContentType='password'/>
+                value={password}  onChangeText={(value) => {setPassword(value)}} textContentType='password'/>
 
                 <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
                 autoCapitalize='none' autoCorrect={false}
-                value={email}  onChangeText={(value:string) => {setEmail(value); setServer(undefined)}}/>
+                value={email}  onChangeText={(value) => {setEmail(value); setServer(undefined)}}/>
                    
                 <Image style={IziDimensions.getDimension(window,loginStyles.logo)} source={require(("../res/logo-iziflo.png"))}/> 
                  
@@ -415,7 +379,7 @@ const LoginScene = ({navigation, route} : Props) => {
             return (
                 <View style={{...loginStyles.login_container, padding:40}} >
                         <InstanceChoice 
-                            user={user!!}
+                            user={user}
                             password={password}
                             onInstanceChoosen={_onInstanceChoosen}
                             serverOpen={dropdownOpen.server2} 
@@ -432,36 +396,36 @@ const LoginScene = ({navigation, route} : Props) => {
         const lockTime = Config.FLAVOR =='D' ? 10000 : 3*60*1000
         return (
             <PINCode 
-            status={user?.pin ? 'enter' : 'choose'}
-            storedPin={user?.pin}
-            storePin={(pin?:string)=>_setPin(pin)}
-            finishProcess={()=> _gotoMain()}
-            onClickButtonLockedPage={()=> _disconnect()}
-            timeLocked={lockTime}
-            //text
-            textButtonLockedPage={locale._template.disconnect}
-            titleChoose={locale._template.pincode.title_choose}
-            titleConfirm={locale._template.pincode.title_confirm}
-            titleEnter={locale._template.pincode.title_enter}
-            titleConfirmFailed={locale._template.pincode.title_confirm_failed}
-            titleAttemptFailed={locale._template.pincode.title_attempt_failed}
-            textTitleLockedPage={locale._template.pincode.text_title_locked_page}
-            textSubDescriptionLockedPage={locale._template.pincode.text_sub_description_locked_page}
-            textDescriptionLockedPage={locale.formatString(locale._template.pincode.text_description_locked_page, {timeLocked:(lockTime/60000)})}
-            subtitleError={locale._template.pincode.subtitle_error}
-            subtitleChoose={locale._template.pincode.subtitle_choose}
-            touchIDTitle={locale._template.pincode.touch_id_title}
-            textCancelButtonTouchID={locale._template.pincode.touch_id_cancel}
-            touchIDSentence={locale._template.pincode.touch_id_sentence}
-            //style
-            stylePinCodeButtonNumber={colors.iziflo_blue}
-            stylePinCodeColorSubtitle={colors.iziflo_blue}
-            stylePinCodeColorTitle={colors.iziflo_blue}
-            colorPassword={colors.iziflo_blue}
-            colorPasswordEmpty={colors.iziflo_blue}
-            stylePinCodeDeleteButtonSize={40}
-            stylePinCodeDeleteButtonText={{display:'none'}}
-            stylePinCodeColumnDeleteButton={{ height:'100%'}}
+                status={user?.pin ? 'enter' : 'choose'}
+                storedPin={user?.pin}
+                storePin={(pin)=>_setPin(pin)}
+                finishProcess={()=> _gotoMain()}
+                onClickButtonLockedPage={()=> _disconnect()}
+                timeLocked={lockTime}
+                //text
+                textButtonLockedPage={locale._template.disconnect}
+                titleChoose={locale._template.pincode.title_choose}
+                titleConfirm={locale._template.pincode.title_confirm}
+                titleEnter={locale._template.pincode.title_enter}
+                titleConfirmFailed={locale._template.pincode.title_confirm_failed}
+                titleAttemptFailed={locale._template.pincode.title_attempt_failed}
+                textTitleLockedPage={locale._template.pincode.text_title_locked_page}
+                textSubDescriptionLockedPage={locale._template.pincode.text_sub_description_locked_page}
+                textDescriptionLockedPage={locale.formatString(locale._template.pincode.text_description_locked_page, {timeLocked:(lockTime/60000)})}
+                subtitleError={locale._template.pincode.subtitle_error}
+                subtitleChoose={locale._template.pincode.subtitle_choose}
+                touchIDTitle={locale._template.pincode.touch_id_title}
+                textCancelButtonTouchID={locale._template.pincode.touch_id_cancel}
+                touchIDSentence={locale._template.pincode.touch_id_sentence}
+                //style
+                stylePinCodeButtonNumber={colors.iziflo_blue}
+                stylePinCodeColorSubtitle={colors.iziflo_blue}
+                stylePinCodeColorTitle={colors.iziflo_blue}
+                colorPassword={colors.iziflo_blue}
+                colorPasswordEmpty={colors.iziflo_blue}
+                stylePinCodeDeleteButtonSize={40}
+                stylePinCodeDeleteButtonText={{display:'none'}}
+                stylePinCodeColumnDeleteButton={{ height:'100%'}}
             />
         )
     }
@@ -493,33 +457,12 @@ const LoginScene = ({navigation, route} : Props) => {
     -
     ----------------------------*/
     return(
-        <TouchableWithoutFeedback style={{flex:1}} onPress={()=>{_closeAll()}}>
-            <View style={{flex:1}}>
-                {_displayContent()}
-            </View>
-        </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback style={{flex:1}} onPress={()=>{_closeAll()}}>
+                <View style={{flex:1}}>
+                    {_displayContent()}
+                </View>
+            </TouchableWithoutFeedback>
     )
-}
-
-const dimensions = {
-    qdef:{
-        bottomHeight:200
-    },
-    q450sw:{
-        bottomHeight:200
-    },
-    q600sw:{},
-    q720sw:{},
-    qdef_land:{
-
-    },
-    q450sw_land:{
-
-    },
-    q600sw_land:{},
-    q720sw_land:{},
-
-   
 }
 
 const loginStyles = {
@@ -545,27 +488,27 @@ const loginStyles = {
     },
     bottom_container:{
         qdef:{
-            height:200,
+            height:160,
             backgroundColor: colors.iziflo_back_blue,
             justifyContent:'center',
             alignItems:'center',
             paddingEnd:40,
             paddingStart:40,
         },
-        q450sw:{
+        q420sw:{
             height:250
         }
     },
     buttons_container:{
         qdef:{
-            flex:0,
+            flex:1,
             width:250,
             justifyContent:'center',
             alignItems:'stretch',
             paddingTop:20,
             paddingBottom:0,
         },
-        q450sw:{
+        q420sw:{
             paddingTop:40,
             paddingBottom:40,
         }
@@ -577,16 +520,24 @@ const loginStyles = {
             resizeMode:'contain',
             alignSelf:'center',
         },
-        q450sw:{
+        q420sw:{
             height:200 ,
         }
        
     },
     forgotten_pass_container:{
-        marginTop:8,
-        marginBottom:8,
-        alignSelf:'center',
-        alignItems:'stretch',
+        qdef:{
+            marginTop:0,
+            marginBottom:0,
+            alignSelf:'center',
+            alignItems:'stretch',
+        },
+        q420sw:{
+            marginTop:8,
+            marginBottom:8,
+            alignSelf:'center',
+            alignItems:'stretch',
+        }
     },
     forgotten_pass_outer_container:{
         alignSelf:'center',
@@ -603,7 +554,7 @@ const loginStyles = {
             width:250,
             marginTop:0,
         },
-        q450sw:{
+        q420sw:{
             marginTop:10,
         }
     },
@@ -628,8 +579,13 @@ const loginStyles = {
          color:colors.iziflo_blue,
          textAlign:'center',
          marginBottom:10,
-         marginTop:20,
     },
+    connect_container_inter_margin:{
+        qdef:{
+            marginBottom:8
+        },
+        marginBottom:20
+    }
 }
 
 

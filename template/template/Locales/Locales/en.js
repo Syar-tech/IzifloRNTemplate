@@ -6,7 +6,9 @@ export default {
         disconnect_upper:'LOG OUT', 
         back:'BACK',
         forgotten_pass:'Forgotten password ?',
+        forgotten_pass_title: 'Forgotten password',
         legal_text:'© iziflo - Developped by Syartec',
+        user_not_found:'Unknown user',
         unknown_external_account_title:'Unknown {0} account on iziflo',
         unknown_external_account_message:'Please connect once with {0} on the server.',
         unknown_external_account_link:'GO',
@@ -17,6 +19,8 @@ export default {
         clearCache:'Empty cache',
         aboutIziflo:"About Iziflo",
         disconnect:"Log out",
+        an_email_was_sent_with_a_new_password:'An email containing your new password has been sent to you',
+        cacheHasBeenCleared:'The cache has been cleared.',
         home:'Home',
         pincode:{
             title_choose:"1 - Enter a PIN code",

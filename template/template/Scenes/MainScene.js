@@ -1,20 +1,12 @@
-import React ,{useState, useEffect} from 'react'
+import React ,{useState} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack';
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect} from "../Tools/TokenTools"
 import locale from "../Locales/locales"
 import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
 
 
-type RootStackParamList = {
-    Main: undefined;
-    Login: undefined;
-  };
-type Props = {
-    navigation : StackNavigationProp<RootStackParamList, 'Login'>
-}
-const MainScene=({navigation} :Props)=>{
+const MainScene=({navigation})=>{
     const [attachments,setAttachments] = useState<string|undefined>(undefined)
 
     const getAttachments = () =>{

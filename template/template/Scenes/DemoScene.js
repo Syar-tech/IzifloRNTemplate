@@ -1,24 +1,14 @@
 import React ,{useState, useEffect} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
-import { StackNavigationProp } from '@react-navigation/stack';
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect, getStoredUser} from "../Tools/TokenTools"
 import locale from "../Locales/locales"
-import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
 import { ModalStyle, colors} from '../Styles/Styles'
 import { getBundleId, getReadableVersion } from 'react-native-device-info';
 import Config from 'react-native-config';
-import { User } from '../Types/LoginTypes';
 
 
-type RootStackParamList = {
-    Main: undefined;
-    Login: undefined;
-  };
-type Props = {
-    navigation : StackNavigationProp<RootStackParamList, 'Login'>
-}
-const DemoScene=({navigation} :Props)=>{
+const DemoScene=({navigation})=>{
     const [user, setUser] = useState<User|undefined>(undefined);
     useEffect(
         ()=>{ _loadUser()

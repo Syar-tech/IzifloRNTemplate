@@ -58,6 +58,7 @@ const ServerInfoModal = React.forwardRef((props, ref ) => {
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : {user?.server?.instance?.instance_name}</Text>
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>User</Text> : {user?.email}</Text>
             <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Token expires on</Text> : {user?.token?.expirationDate}</Text>
+            <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Hash</Text> : {Config.SIGNATURE_HASH}</Text>
             </View>
         </View>
         </Modal>

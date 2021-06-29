@@ -5657,6 +5657,11 @@ react-move@^2.7.0:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
+react-native-app-signature-helper@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-app-signature-helper/-/react-native-app-signature-helper-1.4.0.tgz#c5b4a0e1b030f399d2d6848cd7a10c86e3c8b92c"
+  integrity sha512-W3T6Ba/hHloMdU+LlmhuooCduoMDZGqI8B8rh3sZ+AiaDhEotDVJssZ5IPyKHe94Few1cPTmUnp0wodNOjbRVw==
+
 react-native-codegen@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/react-native-codegen/-/react-native-codegen-0.0.6.tgz#b3173faa879cf71bfade8d030f9c4698388f6909"

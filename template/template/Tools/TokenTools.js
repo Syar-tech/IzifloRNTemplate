@@ -1,5 +1,6 @@
 
 import SInfo from 'react-native-sensitive-info';
+import {Platform} from 'react-native'
 import {__SInfoConfig} from '../Tools/Prefs';
 import Config from "react-native-config";
 import {getUniqueId} from 'react-native-device-info'

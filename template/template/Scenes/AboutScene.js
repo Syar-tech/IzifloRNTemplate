@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Alert, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import { getBundleId, getReadableVersion } from 'react-native-device-info'
 import { getStoredUser } from '../Tools/TokenTools'
 import Config from "react-native-config"
-import { User } from '../Types/LoginTypes'
 import locale from '../Locales/locales'
 import RNFS from 'react-native-fs'
 import { colors } from '../Styles/Styles'
@@ -12,7 +11,7 @@ import {disconnect } from "../Tools/TokenTools"
 
 export default function AboutScene({navigation}){
 
-    const [user, setUser] = useState<User|undefined>(undefined);
+    const [user, setUser] = useState(undefined);
 
     const _loadUser = async ()=>{
         setUser(await getStoredUser())
@@ -27,6 +26,7 @@ export default function AboutScene({navigation}){
                 })
             })
         }
+        Alert.alert(locale._template.clearCache,locale._template.cacheHasBeenCleared)
     }
 
     const onDisconnect = () => {

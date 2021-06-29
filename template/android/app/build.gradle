@@ -123,10 +123,42 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+def currentVersion = "0.0.1"
+
+def incrementVersionCode() {
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        def code = versionProps['VERSION_CODE'].toInteger() + 1
+
+        versionProps['VERSION_CODE']=code.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+
+    }
+    else {
+        throw new GradleException("Could not read version.properties!")
+    }
+}
 android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
+
+    def versionPropsFile = file('version.properties')
+    int currentVersionCode
+    /*Setting default value for versionBuild which is the last incremented value stored in the file */
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        currentVersion = versionProps['VERSION_NAME']
+        currentVersionCode = versionProps['VERSION_CODE'].toInteger()
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -139,8 +171,8 @@ android {
         versionNameSuffix project.env.get("VERSION_SUFFIX")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "1.0.0.3"
+        versionCode currentVersionCode
+        versionName currentVersion
         resValue "string", "build_config_package", project.android.defaultConfig.applicationId
         resValue "string", "msal_host", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
         resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")
@@ -177,6 +209,8 @@ android {
             signingConfig signingConfigs.prod
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+
+            setProperty("archivesBaseName", project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX")+"-" + defaultConfig.versionCode)
         }
     }
 
@@ -231,6 +265,13 @@ dependencies {
 task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
+}
+
+task incrementVersionCode(){
+
+    doLast{
+        incrementVersionCode()
+    }
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

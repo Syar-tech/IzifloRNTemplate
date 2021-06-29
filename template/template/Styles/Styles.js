@@ -10,7 +10,9 @@ export const colors={
     iziflo_dark_gray:"#606060",
     iziflo_green:"#A9D14E",
     iziflo_orange:"#E58B3E",
-    lightBlack:'#272727'
+    lightGray:'#EFEFEF',
+    lightBlack:'#272727',
+    white:'#FFF',
 }
 
 const border_width=1
@@ -25,7 +27,7 @@ const dimensions = {
     qdef:{
 
     },
-    q450sw:{
+    q420sw:{
 
     },
     q600sw:{},
@@ -33,7 +35,7 @@ const dimensions = {
     qdef_land:{
 
     },
-    q450sw_land:{
+    q420sw_land:{
 
     },
     q600sw_land:{},
@@ -211,5 +213,29 @@ export const ModalStyle = StyleSheet.create({
         marginBottom:20
     } 
 })
+
+
+export const footerStyle = {
+
+    footerContainer:{
+        qdef:{
+            height:60,
+            width:'100%',
+            backgroundColor:colors.lightGray,
+            flexDirection:'row',
+            alignItems:'center',
+            justifyContent:'space-between',
+            paddingLeft:5,
+            paddingRight:5,
+            paddingBottom:5,
+            paddingTop:5
+        },
+        q600sw:{
+            height:70
+        }
+    },
+    iconHeight: 25,
+    iconMarginTop: 5
+}
 
 export default {}
