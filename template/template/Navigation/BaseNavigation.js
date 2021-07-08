@@ -123,7 +123,7 @@ const DrawerScreen = (props)=>{
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator 
-          drawerContentOptions={{showModal:showModal}} 
+          drawerContentOptions={{showModal:showModal, drawerContent:props.drawerContent}} 
           drawerContent={CustomDrawerContent} 
           screenOptions={{ gestureEnabled: true }}>
             {props.children}
@@ -160,12 +160,12 @@ function CustomDrawerContent(props) {
             props.navigation.dispatch(
               CommonActions.reset({
                  index: 0,
-                 routes: [{ name: "ScanScene" }],
+                 routes: [{ name: "MainScene" }],
              })
           );
           props.navigation.closeDrawer()
         }}/>
-
+      {props.drawerContent}
       <DrawerItem 
         label={locale._template.aboutIziflo} 
         icon={() => <SvgXml xml={icon_about} fill={colors.lightBlack} height={25} width={25}/>}

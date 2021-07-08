@@ -13,12 +13,14 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       tools:replace="android:label"
+      android:installLocation="auto"
       android:usesCleartextTraffic="@string/CLEARTEXT">
       <activity
         android:name=".MainActivity"
         android:label="@string/variant_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
         android:launchMode="singleTask"
+      android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustPan|adjustResize">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -27,7 +29,8 @@
       </activity>
       <!--Intent filter to capture authorization code response from the default browser on the device calling back to our app after interactive sign in -->
     <activity
-        android:name="com.microsoft.identity.client.BrowserTabActivity">
+        android:name="com.microsoft.identity.client.BrowserTabActivity"
+      android:screenOrientation="portrait">
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />

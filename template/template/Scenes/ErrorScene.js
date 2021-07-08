@@ -5,7 +5,7 @@ import { SvgXml } from 'react-native-svg';
 import icon_warning from '../res/img/icon_warning'
 import icon_no_parameter from '../res/img/icon_no_parameter'
 import icon_validate from '../res/img/icon_validate';
-import FooterControl from '../Components/FooterControl';
+import FooterControl from '../Components/Footers/FooterControl';
 import { IziDimensions } from '../Tools/Dimensions';
 
 const isAndroid = Platform.OS === 'android'

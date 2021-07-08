@@ -1,4 +1,4 @@
-const icon_logout = `<svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+const icon_home = `<svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 viewBox="0 0 86 100" style="enable-background:new 0 0 86 100;" xml:space="preserve">
 <style type="text/css">
 .st0{fill:#555555;}
@@ -10,4 +10,4 @@ viewBox="0 0 86 100" style="enable-background:new 0 0 86 100;" xml:space="preser
 
 `
 
-export default icon_logout
+export default icon_home

@@ -8,9 +8,10 @@ import locale from '../Locales/locales'
 import RNFS from 'react-native-fs'
 import { colors } from '../Styles/Styles'
 import {disconnect } from "../Tools/TokenTools"
+import { useIsFocused } from '@react-navigation/native'
 
 export default function AboutScene({navigation}){
-
+    const isFocused = useIsFocused()
     const [user, setUser] = useState(undefined);
 
     const _loadUser = async ()=>{
@@ -34,8 +35,9 @@ export default function AboutScene({navigation}){
     }
 
     useEffect(()=>{
-        _loadUser()
-    },[])
+        if(isFocused)
+            _loadUser()
+    },[isFocused])
 
     return (
         <View style={styles.container}>

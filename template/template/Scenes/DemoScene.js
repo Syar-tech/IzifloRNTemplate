@@ -6,6 +6,9 @@ import locale from "../Locales/locales"
 import { ModalStyle, colors} from '../Styles/Styles'
 import { getBundleId, getReadableVersion } from 'react-native-device-info';
 import Config from 'react-native-config';
+import ActionsFooter from '../Components/Footers/ActionsFooter'
+import icon_logout from '../res/img/icon_logout'
+import Rotate from '../Components/Rotate'
 
 
 const DemoScene=({navigation})=>{
@@ -31,7 +34,15 @@ const DemoScene=({navigation})=>{
                 <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : Demo</Text>
                 <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>User</Text> : {user?.email}</Text>
             </View>
-            <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
+
+            <ActionsFooter
+                items={[{title:"Action", key:1}, {title:locale._template.disconnect_upper, key:99, icon:icon_logout},{title:"Action 2", key:2},{title:"Action 3", key:5},{title:"Action 4", key:1100},]}
+                onPress={(key)=>{
+                  if(key == 99) disconnect(navigation) 
+                  else console.log('clicked on key : ',key)
+                }}
+                rotate={true}
+                />
         </SafeAreaView>
     )
 }
@@ -42,7 +53,7 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
         backgroundColor:'white',
-        padding:8,
+        backgroundColor:colors.lightGray
     },
     button_disconnect:{
         marginTop:25,
@@ -54,7 +65,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginTop: 22
+      marginTop: 22,
     },
     modalView: {
       margin: 20,
