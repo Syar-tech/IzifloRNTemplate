@@ -21,6 +21,7 @@ export default {
         aboutIziflo:"A propos d'Iziflo",
         disconnect:'Déconnexion',
         home:'Accueil',
+        more:"Plus",
         cacheHasBeenCleared:'Le cache a été vidé.',
         pincode:{
             title_choose:"1 - Entrez un code PIN",

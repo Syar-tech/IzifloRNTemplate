@@ -22,6 +22,7 @@ export default {
         an_email_was_sent_with_a_new_password:'An email containing your new password has been sent to you',
         cacheHasBeenCleared:'The cache has been cleared.',
         home:'Home',
+        more:"More",
         pincode:{
             title_choose:"1 - Enter a PIN code",
             title_confirm:"2 - Confirm your PIN code",

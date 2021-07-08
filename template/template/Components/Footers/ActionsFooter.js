@@ -3,6 +3,7 @@
 // Components/Footer.js
 import React, { useEffect, useState } from 'react'
 import {View} from 'react-native'
+import locale from '../../Locales/locales'
 import icon_home from '../../res/img/icon_home'
 import icon_more from '../../res/img/icon_more'
 import { IziDimensions } from '../../Tools/Dimensions'
@@ -54,7 +55,7 @@ const ActionsFooter = ({items,footerStyle, rotate, onPress,buttonWidth,textStyle
                   onPress={_toggleModal}
                   height={25} 
                   image={icon_more} 
-                  text={"More"} 
+                  text={locale._template.more} 
                   textStyle={{marginTop:5, ...textStyle}} 
                   frontColor={frontColor}
                   backColor={backColor}
