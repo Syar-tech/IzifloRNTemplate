@@ -21,6 +21,7 @@ export default {
         aboutIziflo:"A propos d'Iziflo",
         disconnect:'Déconnexion',
         home:'Accueil',
+        darkMode:'Mode sombre',
         more:"Plus",
         cacheHasBeenCleared:'Le cache a été vidé.',
         pincode:{

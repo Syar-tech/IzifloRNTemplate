@@ -26,6 +26,15 @@ export async function disconnect(navigation){
 }
 
 
+export async function getStoredScheme(defaultScheme = 'light'){
+    const scheme = await SInfo.getItem('scheme', __SInfoConfig)
+    return scheme || defaultScheme
+}
+
+export const storeScheme = async scheme => await SInfo.setItem("scheme",scheme,  __SInfoConfig)
+
+
+
 export const TOKEN_STATE = {
     VALID:"VALID",
     INVALID:"INVALID",

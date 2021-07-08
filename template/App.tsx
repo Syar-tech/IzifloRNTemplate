@@ -11,25 +11,24 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
  import {
-   StyleSheet,
+   StyleSheet, useColorScheme
  } from 'react-native';
 
  import BaseNavigation from './template/Navigation/BaseNavigation'
+ import { Provider } from 'react-redux'
+ import Store from './template/store/SchemeStore'
 
  const App = () => {
-   /*const isDarkMode = useColorScheme() === 'dark';
-
-   const backgroundStyle = {
-     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-   };*/
-
    return (
-     <NavigationContainer>
-         <BaseNavigation useExample={true}/>
-         {
-           // Populate Navigation.js with useExample={false}/>
-        }
-      </NavigationContainer>
+
+      <Provider store={Store}>
+        <NavigationContainer>
+            <BaseNavigation useExample={true}useScheme={true}/>
+          {
+            // Populate Navigation.js with useExample={false}/>
+          }
+        </NavigationContainer>
+      </Provider>
    );
  };
 

@@ -10,10 +10,10 @@ const locale = new LocalizedStrings({
 })
 
 const localeStr = "fr_FR"
-if(Platform.OS == 'ios'){
+if(Platform.OS === 'ios'){
     // iOS:
     const localeStr = NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] // "fr_FR"
-}else if (Platform.OS = 'android'){
+}else if (Platform.OS === 'android'){
     // Android:
     const localeStr = NativeModules.I18nManager.localeIdentifier // "fr_FR"
 }

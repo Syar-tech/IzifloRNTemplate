@@ -13,6 +13,16 @@ export const colors={
     lightGray:'#EFEFEF',
     lightBlack:'#272727',
     white:'#FFF',
+    dark:{
+        backgroundColor:'#272727',
+        textDefaultColor:'#EFEFEF',
+        svgColor:'#EFEFEF'
+    },
+    light:{
+        backgroundColor:'#EFEFEF',
+        textDefaultColor:'#272727',
+        svgColor:'#272727'
+    }
 }
 
 const border_width=1
