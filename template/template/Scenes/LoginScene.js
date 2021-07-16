@@ -245,6 +245,7 @@ const LoginScene = ({navigation, route}) => {
         const params = {
             scopes: ["User.Read"],
           };
+          if(await msal.isSignedIn()) await msal.signOut()
           const result = await msal.signIn(params)
           .catch((e)=>{console.log("msal : "+ JSON.stringify(e, null, 2)); return e});
           
@@ -264,8 +265,6 @@ const LoginScene = ({navigation, route}) => {
               console.log(result);
               setUser(usr)
               setShowInstances(true)
-
-              console.log("connect office : "+JSON.stringify(usr));
             
             }
         }

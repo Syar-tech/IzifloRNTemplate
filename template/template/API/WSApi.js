@@ -54,12 +54,12 @@ export const queryWS = async (navigation, params) => {
         //check token
         return checkToken(user, navigation, user.server.instance.id_instance)
         .then(
-            (data)=>{
+            async (data)=>{
                 let usr = undefined;
                 if(data && data.token && data.token.access_token != user.token.token){
                     console.log("token has been replaced"); 
                     //user updated and should be reloaded 
-                    usr = getStoredUser()
+                    usr = await getStoredUser()
                 }else  usr = user     
                 console.log(JSON.stringify(user.token, null, 2))
                 let commonParams = getCommonParams(usr)

@@ -91,7 +91,10 @@ export default class MSALConnect {
 
   public async getAccount(): Promise<MSALAccount | undefined> {
     if(!this.pca) throw Error("MSAL not init")
-    console.log("accounts : "+JSON.stringify(await this.pca.getAccounts()));
+    let accounts = await this.pca.getAccounts();
+    if(accounts.length >0){
+      return accounts[0];
+    }
     return undefined
     //return await this.pca.getAccount(MSALConnect.config.auth.authority!!);
   }

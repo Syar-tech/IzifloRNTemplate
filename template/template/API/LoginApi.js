@@ -102,12 +102,13 @@ export async function checkToken( user, navigation){
                 }
                 let usr={
                     email:externalToken.email,
-                    token:externalToken
+                    token:externalToken,
+                    server:user.server
   
                 }
-                setUser(usr)
-                setShowInstances(true)
+                await storeUser(JSON.stringify(usr))
               
+                return Promise.resolve(usr);
               }
           }
         break;
