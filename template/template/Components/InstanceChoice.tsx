@@ -19,11 +19,6 @@ export interface Props{
     password?:string
     onLogout():void
     onInstanceChoosen(server:ServerType):void
-    serverOpen:Boolean
-    setServerOpen(open:Boolean):void
-    instancesOpen:Boolean
-    setInstancesOpen(open:Boolean):void
-    onOpen(omit:any):void
 }
 
 interface ServerInfo{
@@ -31,15 +26,10 @@ interface ServerInfo{
     instances?:{
         list?:InstanceType[],
         selectedInstance?:InstanceType,
-    serverOpen:Boolean
-    setServerOpen(open:Boolean):void
-    instancesOpen:Boolean
-    setInstancesOpen(open:Boolean):void
-    onOpen(omit:any):void
     }
 }
 
- const InstanceChoice : React.FC<Props> = ({user,password, onLogout, onInstanceChoosen, serverOpen, setServerOpen, instancesOpen, setInstancesOpen, onOpen}) => {
+const InstanceChoice : React.FC<Props> = ({user,password, onLogout, onInstanceChoosen}) => {
     
     const [serverInfo, setServerInfo] = useState<ServerInfo|undefined>(user.server ? {server:user.server} : undefined)
     const [errorMessage, setErrorMessage] = useState<ErrorType|undefined>(undefined)
@@ -162,10 +152,7 @@ interface ServerInfo{
         if(isExternal){
             return (
                     <IziServerDropDown 
-                            style={{marginTop:12}} 
-                            open={serverOpen}
-                            setOpen={setServerOpen}
-                            onOpen={()=>onOpen({server2:true})}
+                            style={{marginTop:12}}
                             email={user.email ? user.email : user.token?.email} 
                             value={serverInfo?.server} 
                             setValue={(item:ServerType)=>{onServerSelected(item)}}/>
@@ -186,15 +173,11 @@ interface ServerInfo{
                 <IziDropdown
                     items={serverInfo?.instances?.list ? serverInfo.instances.list : []}
                     title={locale._template.dropdown_instance.title}
-                    open={instancesOpen}
-                    setOpen={setInstancesOpen}
-                    onOpen={()=>onOpen({instances:true})}
                     placeholder={serverInfo?.instances?.list && serverInfo.instances.list.length > 0 ? locale._template.dropdown_instance.placeholder :  locale._template.dropdown_instance.empty_placeholder}
                     nothingToShow={locale._template.dropdown_instance.nothing_to_show}
                     disabled={serverInfo?.instances?.list == undefined || serverInfo.instances.list.length == 0}
                     value={serverInfo?.instances?.selectedInstance}
-                    setValue={(value:InstanceType)=>{_onInstanceSelected(value)}}
-                    zIndex={500}/>
+                    setValue={(value:InstanceType)=>{_onInstanceSelected(value)}}/>
                     </View>
             )
         }
@@ -202,10 +185,11 @@ interface ServerInfo{
     
 
     return (
-        <View style={{width:'100%',alignItems:'stretch', flexDirection:'column-reverse',maxWidth:500, alignSelf:'center'}}>
+        <View style={{width:'100%',alignItems:'stretch',maxWidth:500, alignSelf:'center'}}>
             
                 
-            <Button style={loginStyles.button} title={errorMessage ? locale._template.back : locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={_onLogout}/>
+                {_displayServers()}
+                {_displayInstancesOrError()}
             <Button 
                 style={loginStyles.button} 
                 title={errorMessage?.action_button ? errorMessage.action_button.title : locale._template.connect_upper} 
@@ -217,8 +201,7 @@ interface ServerInfo{
                     }
                 }
                 />
-                {_displayInstancesOrError()}
-                {_displayServers()}
+                <Button style={loginStyles.button} title={errorMessage ? locale._template.back : locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={_onLogout}/>
         </View>
     )
 }

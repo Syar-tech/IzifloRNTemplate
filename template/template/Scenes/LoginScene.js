@@ -1,6 +1,6 @@
 import React ,{useState, useEffect, useReducer} from 'react'
 import {
-    View, Text,Image,  TouchableWithoutFeedback,  Alert,BackHandler,TouchableOpacity, Keyboard
+    View, Text,Image, Alert,BackHandler, Keyboard,TouchableWithoutFeedback,TouchableOpacity,
 } from 'react-native'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
@@ -322,53 +322,48 @@ const LoginScene = ({navigation, route}) => {
     function _displayLogin(){
         return  (
             <View style={loginStyles.login_container}>
-            {/* Bottom part*/ }
-            <View style={IziDimensions.getDimension(window,loginStyles.bottom_container)}>
-                <View style={IziDimensions.getDimension(window,loginStyles.buttons_container)}>
-                    <View style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)}>
-                        <View style={loginStyles.connect_with_line}/>
-                        <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
+                {/* Bottom part*/ }
+                <View style={loginStyles.top_container_reverse}>
+                    <Image style={IziDimensions.getDimension(window,loginStyles.logo)} source={require(("../res/logo-iziflo.png"))}/> 
+                    <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
+                    autoCapitalize='none' autoCorrect={false}
+                    value={email}  onChangeText={(value) => {setEmail(value); setServer(undefined)}}/>
+                    <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' autoCapitalize='none' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
+                    value={password}  onChangeText={(value) => {setPassword(value)}} textContentType='password'/>
+                    <IziServerDropDown
+                        style={{marginTop:12}} 
+                        email={email} 
+                        value={server}
+                        setValue={(item)=>{setServer(item)}}
+                        />
+                    <Button 
+                        style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
+                        title={locale._template.connect_upper} 
+                        iziStyle={_getConnectButtonStyle()}
+                        onPress={_connect }/>
+                    <View style={loginStyles.forgotten_pass_outer_container}>
+                        <TouchableOpacity style={IziDimensions.getDimension(window, loginStyles.forgotten_pass_container)} onPress={() =>_onPasswordForgotten()}>
+                            <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
+                        </TouchableOpacity>
                     </View>
-                    <Button style={{...IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin), display:'none'}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
-                    <Button style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
-                </View>
-                <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
-            </View>
-            <View style={loginStyles.top_container_reverse}>
-                <View style={loginStyles.forgotten_pass_outer_container}>
-                    <TouchableOpacity style={IziDimensions.getDimension(window, loginStyles.forgotten_pass_container)} onPress={() =>_onPasswordForgotten()}>
-                        <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
-                    </TouchableOpacity>
-                </View>
-                <Button 
-                    style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
-                    title={locale._template.connect_upper} 
-                    iziStyle={_getConnectButtonStyle()}
-                    onPress={_connect }/>
 
-                <IziServerDropDown 
-                    open={dropdownOpen.server}
-                    setOpen={(value)=>{setDropdownOpen({server:value})}}
-                    onOpen={() => _closeAll({server:true})}
-                    style={{marginTop:12}} 
-                    email={email} 
-                    value={server} 
-                    zIndex={1000}
-                    setValue={(item)=>{setServer(item)}}
-                    />
+                        
+
                     
-                <IziTextInput style={{}} title={locale._template.password_input.title} keyboardType='default' autoCapitalize='none' placeholder={locale._template.password_input.placeholder} secureTextEntry={true}
-                value={password}  onChangeText={(value) => {setPassword(value)}} textContentType='password'/>
-
-                <IziTextInput style={{marginBottom:12}} title={locale._template.email_input.title} keyboardType='email-address' placeholder={locale._template.email_input.placeholder} 
-                autoCapitalize='none' autoCorrect={false}
-                value={email}  onChangeText={(value) => {setEmail(value); setServer(undefined)}}/>
-                   
-                <Image style={IziDimensions.getDimension(window,loginStyles.logo)} source={require(("../res/logo-iziflo.png"))}/> 
-                 
                     
                 </View>
-                
+                <View style={IziDimensions.getDimension(window,loginStyles.bottom_container)}>
+                    <View style={IziDimensions.getDimension(window,loginStyles.buttons_container)}>
+                        <View style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)}>
+                            <View style={loginStyles.connect_with_line}/>
+                            <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
+                        </View>
+                        <Button style={{...IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin), display:'none'}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
+                        <Button style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
+                    </View>
+                    <Text style={loginStyles.legal_text}>{locale._template.legal_text}</Text>
+                </View>
+                    
             </View>
         )
     }
@@ -456,10 +451,10 @@ const LoginScene = ({navigation, route}) => {
     -
     ----------------------------*/
     return(
-            <TouchableWithoutFeedback style={{flex:1}} onPress={()=>{_closeAll()}}>
+            <TouchableWithoutFeedback style={{height:"100%", width:"100%"}} onPress={()=>{_closeAll()}}>
                 <View style={{flex:1}}>
                     {_displayContent()}
-                </View>
+                </View> 
             </TouchableWithoutFeedback>
     )
 }
@@ -467,7 +462,7 @@ const LoginScene = ({navigation, route}) => {
 const loginStyles = {
     login_container:{
         flex:1,
-        flexDirection:'column-reverse',
+        flexDirection:'column',
         justifyContent:'center',
         alignItems:'stretch',
         backgroundColor:'white'
@@ -481,7 +476,7 @@ const loginStyles = {
         paddingEnd:40,
         paddingStart:40,
         alignSelf:'center',
-        flexDirection:'column-reverse',
+        flexDirection:'column',
         maxWidth:500
         
     },

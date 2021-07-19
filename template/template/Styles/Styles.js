@@ -3,6 +3,7 @@ import {
     Platform,
     StyleSheet,
 } from 'react-native'
+import { white } from 'react-native-paper/lib/typescript/styles/colors'
 
 export const colors={
     iziflo_blue:"#5483AC",
@@ -165,6 +166,26 @@ export const loginStyles = {
         }
     },
     dropdown:{
+        marginBottom:20,
+        height:dropdown_height + 20,
+        
+
+        horizontal:{
+            flexDirection:"row",
+            height:dropdown_height,
+            alignItems:'center',
+            marginBottom:0,
+            justifyContent:"center",
+
+        dropContainer: {
+            flex: 1,
+            flexDirection:'row',
+            justifyContent:'center',
+            height:'100%',
+            flexDirection:'column',
+            alignItems:'center',
+        },
+        },
         title:{
             fontSize:13,
             marginStart: 15,
@@ -173,19 +194,25 @@ export const loginStyles = {
         },
 
         title_disabled:{
-            fontSize:13,
             marginStart: 15,
             marginBottom: 3,
             color:'gray',
         },
-        dropdown:{
-            height:dropdown_height,
+        title_horizontal:{
+            marginRight:6,
+            marginStart:0,
+            marginBottom:0,
+        },
+
+        button:{
             borderTopRightRadius:dropdown_height/2,
             borderTopLeftRadius:dropdown_height/2,
             borderBottomRightRadius:dropdown_height/2,
             borderBottomLeftRadius:dropdown_height/2,
             borderWidth:border_width,
-            marginBottom:20,
+            height:dropdown_height,
+            backgroundColor:"white",
+            flex:1,
             enabled:{
                 borderColor:colors.iziflo_blue,
             },
@@ -193,13 +220,47 @@ export const loginStyles = {
                 borderColor:'lightgray',
             },
             label:{
-                color:'black',
+                color:colors.iziflo_dark_gray,
+                fontSize:16,
+                disabled:{
+                    color:'lightgray',
+                },
             },
     
-            label_disabled:{
-                color:'lightgray',
+        },
+        
+        dropdown:{
+            borderTopRightRadius:dropdown_height/2,
+            borderTopLeftRadius:dropdown_height/2,
+            borderBottomRightRadius:dropdown_height/2,
+            borderBottomLeftRadius:dropdown_height/2,
+            borderWidth:border_width,
+            minHeight:0,
+            enabled:{
+                borderColor:colors.iziflo_blue,
             },
-        }
+            disabled:{
+                borderColor:'lightgray',
+            },
+            label:{
+                fontSize:16,
+                alignSelf:"center",
+                height:"auto",
+                flex:0,
+                enabled:{
+                    color:"colors.iziflo_dark_gray",
+                },
+        
+                disabled:{
+                    color:'lightgray',
+                },
+            }
+            
+        },
+        dropdown_horizontal:{
+            width:100,
+        },
+        placeholder:{}
     },    
 }
 

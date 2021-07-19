@@ -5791,6 +5791,11 @@ react-native-screens@^2.18.1:
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.18.1.tgz#47b9991c6f762d00d0ed3233e5283d523e859885"
   integrity sha512-r5WZLpmx2hHjC1RgMdPq5YpSU9tEhBpUaZ5M1SUtNIONyiLqQVxabhRCINdebIk4depJiIl7yw2Q85zJyeX6fw==
 
+react-native-select-dropdown@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-select-dropdown/-/react-native-select-dropdown-1.0.9.tgz#3df0f0c42d63a59101ac958f02ad154756f6e5ac"
+  integrity sha512-0MtM3lO6ntc8tmRs6lqT3JiPAZadecn336/3QN1DsB8FJAfpKdWiBk0a2/3gITOjUIQoQLrK+6IghHae6Ef6OA==
+
 react-native-sensitive-info@^5.5.8:
   version "5.5.8"
   resolved "https://registry.yarnpkg.com/react-native-sensitive-info/-/react-native-sensitive-info-5.5.8.tgz#6ebb67eed83d1c2867bd435630ef2c41eef204ed"

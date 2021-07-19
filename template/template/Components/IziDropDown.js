@@ -1,22 +1,64 @@
-import React ,{useState, useEffect, useRef, memo} from 'react'
+import React ,{useState, useEffect} from 'react'
 import {
     View,
     Text,
-    Keyboard, ActivityIndicator
+    StyleSheet, ScrollView
 } from 'react-native'
-import DropDownPicker from 'react-native-dropdown-picker';
-import { loginStyles, colors } from '../Styles/Styles'
+import { loginStyles, colors, sizes } from '../Styles/Styles'
+import SelectDropdown from 'react-native-select-dropdown'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 export default function IziDropdown(props){
 
-    const [open, setOpen] = useState(false);
+
     let getStyle = ()=>{
         if(typeof props.style  ==="object"){
-            return {
+            style = {
                 ...loginStyles.dropdown, ...props.style}
-        }else
-        return loginStyles.dropdown
+        }else{
+            style = loginStyles.dropdown
+        }
+        if(props.orientation == "horizontal"){
+            style = {...style, ...style.horizontal,
+                title:{...style.title, ...style.title_horizontal} ,
+                dropdown:{...style.dropdown, ...style.dropdown_horizontal} 
+                
+            }     
+        }
+        return style;
+    }
+
+    const getButtonStyle = ()=>{
+        return {...getStyle().button, 
+            ...(props.disabled 
+            ? {...getStyle().button.disabled , ...props.buttonStyleDisabled}
+            : {...getStyle().button.enabled, ...props.buttonStyle})
+        }
+    }
+
+    const getButtonTextStyle = ()=>{
+        return {...getStyle().button.label, 
+            ...(props.disabled 
+            ? {...getStyle().button.label.disabled , ...props.buttonTextStyleDisabled}
+            : {...getStyle().button.label.enabled, ...props.buttonTextStyle})
+        }
+    }
+
+    const getDropdownTextStyle = ()=>{
+        return {...getStyle().dropdown.label, 
+            ...(props.disabled 
+            ? {...getStyle().dropdown.label.disabled , ...props.dropdownTextStyleDisabled}
+            : {...getStyle().dropdown.label.enabled, ...props.dropdownTextStyle})
+        }
+    }
+
+    const getDropDownStyle = ()=>{
+        return {...getStyle().dropdown, 
+            ...(props.disabled 
+            ? {...getStyle().dropdown.disabled , ...props.dropdownStyleDisabled}
+            : {...getStyle().dropdown.enabled, ...props.dropdownStyle})
+        }
     }
 
 
@@ -35,31 +77,67 @@ export default function IziDropdown(props){
     ----------------------------*/
 
     const _setValue=(val)=>{
-        props.setValue(props.items.find((item)=>item.value == val()))
+        //if(val>0)
+            props.setValue(val)
     }
+    console.log("value",props.value)
+    
     return(
-        <View style={getStyle()} >
+        <View style={[getStyle()]} >
             <Text style={ getStyle().title }>{props.title}</Text>
-            <View>
-                <DropDownPicker
-                            open={props.open? props.open : open}
-                            setOpen={props.setOpen ? props.setOpen : setOpen}
-                            items={props.items}
-                            value={props.value?.value}
-                            loading={props.loading}
-                            setValue={_setValue}
-                            searchable={false}
-                            onOpen={props.onOpen}
-                            style={{...getStyle().dropdown, ...(props.disabled ? getStyle().dropdown.disabled : getStyle().dropdown.enabled)}}
-                            textStyle={props.disabled ? getStyle().dropdown.label_disabled : getStyle().dropdown.label}
-                            disabled={props.disabled}
-                            translation={{
-                                PLACEHOLDER : props.placeholder,
-                                NOTHING_TO_SHOW : props.nothingToShow,
+            <View style={{alignItems:'stretch', flexDirection:'column', justifyContent:'center', flex:1}}>
+
+                        <SelectDropdown
+                            style={{flex:1}}
+                            data={props.items}
+                            defaultButtonText={props.placeholder}
+                            defaultValue={props.value}
+                            onSelect={(selectedItem, index) => {
+                            _setValue(selectedItem)
                             }}
-                            />
+                            disabled={props.disabled}
+
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                                return selectedItem.label;
+                            }}
+                            buttonStyle={[getButtonStyle(), {width:props.dropdownWidth,}]}
+                            buttonTextStyle={getButtonTextStyle()}
+                            rowTextForSelection={(item, index) => {
+                                return item.label;
+                            }}
+                            renderDropdownIcon={() => {
+                                return  (props.showArrow 
+                                    ? (<Icon style={getStyle().secureImage} name={"caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? colors.lightGray : colors.iziflo_blue}/> )
+                                   : undefined)
+                                ;
+                            }}
+
+                            dropdownIconPosition={"right"}
+                            dropdownStyle={getDropDownStyle()}
+                            rowTextStyle={getDropdownTextStyle()}
+                            renderCustomizedRowChild={(text, index)=>{
+                                return (
+                                    <Text
+                                    numberOfLines={1}
+                                    allowFontScaling={false}
+                                    style={{...{
+                                        flex: 1,
+                                        fontSize: 18,
+                                        textAlign: "center",
+                                        marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
+                        >{text}</Text>
+                                )
+
+                            }}/>
             </View>
-            {/*props.disabled &&<View style={{backgroundColor:'white', opacity:0.6, position:'absolute', width:'100%', height:'100%', }} />*/}
         </View>
     )
+}
+
+IziDropdown.defaultProps={
+    dropdownStyle:{},
+    dropdownStyleDisabled:{},
+    showArrow:true,
+    disableSort:false,
+    disabled:false
 }

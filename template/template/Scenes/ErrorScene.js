@@ -96,8 +96,8 @@ export default function ErrorScene(props){
 
 
             {!!params?.footerButtons?.length && <View style={IziDimensions.getDimension(window,footerStyle.footerContainer)}>
-                {params.footerButtons.map(button => (
-                    <FooterControl onPress={() => {button?.onPress()}} image={button.image} text={button.text} height={footerStyle.iconHeight} textStyle={{marginTop:footerStyle.iconMarginTop}}/>
+                {params.footerButtons.map((button, index) => (
+                    <FooterControl key={index} onPress={() => {button?.onPress()}} image={button.image} text={button.text} height={footerStyle.iconHeight} textStyle={{marginTop:footerStyle.iconMarginTop}}/>
                 ))}
             </View>}
 
