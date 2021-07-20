@@ -308,5 +308,7 @@ export const footerStyle = {
     iconHeight: 25,
     iconMarginTop: 5
 }
+export const  filterObject = (obj, predicate)=>Object.fromEntries(Object.entries(obj).filter(predicate));
+
 
 export default {}

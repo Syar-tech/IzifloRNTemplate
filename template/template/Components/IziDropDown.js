@@ -4,7 +4,7 @@ import {
     Text,
     StyleSheet, ScrollView
 } from 'react-native'
-import { loginStyles, colors, sizes } from '../Styles/Styles'
+import { loginStyles, colors, sizes ,filterObject} from '../Styles/Styles'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Ionicons'
 
@@ -38,19 +38,23 @@ export default function IziDropdown(props){
     }
 
     const getButtonTextStyle = ()=>{
-        return {...getStyle().button.label, 
+        const st = {...getStyle().button.label, 
             ...(props.disabled 
             ? {...getStyle().button.label.disabled , ...props.buttonTextStyleDisabled}
             : {...getStyle().button.label.enabled, ...props.buttonTextStyle})
         }
+
+        return filterObject(st, ([key, value])=> ["enabled","disabled"].indexOf(key)<0)
     }
 
     const getDropdownTextStyle = ()=>{
-        return {...getStyle().dropdown.label, 
+        const st = {...getStyle().dropdown.label, 
             ...(props.disabled 
             ? {...getStyle().dropdown.label.disabled , ...props.dropdownTextStyleDisabled}
             : {...getStyle().dropdown.label.enabled, ...props.dropdownTextStyle})
         }
+
+        return filterObject(st, ([key, value])=> ["enabled","disabled"].indexOf(key)<0)
     }
 
     const getDropDownStyle = ()=>{
@@ -80,7 +84,6 @@ export default function IziDropdown(props){
         //if(val>0)
             props.setValue(val)
     }
-    console.log("value",props.value)
     
     return(
         <View style={[getStyle()]} >
