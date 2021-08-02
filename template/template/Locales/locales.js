@@ -9,18 +9,16 @@ const locale = new LocalizedStrings({
     fr: fr
 })
 
-const localeStr = "fr_FR"
+let localeStr = "fr_FR"
 if(Platform.OS === 'ios'){
     // iOS:
-    const localeStr = NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] // "fr_FR"
+    localeStr = NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] // "fr_FR"
 }else if (Platform.OS === 'android'){
     // Android:
-    const localeStr = NativeModules.I18nManager.localeIdentifier // "fr_FR"
+    localeStr = NativeModules.I18nManager.localeIdentifier // "fr_FR"
 }
 locale.setLanguage(localeStr.substring(0,2))
 
-
-
-
+export {locale as localeIdentifier}
 
 export default locale

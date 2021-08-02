@@ -101,9 +101,9 @@ export async function checkToken( user, navigation){
                       tokenType:TOKEN_TYPE.MICROSOFT
                 }
                 let usr={
-                    email:externalToken.email,
-                    token:externalToken,
-                    server:user.server
+                      ...user,
+                      email:externalToken.email,
+                      token:externalToken
   
                 }
                 await storeUser(JSON.stringify(usr))
