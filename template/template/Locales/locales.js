@@ -19,6 +19,6 @@ if(Platform.OS === 'ios'){
 }
 locale.setLanguage(localeStr.substring(0,2))
 
-export {locale as localeIdentifier}
+export {localeStr as localeIdentifier}
 
 export default locale
