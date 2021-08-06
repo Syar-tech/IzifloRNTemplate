@@ -8,11 +8,7 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 
 const Rotate = (props) =>{
 
-    const [isInit, setIsInit] = useState(true)
-
     const [deviceOrientation, setDeviceOrientation] = useState()
-
-    const [isLoading,setLoading] = useState(false);
 
     const [viewDim, setViewDim] = useState(undefined); 
     const angle = useSharedValue(0);
@@ -29,9 +25,8 @@ const Rotate = (props) =>{
     }); 
 
     useEffect(()=>{
-        setIsInit(false)
-        setTimeout(()=>{setLoading(false)}, 1000)
-    }, [])
+        if(viewDim)Orientation.getDeviceOrientation(animate)
+    }, [viewDim])
   
     useDeviceOrientationChange((o) => {
 
