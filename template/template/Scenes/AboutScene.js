@@ -39,26 +39,39 @@ export default function AboutScene({navigation}){
             _loadUser()
     },[isFocused])
 
+    const convertLanguage = language => {
+        switch(language){
+            case 'fr':
+                return 'Français'
+            case 'en':
+                return 'English'
+            break;
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>App</Text> : {getBundleId()} ({getReadableVersion()})</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.app}</Text> : {getBundleId()} ({getReadableVersion()})</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>Environment</Text> : {Config.FLAVOR_NAME}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.environment}</Text> : {Config.FLAVOR_NAME}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>Server</Text> : {user?.server?.name}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.server}</Text> : {user?.server?.name}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>Instance</Text> : {user?.server?.instance?.instance_name}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.instance}</Text> : {user?.server?.instance?.instance_name}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>User</Text> : {user?.email}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.user}</Text> : {user?.email}</Text>
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.language}</Text> : {convertLanguage(user?.settings?.language)}</Text>
                 </View>
                 <View style={[styles.textContainer,{borderBottomWidth:0}]}>
-                    <Text style={styles.modalText}><Text style={styles.title}>Token expires on</Text> : {user?.token?.expirationDate}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.token_expires}</Text> : {user?.token?.expirationDate}</Text>
                 </View>
             </View>
             <View>

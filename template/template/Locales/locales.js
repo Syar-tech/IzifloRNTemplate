@@ -9,6 +9,13 @@ const locale = new LocalizedStrings({
     fr: fr
 })
 
+export const setLanguage = language => {
+    let newLanguage = 'fr'
+    if(language.substring(0,2) === 'en')
+        newLanguage = 'en'
+    locale.setLanguage(newLanguage)
+}
+
 let localeStr = "fr_FR"
 if(Platform.OS === 'ios'){
     // iOS:

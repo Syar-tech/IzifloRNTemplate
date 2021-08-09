@@ -2,6 +2,13 @@
 
 export default {
     _template:{
+        language:'Language',
+        app:'App',
+        environment:'Environment',
+        server:'Server',
+        instance:'Instance',
+        user:'User',
+        token_expires:'Token expires on',
         connect_upper:'CONNECT',
         disconnect_upper:'LOG OUT', 
         back:'BACK',

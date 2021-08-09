@@ -12,13 +12,14 @@ import locale from '../Locales/locales'
 //types
 import IziDropdown from './IziDropDown'
 import IziServerDropDown from './IziServerDropDown'
-import { requestInstances } from '../API/LoginApi';
+import { getSettings, requestInstances } from '../API/LoginApi';
+import { getStoredUser, storeUser } from '../Tools/TokenTools';
 
 export interface Props{
     user:User,
     password?:string
     onLogout():void
-    onInstanceChoosen(server:ServerType):void
+    onInstanceChoosen(server:ServerType,language:String):void
 }
 
 interface ServerInfo{
@@ -46,7 +47,7 @@ const InstanceChoice : React.FC<Props> = ({user,password, onLogout, onInstanceCh
         if(serverInfo?.server && serverInfo.instances?.selectedInstance){
             let server = serverInfo.server
             server.instance = serverInfo.instances.selectedInstance
-            onInstanceChoosen(server)
+            getSettings(serverInfo.instances.selectedInstance.id_instance,server,user.email, user.token!!.token, user.token!!.tokenType).then(json => onInstanceChoosen(server,json.data))
         }
     }
 

@@ -4,7 +4,8 @@ export interface User{
         token? : Token,
         extra? : object
         server?:ServerType
-        pin?:string
+        pin?:string,
+        language:String
     }
 
 export interface Token{

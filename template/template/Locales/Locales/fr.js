@@ -2,6 +2,13 @@
 
 export default {
     _template:{
+        language:'Langue',
+        app:'Application',
+        environment:'Environment',
+        server:'Serveur',
+        instance:'Instance',
+        user:'Utilisateur',
+        token_expires:'Expiration du jeton',
         connect_upper:'SE CONNECTER',
         disconnect_upper:'SE DÉCONNECTER',
         back:'RETOUR',

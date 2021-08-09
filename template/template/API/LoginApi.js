@@ -24,6 +24,23 @@ export function searchServers(email){
       .catch((error) => console.error(error))
 }
 
+export async function getSettings(idInstance,server, email, token, tokenType){
+  var params = getCommonParams();
+  params.module_api='get_settings'
+  params.id_instance = idInstance
+  params.email=email
+  params.token=token
+  params.login_type=tokenType
+  try{
+    const response = await Api.post(getWSBaseUrl(server),params)
+    return await response.json()
+  }catch(e){
+    console.log(e)
+    return false
+  }
+  
+}
+
 export function requestInstances(server, email, token, tokenType){
   var params = getCommonParams();
   params.module_api='get_instances'

@@ -14,7 +14,7 @@ import { useWindowDimensions } from 'react-native'
 import Config from "react-native-config";
 
 import { colors } from '../Styles/Styles'
-import locale from '../Locales/locales'
+import locale, { setLanguage } from '../Locales/locales'
 
 //Tools
 import {requestToken} from '../API/LoginApi'
@@ -280,9 +280,10 @@ const LoginScene = ({navigation, route}) => {
     -         Callbacks
     -
     ----------------------------*/
-    const _onInstanceChoosen= ( server )=>{
+    const _onInstanceChoosen= ( server,settings )=>{
         if(user && user.token){
-            let usr = {email:user.email, token:user.token, server:server}
+            setLanguage(settings.language)
+            let usr = {email:user.email, token:user.token, server:server,settings}
             _storeUser(usr, true)
         }
     }
