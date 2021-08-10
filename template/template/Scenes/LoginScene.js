@@ -1,4 +1,4 @@
-import React ,{useState, useEffect, useReducer} from 'react'
+import React ,{useState, useEffect, useReducer, useCallback} from 'react'
 import {
     View, Text,Image, Alert,BackHandler, Keyboard,TouchableWithoutFeedback,TouchableOpacity,
 } from 'react-native'
@@ -9,7 +9,7 @@ import IziTextInput from '../Components/IziTextInput'
 import IziServerDropDown from '../Components/IziServerDropDown'
 //libs
 //import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { useIsFocused} from '@react-navigation/native' 
+import { useFocusEffect, useIsFocused} from '@react-navigation/native' 
 import { useWindowDimensions } from 'react-native'
 import Config from "react-native-config";
 
@@ -81,31 +81,31 @@ const LoginScene = ({navigation, route}) => {
     -
     ----------------------------*/
 
-    useEffect(() => {
-        const backAction = () => {
-            if(route.name == "Login"){
-                Alert.alert("Hold on!", "Are you sure you want to go back?", [
-                    {
-                    text: "Cancel",
-                    onPress: () => null,
-                    style: "cancel",
-                    },
-                    { text: "YES", onPress: () => BackHandler.exitApp() }
-                ],
-                {cancelable:true});
-                return true
-            }else{
-                return false
+    useFocusEffect(
+        useCallback(()=>{
+            const backAction = () => {
+                if(route.name == "Login"){
+                    Alert.alert("Hold on!", "Are you sure you want to go back?", [
+                        {
+                        text: "Cancel",
+                        onPress: () => null,
+                        style: "cancel",
+                        },
+                        { text: "YES", onPress: () => BackHandler.exitApp() }
+                    ],
+                    {cancelable:true});
+                    return true
+                }else{
+                    return false
+                }
             }
-        };
-    
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          backAction
-        );
-    
-        return () => {backHandler.remove();}
-      }, []);
+            BackHandler.addEventListener('hardwareBackPress', backAction);
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', backAction);
+        }, )
+    )
+
+
 
     /*---------------------------
     -
