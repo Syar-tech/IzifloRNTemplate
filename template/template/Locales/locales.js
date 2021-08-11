@@ -20,7 +20,7 @@ export function useUserAndLanguage() {
     useEffect(() => {
         getStoredUser().then(user => {
             setUser(user)
-            locale.setLanguage(getLocaleIdentifier(user))
+            locale.setLanguage(getLocaleIdentifier(user).substring(0,2)
         })
     },[])
 
