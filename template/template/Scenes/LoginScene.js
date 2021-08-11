@@ -14,7 +14,7 @@ import { useWindowDimensions } from 'react-native'
 import Config from "react-native-config";
 
 import { colors } from '../Styles/Styles'
-import locale, { setLanguage } from '../Locales/locales'
+import {useUserAndLanguage } from '../Locales/locales'
 
 //Tools
 import {requestToken} from '../API/LoginApi'
@@ -36,6 +36,7 @@ const LoginScene = ({navigation, route}) => {
     -
     ----------------------------*/
     //local
+    const {locale} = useUserAndLanguage()
     const window = useWindowDimensions()
     const focused = useIsFocused();
     const [email, setEmail] = useState(undefined)
@@ -282,7 +283,6 @@ const LoginScene = ({navigation, route}) => {
     ----------------------------*/
     const _onInstanceChoosen= ( server,settings )=>{
         if(user && user.token){
-            setLanguage(settings.language)
             let usr = {email:user.email, token:user.token, server:server,settings}
             _storeUser(usr, true)
         }

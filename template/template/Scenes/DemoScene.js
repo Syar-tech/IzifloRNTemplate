@@ -2,7 +2,7 @@ import React ,{useState, useEffect} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect, getStoredUser} from "../Tools/TokenTools"
-import locale from "../Locales/locales"
+import { useUserAndLanguage } from "../Locales/locales"
 import { ModalStyle, colors} from '../Styles/Styles'
 import { getBundleId, getReadableVersion } from 'react-native-device-info';
 import Config from 'react-native-config';
@@ -12,16 +12,9 @@ import Rotate from '../Components/Rotate'
 
 
 const DemoScene=({navigation})=>{
-    const [user, setUser] = useState(undefined);
-    useEffect(
-        ()=>{ _loadUser()
-        }
-        ,[]
-    )
 
-    const _loadUser = async ()=>{
-        setUser(await getStoredUser())
-    }
+  const {locale,user} = useUserAndLanguage()
+
     return (
         <SafeAreaView
         style={styles.main_container}>

@@ -2,11 +2,12 @@ import React ,{useState} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect} from "../Tools/TokenTools"
-import locale from "../Locales/locales"
+import { useUserAndLanguage } from "../Locales/locales"
 import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
 
 
 const MainScene=({navigation})=>{
+    const {locale} = useUserAndLanguage()
     const [attachments,setAttachments] = useState<string|undefined>(undefined)
 
     const getAttachments = () =>{

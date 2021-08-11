@@ -8,7 +8,7 @@ import {__SInfoConfig} from '../Tools/Prefs';
 
 import {InstanceType,ServerType, User, TOKEN_TYPE, ERROR_CODE, ErrorType} from "../Types/LoginTypes"
 import {colors} from "../Styles/Styles"
-import locale from '../Locales/locales'
+import { useUserAndLanguage } from '../Locales/locales'
 //types
 import IziDropdown from './IziDropDown'
 import IziServerDropDown from './IziServerDropDown'
@@ -35,6 +35,7 @@ const InstanceChoice : React.FC<Props> = ({user,password, onLogout, onInstanceCh
     const [serverInfo, setServerInfo] = useState<ServerInfo|undefined>(user.server ? {server:user.server} : undefined)
     const [errorMessage, setErrorMessage] = useState<ErrorType|undefined>(undefined)
     const isExternal = user.token!= undefined && user.token.tokenType != TOKEN_TYPE.IZIFLO
+    const {locale} = useUserAndLanguage()
 
     useEffect(()=>{
         if(serverInfo?.server && !serverInfo?.instances){

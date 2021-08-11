@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import {Alert, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import { getBundleId, getReadableVersion } from 'react-native-device-info'
-import { getStoredUser } from '../Tools/TokenTools'
 import Config from "react-native-config"
-import locale from '../Locales/locales'
+import { useUserAndLanguage } from '../Locales/locales'
 import RNFS from 'react-native-fs'
 import { colors } from '../Styles/Styles'
 import {disconnect } from "../Tools/TokenTools"
@@ -12,11 +11,8 @@ import { useIsFocused } from '@react-navigation/native'
 
 export default function AboutScene({navigation}){
     const isFocused = useIsFocused()
-    const [user, setUser] = useState(undefined);
 
-    const _loadUser = async ()=>{
-        setUser(await getStoredUser())
-    }
+    const {locale,user} = useUserAndLanguage()
 
     const onCacheReset = () => {
         if(typeof RNFS !== undefined){
@@ -33,12 +29,7 @@ export default function AboutScene({navigation}){
     const onDisconnect = () => {
         disconnect(navigation)
     }
-
-    useEffect(()=>{
-        if(isFocused)
-            _loadUser()
-    },[isFocused])
-
+    
     const convertLanguage = language => {
         switch(language){
             case 'fr':
@@ -68,7 +59,7 @@ export default function AboutScene({navigation}){
                     <Text style={styles.modalText}><Text style={styles.title}>{locale._template.user}</Text> : {user?.email}</Text>
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.language}</Text> : {convertLanguage(user?.settings?.language)}</Text>
+                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.language}</Text> : {convertLanguage(user?.settings?.language)}. {locale._template.infoEditLanguage}</Text>
                 </View>
                 <View style={[styles.textContainer,{borderBottomWidth:0}]}>
                     <Text style={styles.modalText}><Text style={styles.title}>{locale._template.token_expires}</Text> : {user?.token?.expirationDate}</Text>

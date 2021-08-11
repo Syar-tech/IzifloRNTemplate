@@ -15,7 +15,6 @@ import DemoScene from '../Scenes/DemoScene';
 import { disconnect, getStoredScheme} from '../Tools/TokenTools';
 import icon_hamburger_menu from '../res/img/icon_hamburger_menu'
 import AboutScene from '../Scenes/AboutScene';
-import locale from '../Locales/locales';
 import { colors } from '../Styles/Styles';
 import { SvgXml } from 'react-native-svg';
 import icon_about from '../res/img/icon_about'
@@ -27,7 +26,7 @@ import { CommonActions } from '@react-navigation/routers';
 import ColorSchemeItem from '../Components/ColorSchemeItem';
 import { connect } from 'react-redux';
 import Store from '../store/SchemeStore'
-
+import { useUserAndLanguage } from '../Locales/locales';
 
 const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -58,6 +57,7 @@ function MainStackScreen({navigation}) {
 
 
 const RootStackScreen = (props) =>{
+  const {locale} = useUserAndLanguage()
   const _displayCorner= ()=>{
     if(Config.FLAVOR != 'P' && !!!Config.IS_SCREENSHOT)
       return (
@@ -125,6 +125,8 @@ const DrawerScreen = (props)=>{
 
   },[])
 
+  const {locale} = useUserAndLanguage()
+
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
   useEffect(
@@ -137,7 +139,7 @@ const DrawerScreen = (props)=>{
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator 
           drawerContentOptions={{showModal:showModal, drawerContent:props.drawerContent,useScheme:props.useScheme}} 
-          drawerContent={CustomDrawerContent} 
+          drawerContent={(props) => CustomDrawerContent(props,locale)} 
           screenOptions={{ gestureEnabled: true }}>
             {props.children}
             
@@ -162,7 +164,7 @@ const DrawerScreen = (props)=>{
 
 */
 
-function CustomDrawerContent(props) {
+function CustomDrawerContent(props,locale) {
   let scheme = Store.getState().colorScheme
   return (
     <DrawerContentScrollView {...props} style={{margin:0,padding:0,backgroundColor:colors[scheme].backgroundColor}}>

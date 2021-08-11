@@ -3,7 +3,7 @@
 // Components/Footer.js
 import React, { useEffect, useState } from 'react'
 import {View} from 'react-native'
-import locale from '../../Locales/locales'
+import { useUserAndLanguage } from '../../Locales/locales'
 import icon_home from '../../res/img/icon_home'
 import icon_more from '../../res/img/icon_more'
 import { IziDimensions } from '../../Tools/Dimensions'
@@ -13,6 +13,7 @@ import ModalMenu from './ModalMenu'
 
 
 const ActionsFooter = ({items,footerStyle, rotate, onPress,buttonWidth,textStyle, frontColor, backColor }) => {
+  const {locale} = useUserAndLanguage()
   let [displayedItems, setDisplayedItems] = useState([]);
   let [modalVisible, setModalVisible] = useState(false);
   const maxDisplayed = 4

@@ -2,10 +2,12 @@ import { DrawerItem } from '@react-navigation/drawer'
 import React from 'react'
 import { Switch, Text, View } from 'react-native'
 import { connect } from 'react-redux'
-import locale from '../Locales/locales'
+import { useUserAndLanguage } from '../Locales/locales'
 import { colors } from '../Styles/Styles'
 
 function ColorSchemeItem(props){
+
+    const {locale} = useUserAndLanguage()
 
     const onThemeChange = value => {
         const scheme = value ? 'dark' : 'light'
