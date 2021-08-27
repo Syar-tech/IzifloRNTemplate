@@ -1,6 +1,6 @@
 // Navigation/Navigations.js
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import  { View, TouchableOpacity, DeviceEventEmitter, StyleSheet, Text} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'

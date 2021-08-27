@@ -3,7 +3,7 @@
   // Components/Rotate.js
   import React ,{useState, useEffect} from 'react'
 import { View} from 'react-native'
-import { useDeviceOrientationChange} from 'react-native-orientation-locker';
+import Orientation,{ useDeviceOrientationChange} from 'react-native-orientation-locker';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 const Rotate = (props) =>{
