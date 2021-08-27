@@ -2,6 +2,7 @@
 
 export default {
     _template:{
+        new_update_available:'New update available',
         language:'Language',
         app:'App',
         environment:'Environment',

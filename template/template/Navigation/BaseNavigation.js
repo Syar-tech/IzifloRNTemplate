@@ -26,7 +26,9 @@ import { CommonActions } from '@react-navigation/routers';
 import ColorSchemeItem from '../Components/ColorSchemeItem';
 import { connect } from 'react-redux';
 import Store from '../store/SchemeStore'
-import { useUserAndLanguage } from '../Locales/locales';
+import { useUserAndLanguage } from '../Locales/locales'
+import VersionCheck from 'react-native-version-check'
+import {versionCompare} from '../Tools/StringTools'
 
 const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -116,6 +118,8 @@ const RootStackScreen = (props) =>{
 
 const DrawerScreen = (props)=>{
 
+  const [newVersion,setNewVersion] = useState(false)
+
   useEffect(() => {
     getStoredScheme(props.defaultColorScheme).then(scheme => {
       props.dispatch({
@@ -125,17 +129,52 @@ const DrawerScreen = (props)=>{
 
   },[])
 
-  const {locale} = useUserAndLanguage()
 
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
   useEffect(
-    ()=> DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal()),
+    ()=> {
+      DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal())
+      if(Config.APP_ID){
+        VersionCheck.getLatestVersion()
+        .then(latestVersion => {
+          const currentVersion = VersionCheck.getCurrentVersion()
+          if(versionCompare(latestVersion,currentVersion) === 1){
+            setNewVersion(true)
+          }else{
+            setNewVersion(false)
+          }
+        }).catch(e => console.log(e));
+      }
+
+    },
     []
   )
+
+    const storeUrl = async url => {
+      const supported = await Linking.canOpenURL(url)
+      if(supported)
+          await Linking.openURL(url)
+    }
+    const {locale} = useUserAndLanguage()
+
   
   return (
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
+            {newVersion && <TouchableOpacity style={{height:40,width:'100%',backgroundColor:colors.iziflo_blue,justifyContent:'center',alignItems:'center'}} onPress={() => {
+        if(Platform.OS === 'android'){
+          VersionCheck.getPlayStoreUrl().then(url => storeUrl(url))
+        }else{
+          VersionCheck.getAppStoreUrl({
+            appID:Config.APP_ID
+          }).then(url => storeUrl(url))
+            .catch(e => console.log(e))
+        }
+      }}>
+        <Text style={{color:'white',fontWeight:'bold',textDecorationLine:'underline'}}>
+          {locale._template.new_update_available}
+        </Text>
+      </TouchableOpacity>}
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator 
           drawerContentOptions={{showModal:showModal, drawerContent:props.drawerContent,useScheme:props.useScheme}} 

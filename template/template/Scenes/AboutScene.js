@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Alert, StyleSheet, Text, View} from 'react-native'
+import {Alert, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import { getBundleId, getReadableVersion } from 'react-native-device-info'
 import Config from "react-native-config"
@@ -8,8 +8,13 @@ import RNFS from 'react-native-fs'
 import { colors } from '../Styles/Styles'
 import {disconnect } from "../Tools/TokenTools"
 import { useIsFocused } from '@react-navigation/native'
+import VersionCheck from 'react-native-version-check'
+import { versionCompare } from '../Tools/StringTools'
 
 export default function AboutScene({navigation}){
+
+    const [newVersion,setNewVersion] = useState(false)
+
     const isFocused = useIsFocused()
 
     const {locale,user} = useUserAndLanguage()
@@ -25,6 +30,21 @@ export default function AboutScene({navigation}){
         }
         Alert.alert(locale._template.clearCache,locale._template.cacheHasBeenCleared)
     }
+
+    useEffect(() => {
+        if(Config.APP_ID){
+            VersionCheck.getLatestVersion()
+                .then(latestVersion => {
+                    const currentVersion = VersionCheck.getCurrentVersion()
+
+                    if(versionCompare(latestVersion,currentVersion) === 1){
+                        setNewVersion(true)
+                    }else{
+                        setNewVersion(false)
+                    }
+            }).catch(e => console.log(e));
+        }
+    },[])
 
     const onDisconnect = () => {
         disconnect(navigation)
@@ -66,6 +86,20 @@ export default function AboutScene({navigation}){
                 </View>
             </View>
             <View>
+                {newVersion && <TouchableOpacity onPress={async () => {
+                    
+                    if(Platform.OS === 'android'){
+                        VersionCheck.getPlayStoreUrl().then(url => goToUrl(url))
+                            .catch(e => console.log(e))
+                    }else{
+                        VersionCheck.getAppStoreUrl({
+                            appID:Config.APP_ID
+                        }).then(url => goToUrl(url))
+                            .catch(e => console.log(e))
+                    }
+                }} style={[styles.textContainer,{borderBottomWidth:0,justifyContent:'center',alignItems:'center',marginBottom:10}]}>
+                    <Text style={styles.modalText}><Text style={{fontSize:14,fontWeight:'bold',textDecorationLine:'underline'}}>{locale._template.new_update_available}</Text></Text>
+                </TouchableOpacity>}
                 <Button style={styles.button} title={locale._template.clearCache} iziStyle={IziButtonStyle.connection} onPress={onCacheReset} />
                 <Button style={styles.button} title={locale._template.disconnect} iziStyle={IziButtonStyle.connection} onPress={onDisconnect} />
                 <Text style={{textAlign:'center'}}>{locale._template.legal_text}</Text>
