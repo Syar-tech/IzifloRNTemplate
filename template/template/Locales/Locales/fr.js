@@ -2,6 +2,7 @@
 
 export default {
     _template:{
+        infoEditLanguage:'Rendez-vous sur l’interface web d’iziflo pour modifier la langue dans votre profil. Déconnectez-vous puis reconnectez-vous sur iziflo mobile pour appliquer la modification.',
         new_update_available:'Nouvelle mise à jour disponible',
         language:'Langue',
         app:'Application',
