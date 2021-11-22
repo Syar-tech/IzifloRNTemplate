@@ -138,6 +138,7 @@ def incrementVersionCode() {
         versionProps['VERSION_CODE']=code.toString()
         versionProps.store(versionPropsFile.newWriter(), null)
 
+        return code
     }
     else {
         throw new GradleException("Could not read version.properties!")
@@ -270,7 +271,14 @@ task copyDownloadableDepsToLibs(type: Copy) {
 task incrementVersionCode(){
 
     doLast{
-        incrementVersionCode()
+        println 'New Version'
+        println incrementVersionCode()
+    }
+}
+
+task getAppId(){
+    doLast{
+        println project.android.defaultConfig.applicationId
     }
 }
 
