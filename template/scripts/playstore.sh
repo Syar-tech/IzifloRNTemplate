@@ -18,27 +18,27 @@ case $1 in
         ./gradlew incrementVersionCode
         cd ../
 
-        echo '--------------'
-        echo 'Bundle Sprint'
-        echo '--------------'
+        # echo '--------------'
+        # echo 'Bundle Sprint'
+        # echo '--------------'
           
           
-        ./scripts/apply_config.sh p.sprint android
+        # ./scripts/apply_config.sh p.sprint android
 
-        cd android
-        ENVFILE=".env.p.sprint" ./gradlew bundleRelease
-        cd ../
+        # cd android
+        # ENVFILE=".env.p.sprint" ./gradlew bundleRelease
+        # cd ../
   
 
-        echo "--------------"
-        echo "Bundle Recette"
-        echo "--------------"
+        # echo "--------------"
+        # echo "Bundle Recette"
+        # echo "--------------"
                 
-        ./scripts/apply_config.sh p.recette android
+        # ./scripts/apply_config.sh p.recette android
 
-        cd android
-        ENVFILE=".env.p.recette" ./gradlew bundleRelease
-        cd ../
+        # cd android
+        # ENVFILE=".env.p.recette" ./gradlew bundleRelease
+        # cd ../
 
         echo "--------------"
         echo "Bundle Prod"
