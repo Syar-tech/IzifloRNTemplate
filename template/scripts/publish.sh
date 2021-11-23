@@ -69,6 +69,11 @@ case $2 in
     #   Non géré 
     #
         echo 'Publication sur iOS'
+        cd ios
+        echo "Pod install"
+        pod install
+        echo "Run fastlane"
+        fastlane $IZI_ENV
         ;;
     *)
         echo 'Commande non reconnu, essayez parmis : apk , store, ios'

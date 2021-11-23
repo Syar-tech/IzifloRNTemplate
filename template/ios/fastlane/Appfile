@@ -1,8 +1,24 @@
-app_identifier("com.iziflotemplatets.sprint") # The bundle identifier of your app
+app_identifier("com.iziflotemplatets") # The bundle identifier of your app
 apple_id("tech-mob@syartec.com") # Your Apple email address
 
 itc_team_id("122918290") # App Store Connect Team ID
 team_id("5ND2X5WSPX") # Developer Portal Team ID
+
+
+for_platform :ios do
+    for_lane :sprint do
+        app_identifier("com.iziflotemplatets.sprint")
+    end
+    for_lane :recette do
+        app_identifier("com.iziflotemplatets.recette")
+    end
+    for_lane :recette2 do
+        app_identifier("com.iziflotemplatets.recette2")
+    end
+    for_lane :prod do
+        app_identifier("com.iziflotemplatets")
+    end
+end
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile
