@@ -58,6 +58,9 @@ case $2 in
         FILE="android/app/build/outputs/apk/release/${FULLNAME}"
         if test -f "$FILE";then
             adb install -r $FILE
+            
+            echo "Start App"
+            adb shell monkey -p $PACKAGE -c android.intent.category.LAUNCHER 1 &> /dev/null
         else 
             echo "Le fichier ${FILE} est introuvable."
             exit 1
