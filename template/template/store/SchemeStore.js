@@ -1,15 +1,29 @@
-import {createStore} from 'redux'
+import {createStore, combineReducers} from 'redux'
 import { storeScheme } from '../Tools/TokenTools'
 
-const setScheme = (state = {colorScheme:'dark'}, action) => {
-    switch(action.type){
+const setScheme = (state = 'light', action) => {
+    switch(action?.type){
         case 'dark':
         case 'light':
             storeScheme(action.type)
-            return {...state,colorScheme:action.type}
+            return action.type
     }
 
     return state
 }
 
-export default createStore(setScheme)
+const userUpdated = (state=0, action) =>{
+    if(action.type == "newUser"){
+        return state+1
+    }
+    return state;
+}
+
+
+const rootReducer= combineReducers({
+    colorScheme:setScheme,
+    userUpdatedCycle:userUpdated
+})
+
+
+export default createStore(rootReducer)
