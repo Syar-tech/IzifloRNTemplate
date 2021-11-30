@@ -135,7 +135,7 @@ const DrawerScreen = (props)=>{
   useEffect(
     ()=> {
       DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal())
-      if(Config.APP_ID){
+      if(Config.FLAVOR=="P" && !__DEV__ && Config.APP_ID){
         VersionCheck.getLatestVersion()
         .then(latestVersion => {
           const currentVersion = VersionCheck.getCurrentVersion()
