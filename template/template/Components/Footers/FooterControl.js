@@ -10,12 +10,13 @@ export default function FooterControl(props){
     const footerControlText = [IziDimensions.getDimension(useWindowDimensions(),{
         qdef:{
             textAlign:"center",
-            width:200,
+            width:100,
             //overflow:'visible',
             alignSelf:'center',
             fontSize:14
         },
         q600sw:{
+            width:200,
             fontSize:16
         }
     })]
