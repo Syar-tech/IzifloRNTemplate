@@ -73,6 +73,7 @@ const ActionsFooter = ({items,footerStyle, rotate, onPress,buttonWidth,textStyle
                         key={item.key}
                         title={item.title}
                         icon={item.icon}
+                        disabled={item.disabled}
                         onPress={() => { if(onPress) onPress(item.key)}} />
                     )
                   })}

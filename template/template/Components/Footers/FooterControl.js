@@ -23,7 +23,7 @@ export default function FooterControl(props){
 
     return (
         <TouchableOpacity style={[styles.control,props.style ? props.style : {}, {height:"100%"}]} onPress={() => !props?.disabled && props.onPress()}>
-            <Rotate style={{height:"100%",justifyContent:"center"}}rotate={props.rotate}>
+            <Rotate style={{height:"100%",justifyContent:"center", opacity : props?.disabled ? 0.3 : 1}}rotate={props.rotate}>
                 <SvgXml style={{alignSelf:"center", marginTop:3}}width={props.width} height={ props.height} xml={props.image} fill={props.frontColor}/>
                 <Text style={[footerControlText,{color:props.frontColor}, props.textStyle]} numberOfLines={1}>
                     {props.text}

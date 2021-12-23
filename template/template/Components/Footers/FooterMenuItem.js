@@ -7,7 +7,7 @@ import icon_home from '../../res/img/icon_home'
 import { colors } from '../../Styles/Styles'
 import { IziDimensions } from '../../Tools/Dimensions'
 
-function FooterMenuItem({ onPress, height,width, title, icon, backColor, frontColor,borderColor }) {
+function FooterMenuItem({ onPress, height,width, title, icon, backColor, frontColor,borderColor, disabled }) {
 
 
 
@@ -22,10 +22,10 @@ function FooterMenuItem({ onPress, height,width, title, icon, backColor, frontCo
         }
     })]
     return (
-        <TouchableOpacity style={{width:width, height:height, backgroundColor:backColor, alignItems:'center', flexDirection:'row', paddingLeft:10, paddingRight:10, borderBottomColor:borderColor, borderBottomWidth:1}} onPress={onPress}>
+        <TouchableOpacity style={{width:width, height:height, backgroundColor:backColor, alignItems:'center', flexDirection:'row', paddingLeft:10, paddingRight:10, borderBottomColor:borderColor, borderBottomWidth:1}} onPress={disabled ? onPress : undefined}>
 
-            <SvgXml style={{alignSelf:"center"}}width={25} height={ 25} xml={icon} fill={frontColor}/>
-                        <Text style={[footerControlText, {color:frontColor}]} numberOfLines={1}>
+            <SvgXml style={{alignSelf:"center", opacity: disabled ? 0.3 : 1}}width={25} height={ 25} xml={icon} fill={frontColor}/>
+                        <Text style={[footerControlText, {color:frontColor, opacity: disabled ? 0.3 : 1}]} numberOfLines={1}>
                             {title}
                         </Text>
             
