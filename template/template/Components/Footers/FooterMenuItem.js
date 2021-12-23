@@ -22,7 +22,7 @@ function FooterMenuItem({ onPress, height,width, title, icon, backColor, frontCo
         }
     })]
     return (
-        <TouchableOpacity style={{width:width, height:height, backgroundColor:backColor, alignItems:'center', flexDirection:'row', paddingLeft:10, paddingRight:10, borderBottomColor:borderColor, borderBottomWidth:1}} onPress={disabled ? onPress : undefined}>
+        <TouchableOpacity style={{width:width, height:height, backgroundColor:backColor, alignItems:'center', flexDirection:'row', paddingLeft:10, paddingRight:10, borderBottomColor:borderColor, borderBottomWidth:1}} onPress={disabled ? undefined : onPress}>
 
             <SvgXml style={{alignSelf:"center", opacity: disabled ? 0.3 : 1}}width={25} height={ 25} xml={icon} fill={frontColor}/>
                         <Text style={[footerControlText, {color:frontColor, opacity: disabled ? 0.3 : 1}]} numberOfLines={1}>
