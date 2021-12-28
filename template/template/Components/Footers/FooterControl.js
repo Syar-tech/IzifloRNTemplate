@@ -15,7 +15,7 @@ export default function FooterControl(props){
             alignSelf:'center',
             fontSize:14
         },
-        q600sw:{
+        q552sw:{
             width:200,
             fontSize:16
         }
