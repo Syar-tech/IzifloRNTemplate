@@ -1,9 +1,13 @@
-import React from 'react'
-import { View,StyleSheet, Platform, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View,StyleSheet, Platform, Image, Text } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import DemoScene from '../template/Scenes/DemoScene';
-import colors from '../template/Styles/Styles'
+import {colors} from '../template/Styles/Styles'
 import {hamburgerMenu} from '../template/Navigation/BaseNavigation'
+import { DrawerItem } from '@react-navigation/drawer';
+import { SvgXml } from 'react-native-svg';
+import { useUserAndLanguage } from '../template/Locales/locales';
+import { useSelector } from 'react-redux';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +65,45 @@ function RootStack() {
         />
       </Stack.Navigator>
     );
+}
+
+
+export const CustomDrawers= (props)=>{
+
+
+    let scheme = useSelector((state)=>state._template.colorScheme)
+    const user = useSelector(state => state._template_user)
+    const {locale} = useUserAndLanguage(false);
+
+    const [privileges,setPrivileges] = useState([])
+    useEffect(()=>{
+        if(user){
+            const p = {}
+
+            if(Array.isArray(user.settings.privileges))
+                user.settings.privileges.forEach(privilege => {
+                    for(let prop in privilege)
+                        if(privilege.hasOwnProperty(prop))
+                            p[prop] = privilege[prop]
+                })
+                const array = []
+                for(let prop in p){
+                    if(p[prop])
+                        array.push(prop)
+                }
+            setPrivileges(array)
+        }
+        },
+        [props.user]
+    )
+    console.log("ici", scheme, colors)
+
+    return (
+        <>
+            {// Add here custom DrawerItem
+            }
+        </>
+    )
 }
 
 export default RootStack

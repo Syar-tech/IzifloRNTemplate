@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import  { View, TouchableOpacity, DeviceEventEmitter, StyleSheet, Text} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
-import Navigation from '../../Navigation/Navigation'
+import Navigation, {CustomDrawers} from '../../Navigation/Navigation'
 import Corner from '../Components/CornerLabel'
 import LoginScene from '../Scenes/LoginScene'
 import ServerInfoModal from '../Modal/ServerInfoModal'
@@ -222,6 +222,8 @@ function CustomDrawerContent(props,locale) {
         }}/>
 
         {props.useScheme && <ColorSchemeItem navigation={props.navigation} />}
+
+        <CustomDrawers />
         {props.drawerContent}
 
       <DrawerItem 
