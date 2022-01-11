@@ -223,7 +223,7 @@ function CustomDrawerContent(props,locale) {
 
         {props.useScheme && <ColorSchemeItem navigation={props.navigation} />}
 
-        <CustomDrawers />
+        <CustomDrawers navigation={props.navigation} />
         {props.drawerContent}
 
       <DrawerItem 
