@@ -1,4 +1,6 @@
+import { Platform } from "react-native";
 import Config from "react-native-config";
+import { getBundleId } from "react-native-device-info";
 import PublicClientApplication, { MSALAccount, MSALConfiguration, MSALInteractiveParams, MSALResult, MSALSilentParams } from "react-native-msal"
 
 export type MSALSignInParams = Omit<MSALInteractiveParams, 'authority'>;
@@ -8,6 +10,10 @@ export default class MSALConnect {
     private static  config  : MSALConfiguration = {
         auth: {
           clientId: Config.MICROSOFT_CLIENT_ID,
+          redirectUri: Platform.select({
+           android: 'msauth://'+ getBundleId() +'/'+ encodeURIComponent(Config.SIGNATURE_HASH), // ex: "msauth://com.package/Xo8WBi6jzSxKDVR4drqm84yr9iU%3D"
+           default: undefined,
+         }),
           //authority: getBundleId()+"/default_msal_authority"
         },
       };
@@ -19,7 +25,7 @@ export default class MSALConnect {
     public async init(){
         if(!this.pca)
         {
-            this.pca = new PublicClientApplication(MSALConnect.config, false);
+            this.pca = new PublicClientApplication(MSALConnect.config);
             try {
                 await this.pca.init();
             } catch (error) {

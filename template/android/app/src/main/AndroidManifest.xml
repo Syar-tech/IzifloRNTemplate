@@ -32,13 +32,14 @@
         android:name="com.microsoft.identity.client.BrowserTabActivity"
       android:screenOrientation="portrait">
         <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data
-                android:scheme="msauth"
-                android:host="@string/msal_host"
-                android:path="@string/SIGNATURE_HASH" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>  
+                <data
+                        android:host="@string/msal_host"
+                        android:path="@string/manifest_signature_hash"
+                        android:scheme="msauth" />
         </intent-filter>
     </activity>
     </application>

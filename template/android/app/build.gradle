@@ -179,6 +179,7 @@ android {
         resValue "string", "build_config_package", project.android.defaultConfig.applicationId
         resValue "string", "msal_host", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
         resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")
+        resValue "string", "manifest_signature_hash", "/"+project.env.get("SIGNATURE_HASH")
     }
     splits {
         abi {
@@ -190,10 +191,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file("$rootDir/keystore/key_signed_pass_syartec")
+            storePassword "syartec"
+            keyAlias "syartec"
+            keyPassword "syartec"
             ext.enableCrashlytics = project.env.get("PACKAGE_SUFFIX") == ""
         }
         prod {
