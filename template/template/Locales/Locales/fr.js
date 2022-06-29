@@ -27,6 +27,7 @@ export default {
         google:'Google',
         office_365:'Office 365',
         clearCache:'Vider le cache',
+        updateParams:'MAJ des paramètres',
         aboutIziflo:"A propos d'Iziflo",
         disconnect:'Déconnexion',
         home:'Accueil',
@@ -70,5 +71,8 @@ export default {
             no_instance_title:"Aucune instance disponible.",
             no_instance_message:"Veuillez-vous assurer d'avoir bien accès à cette instance sur ce serveur.",
         },
+        dropdown:{
+            nSelectedElements:'{items} éléments sélectionnés'
+        }
     }
 }

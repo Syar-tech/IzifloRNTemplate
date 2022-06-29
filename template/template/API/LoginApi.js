@@ -1,14 +1,13 @@
-import {demo_flavor, isDemo, izi_api_app_code} from "../../config/iziConfig"
+import {demo_flavor, isDemo, izi_api_app_code, privileges} from "../../config/iziConfig"
 import Config from "react-native-config";
 import {getCommonParams,storeUser,TOKEN_STATE} from '../Tools/TokenTools'
 import {disconnect } from "../Tools/TokenTools"
 import {Api, getWSBaseUrl} from '../API/WSApi'
 import { TOKEN_TYPE } from "../Types/LoginTypes";
 import MSALConnect from '../API/MSALConnectApi'
-
-
-const core_version = Config.CORE_VERSION
-
+import { ACTIONS_TYPE } from "../../Store/ReduxStore";
+import deviceInfoModule from "react-native-device-info";
+import { Platform } from "react-native";
 
 export function searchServers(email){
   var params = {
@@ -25,13 +24,16 @@ export function searchServers(email){
 }
 
 export async function getSettings(idInstance,server, email, token, tokenType){
-  var params = getCommonParams();
+  var params = await getCommonParams();
   params.module_api='get_settings'
   params.id_instance = idInstance
   params.email=email
   params.token=token
   params.login_type=tokenType
+  params.privileges = Array.isArray(privileges) ? privileges.join(',') : privileges
+
   try{
+    console.log("get_settings",getWSBaseUrl(server), params)
     const response = await Api.post(getWSBaseUrl(server),params)
     return await response.json()
   }catch(e){
@@ -41,8 +43,27 @@ export async function getSettings(idInstance,server, email, token, tokenType){
   
 }
 
-export function requestInstances(server, email, token, tokenType){
-  var params = getCommonParams();
+export const loadSettings = async (dispatch,user) =>{
+  if(user?.server?.instance?.id_instance && user?.token){
+    getSettings(user.server.instance.id_instance,user.server,user.email, user.token?.token, user.token?.tokenType)
+      .then(json => {
+              if(json?.data){
+                let usr = {...user, settings:json.data}
+                try{
+                  dispatch({type:ACTIONS_TYPE.USER_SET, value:usr});
+              } catch (error) {
+                  console.log("Something went wrong", error);
+              }
+              }else{
+                console.log(`settings are empty ${json}`)
+              }
+            }
+        )
+      }
+  }
+
+export async function requestInstances(server, email, token, tokenType){
+  var params = await getCommonParams();
   params.module_api='get_instances'
   params.email=email
   params.token=token
@@ -56,7 +77,7 @@ export function requestInstances(server, email, token, tokenType){
 }
 
 export async function resetPassword(server, email){
-  const params = getCommonParams()
+  const params = await getCommonParams()
   params.module_api = 'forgot_password'
   params.email = email
 
@@ -72,31 +93,35 @@ export async function resetPassword(server, email){
 }
 
 //request token
-export function requestToken(server, email, password){
-  var params = getCommonParams();
+export async function requestToken(server, email, password){
+  const params = await getCommonParams();
   params.module_api='request_token'
   params.email=email
   params.password=password
 
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
-        return response.json()
+      return response.json()
+        
     })
     .catch((error) => console.error(error))
 }
 
 //check token
-export async function checkToken( user, navigation){
+export async function checkToken( user, navigation, store){
+  
+  //console.log("user config", JSON.stringify(user, null, 2))
   switch (user.token.tokenType) {
     case TOKEN_TYPE.IZIFLO:
       {
 
-        let params = getCommonParams(user, true);
+        let params = await getCommonParams(user, true);
         params.module_api="check_token";
+
 
         var promise = Api.post(getWSBaseUrl(user.server),params)
           .then((response) => response.json())
-          .then(tokenHandler(navigation, user))
+          .then(tokenHandler(navigation,store,  user))
           .catch((error) => {console.error(error); Promise.reject(error)})
         return promise;
       }
@@ -123,7 +148,7 @@ export async function checkToken( user, navigation){
                       token:externalToken
   
                 }
-                await storeUser(JSON.stringify(usr))
+                store.dispatch({type:ACTIONS_TYPE.USER_SET, value:usr})
               
                 return Promise.resolve(usr);
               }
@@ -144,7 +169,7 @@ export async function checkToken( user, navigation){
  * @param {*} user if not null, handler will try to renew the token.
  * @returns 
  */
- export function tokenHandler(navigation, user = null){
+ export function tokenHandler(navigation, store, user = null){
   return async (json) => {
     if(json.token && json.token.state){
       switch (json.token.state) {
@@ -152,13 +177,13 @@ export async function checkToken( user, navigation){
             return json;
         case TOKEN_STATE.OBSOLETE:
             if(user){
-              return refreshToken(user)
+              return refreshToken(user, store)
             }else Promise.reject(json)
           break;
         default:
             //TODO 
           console.log("token invalid : "+ JSON.stringify(json.token))
-          disconnect(navigation)
+          disconnect(navigation, store.dispatch)
           Promise.reject(json);
           break;
       }
@@ -166,10 +191,10 @@ export async function checkToken( user, navigation){
   }
 }
 
-function refreshToken(user){
+function refreshToken(user, store){
   switch (user.token.tokenType) {
     case TOKEN_TYPE.IZIFLO:
-      return refreshIzifloToken(user)
+      return refreshIzifloToken(user, store)
     case TOKEN_TYPE.MICROSOFT:
       //TODO refresh MICROSOFT
       return refreshMicrosoftToken(user)
@@ -183,9 +208,9 @@ function refreshToken(user){
   }
 }
 
-function refreshIzifloToken(user){
+async function refreshIzifloToken(user, store){
 
-  var params = getCommonParams(user);
+  var params = await getCommonParams(user);
   params.module_api='refresh_token'
   params.refresh_token=user.token.refreshToken
   return Api.post(getWSBaseUrl(user.server),params)
@@ -202,9 +227,9 @@ function refreshIzifloToken(user){
               tokenType:TOKEN_TYPE.IZIFLO, 
               expirationDate:data.success.access_token_expiration_date, 
               refreshExpirationDate:data.success.refresh_token_expiration_date, 
-              email:user.email
+              email:user.email,
             }
-            storeUser(JSON.stringify(usr))
+            store.dispatch({type:ACTIONS_TYPE.USER_SET, value:usr})
             return {token : data.success}
         }else if(data.error){
             Promise.reject(data)
@@ -231,5 +256,3 @@ function refresMicrosoftToken(user){
 function refresGoogleToken(user){
   //TODO refresh Google token
 }
-
-

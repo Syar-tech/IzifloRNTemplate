@@ -32,7 +32,7 @@ export default function IziButton(props){
     }
 
     function displayText(){
-        if (props.title || props.imgSrc){
+        if (props.title || props.imgSrc){
             return (
             <View style={getButtonStyle().textContainer}>
                 {props.imgSrc ? <Image style={getButtonStyle().image} source={props.imgSrc}/> : undefined}

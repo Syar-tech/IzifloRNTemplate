@@ -1,6 +1,7 @@
 {
   "name": "IzifloTemplateTs",
   "version": "0.0.1",
+  "license": "UNDEFINED",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,12 +12,15 @@
     "r": "./scripts/run.sh",
     "p": "./scripts/publish.sh",
     "pod": "cd ios && pod install && cd ../",
-    "playstore": "./scripts/playstore.sh"
+    "playstore": "./scripts/playstore.sh",
+    "dev": "yarn r dev android",
+    "sprint": "yarn p sprint install"
   },
   "dependencies": {
     "@haskkor/react-native-pincode": "^1.22.6",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-community/netinfo": "^9.3.0",
     "@react-native-firebase/app": "^13.0.1",
     "@react-native-firebase/crashlytics": "^13.0.1",
     "@react-navigation/drawer": "^5.12.5",
@@ -49,7 +53,10 @@
     "react-native-svg": "^12.1.1",
     "react-native-touch-id": "^4.4.1",
     "react-native-vector-icons": "^8.1.0",
-    "react-redux": "^7.2.4"
+    "react-redux": "^8.0.2",
+    "redux-persist": "^6.0.0",
+    "redux-persist-filesystem-storage": "^4.1.0",
+    "redux-persist-sensitive-storage": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

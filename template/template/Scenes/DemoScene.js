@@ -1,37 +1,45 @@
 import React ,{useState, useEffect} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
-import {disconnect, getStoredUser} from "../Tools/TokenTools"
-import { useUserAndLanguage } from "../Locales/locales"
+import {disconnect} from "../Tools/TokenTools"
+import { useLanguage } from "../Locales/locales"
 import { ModalStyle, colors} from '../Styles/Styles'
 import { getBundleId, getReadableVersion } from 'react-native-device-info';
 import Config from 'react-native-config';
 import ActionsFooter from '../Components/Footers/ActionsFooter'
 import icon_logout from '../res/img/icon_logout'
 import Rotate from '../Components/Rotate'
+import { useDispatch, useSelector } from 'react-redux'
+import { RNCamera } from 'react-native-camera'
 
 
 const DemoScene=({navigation})=>{
 
-  const {locale,user} = useUserAndLanguage()
+  const dispatch = useDispatch()
+
+  const {locale} = useLanguage()
+  const user = useSelector(state => state._template.user)
 
     return (
         <SafeAreaView
         style={styles.main_container}>
-            <Text>Bienvenue sur l'application de test de login.</Text>
+            <Text>RNCamera.</Text>
             <View style={styles.centeredView}>
-                <Text style={ModalStyle.title}>App info</Text>
-                <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>App</Text> : {getBundleId()} ({getReadableVersion()})</Text>
-                <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Environment</Text> : {Config.FLAVOR_NAME}</Text>
-                <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Server</Text> : Demo</Text>
-                <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>Instance</Text> : Demo</Text>
-                <Text style={styles.modalText}><Text style={{fontWeight:'bold'}}>User</Text> : {user?.email}</Text>
+                <RNCamera style={[{flex:1,width:'100%'}]}
+                    onTextRecognized={obj => {
+                      obj.textBlocks.forEach(e => {
+                          if(e?.value)
+                              console.log(e.value)
+                      })
+                    }}
+                    captureAudio={false}
+                />
             </View>
 
             <ActionsFooter
                 items={[{title:"Action", key:1}, {title:locale._template.disconnect_upper, key:99, icon:icon_logout},{title:"Action 2", key:2},{title:"Action 3", key:5},{title:"Action 4", key:1100},]}
                 onPress={(key)=>{
-                  if(key == 99) disconnect(navigation) 
+                  if(key == 99) disconnect(navigation,dispatch,locale) 
                   else console.log('clicked on key : ',key)
                 }}
                 rotate={true}
@@ -50,7 +58,7 @@ const styles = StyleSheet.create({
     },
     button_disconnect:{
         marginTop:25,
-        marginBottom:16,
+        marginBottom:16, 
         width:250,
         alignSelf:'center'
     },
@@ -82,4 +90,4 @@ const styles = StyleSheet.create({
   });
 
 
-export default DemoScene;
+export default (DemoScene);

@@ -9,25 +9,29 @@
  */
 
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
  import {
-   StyleSheet, useColorScheme
+   StyleSheet, View, NativeModules
  } from 'react-native';
 
  import BaseNavigation from './template/Navigation/BaseNavigation'
- import { Provider } from 'react-redux'
- import Store from './template/store/SchemeStore'
-
+ import { Provider, useDispatch } from 'react-redux'
+ import Store, {persistor} from './Store/ReduxStore'
+import { PersistGate } from 'redux-persist/integration/react';
+import { ACTIONS_TYPE } from './Store/reducers/UHFConfigReducer';
+ 
  const App = () => {
-   return (
 
+   return (
       <Provider store={Store}>
+        <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-            <BaseNavigation useExample={true}useScheme={true}/>
+            <BaseNavigation useExample={true} useScheme={true}/>
           {
             // Populate Navigation.js with useExample={false}/>
           }
         </NavigationContainer>
+       </PersistGate>
       </Provider>
    );
  };

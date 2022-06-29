@@ -5,11 +5,12 @@ import {
 } from 'react-native'
 import { loginStyles } from '../Styles/Styles'
 import { isEmailValid } from '../Tools/StringTools'
-import locale from '../Locales/locales'
+import {useLanguage} from '../Locales/locales'
 import { searchServers } from '../API/LoginApi';
 import IziDropdown from './IziDropDown';
 import Config from "react-native-config";
 import { isDemo } from '../../config/iziConfig'
+import { useSelector } from 'react-redux'
 
 let searchTimeout = null
 
@@ -17,6 +18,7 @@ export default function IziServerDropdown(props){
 
     const [servers, setServers] = useState({servers:[]})
     const [loading, setLoading] = useState(false)
+    const {locale,localeIdentifier} = useLanguage()
     
     useEffect(
         ()=>{

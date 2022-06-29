@@ -2,21 +2,19 @@ import React ,{useState, useImperativeHandle, useEffect} from 'react'
 import {
     View, Text, StyleSheet, Modal, Pressable, Alert, Image
 } from 'react-native'
-import {__SInfoConfig} from '../Tools/Prefs';
-import {getStoredUser} from '../Tools/TokenTools';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Config from "react-native-config";
 import { getBundleId, getReadableVersion } from "react-native-device-info";
 
 import { sizes, ModalStyle } from '../Styles/Styles'
-//types
-import {User} from "../Types/LoginTypes"
+import { useSelector } from 'react-redux';
+
 
 
 
 const ServerInfoModal = React.forwardRef((props, ref ) => {
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const [user, setUser] = useState<User|undefined>(undefined);
+    const [modalVisible, setModalVisible] = useState(false);
+
 
     useImperativeHandle(ref, ()=>({
         show: ()=>{
@@ -24,16 +22,8 @@ const ServerInfoModal = React.forwardRef((props, ref ) => {
         }
     }))
 
-    useEffect(
-        ()=>{
-            if(modalVisible) _loadUser()
-        }
-        ,[modalVisible]
-    )
+    const user = useSelector((state)=> state._template?.user)
 
-    const _loadUser = async ()=>{
-        setUser(await getStoredUser())
-    }
     const hide = ()=>{
         setModalVisible(false)
     }
@@ -94,4 +84,4 @@ const styles = StyleSheet.create({
     }
   });
 
-  export default ServerInfoModal
+  export default  ServerInfoModal

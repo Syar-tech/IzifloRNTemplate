@@ -8,14 +8,13 @@ import fr_tpl from './Locales/fr';
 import en from '../../Locales/en';
 import fr from '../../Locales/fr';
 import { useEffect, useState } from 'react';
-import { getStoredUser } from '../Tools/TokenTools';
 import { getNumberSettings } from './number';
 import { useIsFocused } from '@react-navigation/core';
 import { useSelector } from 'react-redux';
 import crashlytics from '@react-native-firebase/crashlytics';
 
 
-export function useUserAndLanguage(withFocus=true) {
+export function useLanguage(withFocus=true) {
 
     
     const locale = new LocalizedStrings({
@@ -25,22 +24,17 @@ export function useUserAndLanguage(withFocus=true) {
 
 
 
-    const [user,setUser] = useState(null)
+    const user = useSelector(state => {return state._template.user ? state._template.user : undefined})
+
     const isFocused = !withFocus ? true : useIsFocused()
-    const userCycle = useSelector((state)=>state.userUpdatedCycle)
 
     useEffect(() => {
         if(isFocused){
-            getStoredUser().then(user => {
-                setUser(user)
                 locale.setLanguage(getLocaleIdentifier(user).substring(0,2))
                 setLocaleTools(setLocaleToTools(locale, user))
-            }).catch(e => console.log(e))
         }
         setCrashlyticsAttributes()
-        
-
-    },[isFocused, userCycle])
+    },[isFocused, user])
 
     const getLocaleIdentifier = (usr = user) => {
 
@@ -87,7 +81,6 @@ export function useUserAndLanguage(withFocus=true) {
     const setLocaleToTools = (locale, usr=user)=>{
         return {
             locale,
-            user:usr,
             localeIdentifier:getLocaleIdentifier(usr),
             numberSettings:getNumberSettings(getLocaleIdentifier(usr)),
         }

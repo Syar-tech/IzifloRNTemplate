@@ -2,12 +2,13 @@ import React ,{useState} from 'react'
 import { SafeAreaView, StyleSheet, Text, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect} from "../Tools/TokenTools"
-import { useUserAndLanguage } from "../Locales/locales"
+import { useLanguage } from "../Locales/locales"
 import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
+import { useDispatch } from 'react-redux'
 
 
 const MainScene=({navigation})=>{
-    const {locale} = useUserAndLanguage()
+    const {locale} = useLanguage()
     const [attachments,setAttachments] = useState<string|undefined>(undefined)
 
     const getAttachments = () =>{
@@ -25,7 +26,7 @@ const MainScene=({navigation})=>{
                 <View style={{width:20}}/>
                 <Button style={styles.button} title="Clear" iziStyle={IziButtonStyle.connection} onPress={()=> setAttachments(undefined) }/>
             </View>
-            <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation)}/>
+            <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation, useDispatch(),locale)}/>
         </SafeAreaView>
     )
 }

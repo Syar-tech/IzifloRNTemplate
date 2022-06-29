@@ -1,17 +1,19 @@
 import { DrawerItem } from '@react-navigation/drawer'
 import React from 'react'
 import { Switch, Text, View } from 'react-native'
-import { connect } from 'react-redux'
-import { useUserAndLanguage } from '../Locales/locales'
+import { useDispatch, useSelector } from 'react-redux'
+import { useLanguage } from '../Locales/locales'
 import { colors } from '../Styles/Styles'
 
 function ColorSchemeItem(props){
 
-    const {locale} = useUserAndLanguage()
+    const {locale} = useLanguage(false)
+    const colorScheme = useSelector((state) =>state._template.colorScheme);
+    const dispatch = useDispatch()
 
     const onThemeChange = value => {
         const scheme = value ? 'dark' : 'light'
-        props.dispatch({
+        dispatch({
             type:scheme
         })
         props.navigation.toggleDrawer()
@@ -19,29 +21,22 @@ function ColorSchemeItem(props){
 
     return (<DrawerItem style={{width:'100%'}}
         label={() => <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-              <Text style={{color:colors[props.colorScheme].textDefaultColor}}>
+              <Text style={{color:colors[colorScheme].textDefaultColor}}>
                 {locale._template.darkMode}
               </Text>
               <Switch
                   trackColor={{ false: '#DEDEDE', true: colors.iziflo_green }}
-                  thumbColor={props.colorScheme === 'light' ? colors.lightGray : "#F4F3F4"}
+                  thumbColor={colorScheme === 'light' ? colors.lightGray : "#F4F3F4"}
                   ios_backgroundColor={colors.lightGray}
                   onValueChange={onThemeChange}
-                  value={props.colorScheme === 'dark'}
+                  value={colorScheme === 'dark'}
               />
             </View>
         } onPress={() => {
-            onThemeChange(!(props.colorScheme === 'dark'))
+            onThemeChange(!(colorScheme === 'dark'))
         }}/>
     )
 }
-
-const mapStateToProps = state => {
-
-    return {
-      colorScheme: state.colorScheme
-    }
-  }
   
-  export default connect(mapStateToProps)(ColorSchemeItem)
+  export default ColorSchemeItem
   

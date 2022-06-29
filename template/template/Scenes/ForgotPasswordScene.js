@@ -3,7 +3,7 @@ import {View,useWindowDimensions, StyleSheet, Image, Keyboard} from 'react-nativ
 import { resetPassword } from '../API/LoginApi';
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import IziTextInput from '../Components/IziTextInput';
-import { useUserAndLanguage } from '../Locales/locales';
+import { useLanguage } from '../Locales/locales';
 import { IziDimensions } from '../Tools/Dimensions';
 import { isEmailValid, isEmpty } from '../Tools/StringTools';
 import IziServerDropdown from '../Components/IziServerDropDown';
@@ -11,7 +11,7 @@ import IziServerDropdown from '../Components/IziServerDropDown';
 
 export default function ForgotPasswordScene({navigation}){
 
-    const {locale} = useUserAndLanguage()
+    const {locale} = useLanguage()
 
     const [dropdownOpen, setDropdownOpen] = useReducer((state, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
 

@@ -1,8 +1,11 @@
 
+import React from 'react'
 import {
     Platform,
     StyleSheet,
+    Text,
 } from 'react-native'
+import { baseProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlers'
 import { white } from 'react-native-paper/lib/typescript/styles/colors'
 
 export const colors={
@@ -17,12 +20,14 @@ export const colors={
     dark:{
         backgroundColor:'#272727',
         textDefaultColor:'#EFEFEF',
-        svgColor:'#EFEFEF'
+        svgColor:'#EFEFEF',
+        listOverlay:"black"
     },
     light:{
         backgroundColor:'#EFEFEF',
         textDefaultColor:'#272727',
-        svgColor:'#272727'
+        svgColor:'#272727',
+        listOverlay:"white"
     }
 }
 
@@ -67,6 +72,8 @@ export const sizes = {
     }
 }
 
+
+export const B = props => <Text style={{fontWeight:'bold'}}>{props.children}</Text>
 
 export const loginStyles = {
     textinput:{
@@ -248,7 +255,7 @@ export const loginStyles = {
                 height:"auto",
                 flex:0,
                 enabled:{
-                    color:"colors.iziflo_dark_gray",
+                    color:colors.iziflo_dark_gray,
                 },
         
                 disabled:{

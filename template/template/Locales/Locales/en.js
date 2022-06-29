@@ -26,6 +26,7 @@ export default {
         google:'Google',
         office_365:'Office 365',
         clearCache:'Empty cache',
+        updateParams:'Update parameters',
         aboutIziflo:"About Iziflo",
         disconnect:"Log out",
         an_email_was_sent_with_a_new_password:'An email containing your new password has been sent to you',
@@ -69,6 +70,9 @@ export default {
             title:"INSTANCE",
             no_instance_title:"No instance available",
             no_instance_message:"Please check that you have access to an instance on this server",
+        },
+        dropdown:{
+            nSelectedElements:'{items} items selected'
         }
     }
 }

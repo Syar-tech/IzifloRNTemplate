@@ -1,7 +1,8 @@
 import React ,{useState, useEffect, useReducer, useCallback} from 'react'
 import {
-    View, Text,Image, Alert,BackHandler, Keyboard,TouchableWithoutFeedback,TouchableOpacity,
+    View, Text,Image, Alert,BackHandler, Keyboard,TouchableWithoutFeedback,TouchableOpacity, KeyboardAvoidingView,
 } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
 import Loader from '../Components/IziLoader'
@@ -13,22 +14,26 @@ import { useFocusEffect, useIsFocused} from '@react-navigation/native'
 import { useWindowDimensions } from 'react-native'
 import Config from "react-native-config";
 
-import { colors } from '../Styles/Styles'
-import {useUserAndLanguage } from '../Locales/locales'
+import { B, colors } from '../Styles/Styles'
+import {useLanguage } from '../Locales/locales'
 
 //Tools
-import {requestToken} from '../API/LoginApi'
+import {loadSettings, requestToken} from '../API/LoginApi'
 import {__SInfoConfig} from '../Tools/Prefs';
-import {getStoredUser, deleteStoredUser, storeUser, TOKEN_STATE} from '../Tools/TokenTools';
+import {  TOKEN_STATE, disconnect} from '../Tools/TokenTools';
 import {isEmpty, isEmailValid} from '../Tools/StringTools';
 //types
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
 import { IziDimensions } from '../Tools/Dimensions';
 import { TOKEN_TYPE } from "../Types/LoginTypes";
+import store, { ACTIONS_TYPE } from '../../Store/ReduxStore'
+import IziButton from '../Components/IziButton'
+import { useModifiedDataOnly } from '../store/CommonDownReducer'
+import icon_back from '../../res/img/icon_back'
+import icon_validate from '../res/img/icon_validate'
 
-
-const LoginScene = ({navigation, route}) => {
+const LoginScene = ({navigation, route }) => {
 
     /*---------------------------
     -
@@ -36,7 +41,8 @@ const LoginScene = ({navigation, route}) => {
     -
     ----------------------------*/
     //local
-    const {locale} = useUserAndLanguage()
+    const {locale} = useLanguage()
+    const storedUser = useSelector(state=>state._template?.user)
     const window = useWindowDimensions()
     const focused = useIsFocused();
     const [email, setEmail] = useState(undefined)
@@ -47,20 +53,33 @@ const LoginScene = ({navigation, route}) => {
     const [msal] = useState(new MSALConnect())
     const [dropdownOpen, setDropdownOpen] = useReducer((state, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
     
+    const currentInventories = useModifiedDataOnly("inventories", (tableData)=>{
+        return tableData.filter(inventory=>{
+            return inventory.state !== 2
+        }).length
+    })
+
     //data
     const [user, setUser] = useState(undefined)
+
+    const dispatch = useDispatch()
 
 
     useEffect(()=>{
         _initOffice()
     }, [])
     useEffect(()=>{
-        if(focused)
+        if(focused){
             _loadUser()
+        }
         else setUser(undefined)
+        
     }, [focused])
 
-    
+    useEffect(()=>{
+        if(_isLoggedIn())
+            loadSettings(dispatch,user)
+    }, [user])
 
 
 
@@ -114,11 +133,10 @@ const LoginScene = ({navigation, route}) => {
     -
     ----------------------------*/
 
-    const _resetUser= ( shouldSetUser = true)=>{
+    const _resetUser= ()=>{
         try{
-            deleteStoredUser();    
-            if(shouldSetUser)
-                setUser(undefined)
+            disconnect(false, dispatch,locale)
+            setUser(undefined)
         } catch (error) {
             console.log("Something went wrong", error);
         }
@@ -126,7 +144,7 @@ const LoginScene = ({navigation, route}) => {
     // create a function that saves your data asyncronously
     const _storeUser = async (user, shouldSetUser = true) => {
         try{
-            await storeUser(JSON.stringify(user));    
+            dispatch({type:ACTIONS_TYPE.USER_SET, value:user});    
             if(shouldSetUser)
                 setUser(user)
         } catch (error) {
@@ -137,29 +155,23 @@ const LoginScene = ({navigation, route}) => {
 
     const _loadUser = async ()=>{
         try {
-
             await setLoading(true)
-            let data = await getStoredUser()
-            await setUser(data)
-            if(!user) {
+            setUser(storedUser)
+            if(!storedUser) {
                 await setServer(undefined)
-                setLoading(false)
-                return undefined
             }
           } catch (error) {
             console.log("Something went wrong", error);
-            setLoading(false)
           }
+          setLoading(false)
       
     }
 
     const _setPin = (pin)=>{
-        console.log("setPin")
         if(user){
-            console.log("setPin loading true")
             setLoading(true)
             user.pin = pin
-            _storeUser(user, false)
+            dispatch({type:ACTIONS_TYPE.USER_PIN_SET, value:pin});
         }
     }
 
@@ -176,16 +188,14 @@ const LoginScene = ({navigation, route}) => {
 
     function _connect(){
 
-        console.log("connect loading true")
         setLoading(true);
         if(server){
             let promise  = null;
             
-            if(!isEmailValid(email) || !password) {
+            if(!isEmailValid(email) || !password) {
                 //TODO error message : missing data
             }else{
                 //connect to instance
-                console.log("promise")
                 promise = requestToken(server, email, password)
             }
 
@@ -206,7 +216,6 @@ const LoginScene = ({navigation, route}) => {
                         }
                         setUser(usr)
                         setShowInstances(true)
-                        console.log("showIntance")
                     
                     }else if(data?.error){
                         //TODO failed
@@ -223,13 +232,31 @@ const LoginScene = ({navigation, route}) => {
             //TODO no server 
                 console.log("no server ")
         }
-        console.log("connect loading false")
         setLoading(false)
     }
 
 
-    function _disconnect(){
-        console.log("logout");
+    function _disconnect(isFromInstanceChoise = false){
+        if(!isFromInstanceChoise)
+            return navigation.navigate('ErrorScene',{
+                errorMessage: <Text>{locale.MainMenuScene.inventoryInProgress +"\n"}<B>{locale.ErrorScene.confirm}</B></Text>,
+                icon:'warning',
+                footerButtons:[{
+                    image:icon_back,
+                    text:locale.Global.back,
+                },{
+                    image:icon_validate,
+                    text:locale.Global.confirm,
+                    onPress : async () => {
+                        _resetUser()
+                        setServer(undefined)
+                        setPassword(undefined)
+                        setShowInstances(false)
+                        navigation.navigate("Login")
+                    }
+                }]
+            })
+                
         _resetUser()
         setServer(undefined)
         setPassword(undefined)
@@ -382,7 +409,7 @@ const LoginScene = ({navigation, route}) => {
                             instancesOpen={dropdownOpen.instances} 
                             setInstancesOpen={(value)=>setDropdownOpen({instances:value})} 
                             onOpen={_closeAll}
-                        onLogout={_disconnect}/>
+                        onLogout={() => _disconnect(true)}/>
                 </View>
         )
     }
@@ -390,6 +417,7 @@ const LoginScene = ({navigation, route}) => {
     function _displayLoggedIn(){
         const lockTime = Config.FLAVOR =='D' ? 10000 : 3*60*1000
         return (
+            <View style={{flex:1, width:"100%"}}>
             <PINCode 
                 status={user?.pin ? 'enter' : 'choose'}
                 storedPin={user?.pin}
@@ -422,6 +450,8 @@ const LoginScene = ({navigation, route}) => {
                 stylePinCodeDeleteButtonText={{display:'none'}}
                 stylePinCodeColumnDeleteButton={{ height:'100%'}}
             />
+            <Button style={{...loginStyles.button, position:"absolute", width:160, top:5, right:10,height:35}} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={() => _disconnect()}/>
+            </View>
         )
     }
 
@@ -453,9 +483,11 @@ const LoginScene = ({navigation, route}) => {
     ----------------------------*/
     return(
             <TouchableWithoutFeedback style={{height:"100%", width:"100%"}} onPress={()=>{_closeAll()}}>
-                <View style={{flex:1}}>
-                    {_displayContent()}
-                </View> 
+                <KeyboardAvoidingView style={{height:'100%'}} behavior=''>
+                    <View style={{flex:1}}>
+                        {_displayContent()}
+                    </View> 
+                </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
     )
 }
@@ -582,6 +614,5 @@ const loginStyles = {
         marginBottom:20
     }
 }
-
 
 export default LoginScene

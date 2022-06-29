@@ -3,7 +3,7 @@
   // Components/Rotate.js
   import React ,{useState, useEffect} from 'react'
 import { View} from 'react-native'
-import Orientation,{ useDeviceOrientationChange} from 'react-native-orientation-locker';
+import Orientation, { useDeviceOrientationChange} from 'react-native-orientation-locker';
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 const Rotate = (props) =>{
@@ -17,11 +17,14 @@ const Rotate = (props) =>{
     const transY = useSharedValue(0);
 
     const animatedStyles = useAnimatedStyle(() => {
-        return {
-            width: width.value ? width.value : "100%", 
-            height: height.value ? height.value : "100%",
-            transform: [{ rotate:(angle.value + "deg")} , {translateY:transY.value}],
-        }
+        if(props.rotate)
+            return {
+                width: width.value ? width.value : "100%", 
+                height: height.value ? height.value : "100%",
+                transform: [{ rotate:(angle.value + "deg")} , {translateY:transY.value}],
+            }
+	else
+            return {}
     }); 
 
     useEffect(()=>{
@@ -29,7 +32,6 @@ const Rotate = (props) =>{
     }, [viewDim])
   
     useDeviceOrientationChange((o) => {
-
         if(props.rotate && viewDim && deviceOrientation != o){
             setDeviceOrientation(o)
             animate(o) 
@@ -38,24 +40,28 @@ const Rotate = (props) =>{
     });
 
     const animate = ( newOrientation) =>{
+        let a = 0
         switch (newOrientation) {
             case "LANDSCAPE-LEFT":
-                angle.value = withTiming(90, {}, ()=>{/*transY.value=-viewDim.x*/})
+                a = 90
+                angle.value = withTiming(a, {}, ()=>{/*transY.value=-viewDim.x*/})
                 height.value = withTiming(viewDim.width);
                 width.value = withTiming(viewDim.height);
                 break;
             case "PORTRAIT-UPSIDEDOWN":
+                a = 180
                 //transY.value=viewDim.x
-                angle.value =  withTiming(180)
+                angle.value =  withTiming(a)
                 height.value = withTiming(viewDim.height);
                 width.value = withTiming(viewDim.width);
                 break;
             case "LANDSCAPE-RIGHT":
+                a = -90
                 //transY.value=viewDim.x
-                angle.value = withTiming(-90)
+                angle.value = withTiming(a)
                 height.value = withTiming(viewDim.width);
                 width.value = withTiming(viewDim.height);
-                break;r
+                break;
             default:
                 //transY.value=viewDim.x
                 angle.value = withTiming(0)
@@ -63,6 +69,8 @@ const Rotate = (props) =>{
                 width.value = withTiming(viewDim.width);
                 break;
         }
+        if(typeof props.onRotate === 'function')
+            props.onRotate(newOrientation,a)
     }
 
     return ( <View style={{...props.style, alignItems:'center', justifyContent:"center"}} onLayout={(e)=>{setViewDim(e.nativeEvent.layout)}}>

@@ -12,9 +12,10 @@ import MainScene from '../Scenes/MainScene'
 import Config from "react-native-config";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DemoScene from '../Scenes/DemoScene';
-import { disconnect, getStoredScheme} from '../Tools/TokenTools';
+import { disconnect} from '../Tools/TokenTools';
 import icon_hamburger_menu from '../res/img/icon_hamburger_menu'
 import AboutScene from '../Scenes/AboutScene';
+import SyncTestDev from '../Scenes/SyncTestDev';
 import { colors } from '../Styles/Styles';
 import { SvgXml } from 'react-native-svg';
 import icon_about from '../res/img/icon_about'
@@ -24,11 +25,10 @@ import ForgotPasswordScene from '../Scenes/ForgotPasswordScene';
 import ErrorScene from '../Scenes/ErrorScene';
 import { CommonActions } from '@react-navigation/routers';
 import ColorSchemeItem from '../Components/ColorSchemeItem';
-import { connect } from 'react-redux';
-import Store from '../store/SchemeStore'
-import { useUserAndLanguage } from '../Locales/locales'
+import { useLanguage } from '../Locales/locales'
 import VersionCheck from 'react-native-version-check'
 import {versionCompare} from '../Tools/StringTools'
+import { useDispatch, useSelector } from 'react-redux';
 
 const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -37,12 +37,12 @@ const Drawer = createDrawerNavigator();
 export const hamburgerMenu = navigation => (
     <TouchableOpacity onPress={() => {
         navigation.toggleDrawer()
-    }} style={{marginLeft:20}}>
+    }} style={{paddingLeft:20}}>
       <SvgXml xml={icon_hamburger_menu} height={20} width={20} fill={colors.lightBlack} />
     </TouchableOpacity>
   )
 
-function MainStackScreen({navigation}) {
+function MainStackScreen({navigation, user, colorScheme}) {
   
   return (
       <MainStack.Navigator>
@@ -59,7 +59,7 @@ function MainStackScreen({navigation}) {
 
 
 const RootStackScreen = (props) =>{
-  const {locale} = useUserAndLanguage()
+  const {locale} = useLanguage()
   const _displayCorner= ()=>{
     if(Config.FLAVOR != 'P' && !!!Config.IS_SCREENSHOT)
       return (
@@ -75,7 +75,7 @@ const RootStackScreen = (props) =>{
 
   return (
       <View style={{flex:1}}>
-          <RootStack.Navigator navOptions={{ headerShown: true }}>
+          <RootStack.Navigator navOptions={{ headerShown: true, elevation:10, shadowOpacity:0.8 }}>
 
             <RootStack.Screen 
                 name="Login" 
@@ -120,16 +120,11 @@ const DrawerScreen = (props)=>{
 
   const [newVersion,setNewVersion] = useState(false)
 
-  useEffect(() => {
-    getStoredScheme(props.defaultColorScheme).then(scheme => {
-      props.dispatch({
-        type:scheme
-      })
-    })
-
-  },[])
+  let scheme = useSelector((state)=>state._template.colorScheme)
+  let dispatch = useDispatch()
 
 
+  const {locale} = useLanguage(false);
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
   useEffect(
@@ -146,7 +141,6 @@ const DrawerScreen = (props)=>{
           }
         }).catch(e => console.log(e));
       }
-
     },
     []
   )
@@ -156,9 +150,10 @@ const DrawerScreen = (props)=>{
       if(supported)
           await Linking.openURL(url)
     }
-    const {locale} = useUserAndLanguage()
 
-  
+
+
+  const extraOptions = {showModal:showModal, drawerContent:props.drawerContent,useScheme:props.useScheme};
   return (
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
             {newVersion && <TouchableOpacity style={{height:40,width:'100%',backgroundColor:colors.iziflo_blue,justifyContent:'center',alignItems:'center'}} onPress={() => {
@@ -177,9 +172,9 @@ const DrawerScreen = (props)=>{
       </TouchableOpacity>}
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator 
-          drawerContentOptions={{showModal:showModal, drawerContent:props.drawerContent,useScheme:props.useScheme}} 
-          drawerContent={(props) => CustomDrawerContent(props,locale)} 
-          screenOptions={{ gestureEnabled: true }}>
+          drawerContentOptions={extraOptions}
+          drawerContent={(props) => CustomDrawerContent({...props, ...extraOptions},locale,scheme, dispatch)} 
+          screenOptions={{ gestureEnabled: true, headerShown:false,drawerContent:props.drawerContent}}>
             {props.children}
             
             <Drawer.Screen name='Home' 
@@ -191,6 +186,10 @@ const DrawerScreen = (props)=>{
               headerShown:true,
               headerLeft:() => hamburgerMenu(navigation),
             })}/>
+            <Drawer.Screen name="SyncTest" component={SyncTestDev} options={({navigation})=> ({
+              headerShown:true,
+              headerLeft:() => hamburgerMenu(navigation),
+            })}/>
           </Drawer.Navigator>
         <ServerInfoModal ref={infoModal}/>
       </View>
@@ -199,12 +198,10 @@ const DrawerScreen = (props)=>{
 }
 
 /*
- <DrawerItemList {...props} onPress/>
-
+ <DrawerItemList {...props} onPress/>é
 */
-
-function CustomDrawerContent(props,locale) {
-  let scheme = Store.getState().colorScheme
+function CustomDrawerContent(props,locale,scheme, dispatch) {
+  
   return (
     <DrawerContentScrollView {...props} style={{margin:0,padding:0,backgroundColor:colors[scheme].backgroundColor}}>
         <DrawerItem 
@@ -215,16 +212,18 @@ function CustomDrawerContent(props,locale) {
             props.navigation.dispatch(
               CommonActions.reset({
                  index: 0,
-                 routes: [{ name: "MainScene" }],
+                 routes: [{ name: "MainMenuScene" }],
              })
           );
           props.navigation.closeDrawer()
         }}/>
 
-        {props.useScheme && <ColorSchemeItem navigation={props.navigation} />}
+        {props.useScheme && <ColorSchemeItem navigation={props.navigation}/>}
 
         <CustomDrawers navigation={props.navigation} />
+
         {props.drawerContent}
+        
 
       <DrawerItem 
         label={() => <Text style={{color:colors[scheme].textDefaultColor}}>{locale._template.aboutIziflo}</Text>} 
@@ -234,10 +233,18 @@ function CustomDrawerContent(props,locale) {
           props.navigation.closeDrawer()
         }}/>
 
+        {(Config.FLAVOR == 'D' || !!__DEV__) && <DrawerItem 
+          label={() => <Text style={{color:colors[scheme].textDefaultColor}}>{"Sync Test for Dev"}</Text>} 
+          icon={() => <SvgXml xml={icon_about} fill={colors[scheme].svgColor} height={25} width={25}/>}
+          onPress={() => {
+            props.navigation.navigate('SyncTest')
+            props.navigation.closeDrawer()
+          }}/>}
+
       <DrawerItem 
         label={() => <Text style={{color:colors[scheme].textDefaultColor}}>{locale._template.disconnect}</Text>} 
         icon={() => <SvgXml xml={icon_logout} fill={colors[scheme].svgColor} height={25} width={25}/>}
-        onPress={() => disconnect(props.navigation)}/>
+        onPress={() => disconnect(props.navigation, dispatch,locale)}/>
     </DrawerContentScrollView>
   );
 }
@@ -258,5 +265,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect()(DrawerScreen)//RootStackScreen
-    
+export default DrawerScreen//RootStackScreen
