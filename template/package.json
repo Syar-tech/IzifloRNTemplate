@@ -33,7 +33,6 @@
     "@react-navigation/stack": "^5.14.3",
     "@types/react": "^17",
     "date-fns": "^2.25.0",
-    "icon-set-creator": "^1.1.5",
     "move": "^0.4.9",
     "patch-package": "^6.4.7",
     "prop-types": "^15.7.2",
