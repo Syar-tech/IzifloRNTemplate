@@ -1,13 +1,9 @@
 
 import {izi_api_app_code,izi_api_app_api_version} from "../../config/iziConfig"
-import {getStoredUser, getCommonParams, TOKEN_STATE, generateRandomKey} from "../Tools/TokenTools"
+import {getCommonParams} from "../Tools/TokenTools"
 import { checkToken} from "./LoginApi";
 import Config from "react-native-config";
 import { getUniqueId } from "react-native-device-info";
-import NetInfo from "@react-native-community/netinfo";
-import { ACTIONS_TYPE } from "../Store/ReduxStore";
-import { queryWS } from "../template/API/WSApi";
-import crashlytics from '@react-native-firebase/crashlytics'
 
 //Api Object for post|get promises
 //Api::post(url,data) || Api::get(url,data)
@@ -27,7 +23,8 @@ import crashlytics from '@react-native-firebase/crashlytics'
         headers: Object.assign({}, Api.headers, headers)
     };
     if(method.toLowerCase() === 'get'){
-        url+=body
+        if(body.length>1)
+            url+=body
     }
     else
         request.body = body
@@ -73,7 +70,7 @@ export const queryWS = async (navigation,store, params) => {
                     module_version : izi_api_app_api_version
                 }
                 return Api.post(getWSBaseUrl(usr.server),{...commonParams, ...wsQueryParams, ...params})
-                    .then(async (response) =>{/*console.log(await response.text())*/return params?.text ? response.text() : response.json()}).catch(e => console.log('ERROR FETCHING DATA',e.message, e))
+                    .then(async (response) =>{return params?.text ? response.text() : response.json()}).catch(e => console.log('ERROR FETCHING DATA',e.message, e))
             }
         ).catch(e => console.log('ERROR TOKEN ',e))
 
@@ -106,12 +103,21 @@ export const getWSGETURL = async (store,params = {}) => {
 
 
 
-//Sync functions
+/*--------------------
+ *
+ *    Load and save table
+ * 
+ -------------------*/
 
-export async function loadTable(navigation, store, params, storeTable = null, extraTables=[]){
-    
+export async function loadTableWithCheckSync(navigation, store, params, storeTable = null, extraTables=[], forceUpdate = false){
+    if(canBeUpdated(store,[storeTable, ...extraTables],forceUpdate))
+        return await loadTable(navigation,store,params,storeTable, extraTables)
+}
+
+ export async function loadTable(navigation, store, params, storeTable = null, extraTables=[]){
+    let start = Date.now()
+    console.log("load table Start : ", storeTable, start)
     const key = generateRandomKey(20)
-        if(storeTable) store.dispatch({type:ACTIONS_TYPE.START_UPDATE, table:storeTable, id:key})
         try{
         //CheckConnectiviTy
         const state = await NetInfo.fetch()
@@ -119,84 +125,22 @@ export async function loadTable(navigation, store, params, storeTable = null, ex
             ||  state.isConnected){
                 if(params == null){
                     params = {module_api:'get_'+storeTable}
-                    /*if(storeTable === 'shipments'){
-                            params.text = true
-                            params._debug = true
-                        }*/
+                    /*if(storeTable === 'inventories'){
+                        params.text = true
+                        params._debug = true
+                    }//*/
                 }
                 try{
-                    const response = await queryWS(navigation, store, params)
+                    let response = await queryWS(navigation, store, params)
                     if(storeTable){
-                       /* if(storeTable === 'locations'){
-                            usr = store.getState()._template.user
-                            let commonParams = await getCommonParams(usr)
-                            console.log(response, params, commonParams)
-                        }*/
+
+                        if(params.text == true)
+                            console.log("xx",response)
+
                         if(response?.error){
                             throw Error(`Error on ws ${storeTable} : ${JSON.stringify(response)}`)
                         }
-                        store.dispatch({
-                            type:storeTable+ACTIONS_TYPE.TABLE_SET, 
-                            value:response.data, 
-                            time:response.time ? response.time : Date.now(),
-                            i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
-                        })
-                        extraTables.forEach(extraTbl => {
-                            store.dispatch({
-                                type:extraTbl+ACTIONS_TYPE.TABLE_SET, 
-                                value:response[extraTbl], 
-                                time:response.time ? response.time : Date.now(),
-                                i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
-                            })
-                        });
-                    }
-                    return response
-                }catch(e){
-                    usr = store.getState()._template.user
-                    let commonParams = await getCommonParams(usr)
-                    crashlytics().recordError(new Error('Error while getting table data: ' +storeTable + ', with params ' + JSON.stringify({...commonParams, ...params}) + ', with message : '+ e.message))
-                    console.log(e)
-                }            
-        }else{
-            console.log(state, "not connected")
-            setTimeout(()=>{if(storeTable) store.dispatch({type:ACTIONS_TYPE.STOP_UPDATE, table:storeTable, id:key})}, 200)    
-            return Promise.resolve(store.getState()["tablename"])
-        }
-        //checkToken
-
-    }catch(e){
-        console.log(e);
-    }
-    
-    setTimeout(()=>{if(storeTable) store.dispatch({type:ACTIONS_TYPE.STOP_UPDATE, table:storeTable, id:key})}, 200)    
-}
-
-export async function saveTable(navigation, store, params, storeTable = null, extraTables=[], items = null){
-    
-    const key = generateRandomKey(20)
-    items = items == null ? store.getState()[storeTable].local_data : items
-    if(storeTable &&  items && items.length) store.dispatch({type:ACTIONS_TYPE.START_UPDATE, table:storeTable, id:key})
-    else return 4
-    //console.log("saving ", storeTable, items)
-    try{
-        //CheckConnectiviTy
-        r = await NetInfo.fetch().then(  async state => {
-            if(state.isConnected){
-                    if(params == null){
-                        params = {module_api:'save_'+storeTable}                        
-                        params[storeTable] = items && JSON.stringify(items)
-                        /*if(storeTable === 'shipments'){
-                            params.text = true
-                            params._debug = true
-                        }*/
-                    }
-
-                    let ret = 0
-                    return await queryWS(navigation, store, params)
-                    .then(response => {
-                        /*if(storeTable === 'shipments')
-                            console.log(response)*/
-                        if(storeTable){
+                        batch(()=>{
                             store.dispatch({
                                 type:storeTable+ACTIONS_TYPE.TABLE_SET, 
                                 value:response.data, 
@@ -204,26 +148,110 @@ export async function saveTable(navigation, store, params, storeTable = null, ex
                                 i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
                             })
                             extraTables.forEach(extraTbl => {
-                                store.dispatch({
-                                    type:extraTbl+ACTIONS_TYPE.TABLE_SET, 
-                                    value:response[extraTbl], 
-                                    time:response.time ? response.time : Date.now(),
-                                    i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
-                                })
+                                if(response[extraTbl]){
+                                    //console.log("dispatch : ",extraTbl, Date.now(), (Date.now()-start)/1000.0)
+                                    store.dispatch({
+                                        type:extraTbl+ACTIONS_TYPE.TABLE_SET, 
+                                        value:response[extraTbl], 
+                                        time:response.time ? response.time : Date.now(),
+                                        i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
+                                    })
+                                }
                             });
+                        })
+                    }
+                    const end = Date.now()
+                    return response
+                }catch(e){
+                    usr = store.getState()._template.user
+                    let commonParams = await getCommonParams(usr)
+                    crashlytics().recordError(new Error('Error while getting table data: ' +storeTable + ', with params ' + JSON.stringify({...commonParams, ...params}) + ', with message : '+ e.message))
+                    console.log(e)
+                }
+        }else{
+            console.log(state, "not connected")
+            return false
+        }
+        //checkToken
+
+    }catch(e){
+        console.log(e);
+    }
+
+    return false
+     
+}
+
+export async function saveTable(navigation, store, params, storeTable = null, extraTables=[], items = null){
+    
+    const key = generateRandomKey(20)
+    items = items == null ? store.getState()[storeTable].local_data : items
+    if(!storeTable ||  !items || !items.length) return 4
+    //console.log("saving ", storeTable, items)
+    try{
+        //CheckConnectiviTy
+        r = await NetInfo.fetch().then(  async state => {
+            if(state.isConnected){
+                let initParams = {module_api:'save_'+storeTable}                        
+                initParams[storeTable] = items && JSON.stringify(items)
+                    if(params == null){
+                        params = initParams
+                    }else{
+                        params = {...initParams, ...params}
+                    }
+
+                    /*if(storeTable === 'shipments' ){
+                        params.text = true
+                        params._debug = __DEV__ ? 1 : 0
+                    }//*/
+
+                    let ret = 0
+
+                    console.log("save table start", Date.now())
+                    //console.log("params", params)
+                    return await queryWS(navigation, store, params)
+                    .then(response => {
+                        if(params.text === true)
+                            console.log("RES", response)
+                        else if(response.error) {
+                            console.log('RESPONSE : ',response.error)
+                        }
+
+                        if(storeTable){
+                            batch(()=>{
+                                if(response?.data){
+                                    store.dispatch({
+                                        type:storeTable+ACTIONS_TYPE.TABLE_SET, 
+                                        value:response.data, 
+                                        time:response.time ? response.time : Date.now(),
+                                        i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
+                                    })
+                                }
+                                else 
+                                    console.log('API Save : Main table is empty <'+storeTable+'>')
+                                
+                                    extraTables.forEach(extraTbl => {
+                                        if( response && response[extraTbl])
+                                            store.dispatch({
+                                                type:extraTbl+ACTIONS_TYPE.TABLE_SET, 
+                                                value:response[extraTbl], 
+                                                time:response.time ? response.time : Date.now(),
+                                                i_id:store?.getState()?._template?.user?.server?.instance?.id_instance
+                                            })
+                                    });
+                            })
                         }
                         return response
                     })
                     .catch(e=>{
+                        console.log("save table end (crash)", Date.now())
                         crashlytics().recordError(new Error('Error while saving table data: ' +storeTable + ', with params ' + JSON.stringify(params) + ', with message : '+ e.message))
                         console.log(e);
                         ret=3
+                        return ret
                     })
-                    return ret
-            
             }else{
-                console.log(state, "not connected")
-                setTimeout(()=>{if(storeTable) store.dispatch({type:ACTIONS_TYPE.STOP_UPDATE, table:storeTable, id:key})}, 200)    
+                console.log(state, "not connected")   
                 return 1
             }
         });
@@ -232,17 +260,21 @@ export async function saveTable(navigation, store, params, storeTable = null, ex
     }catch(e){
         console.log(e);
         crashlytics().recordError(new Error('Error before saving table data: ' +storeTable + ', with params ' + JSON.stringify(params) + ', with message : '+ e.message))
-        setTimeout(()=>{if(storeTable) store.dispatch({type:ACTIONS_TYPE.STOP_UPDATE, table:storeTable, id:key})}, 200)    
         return 2
     }
     
-    setTimeout(()=>{if(storeTable) store.dispatch({type:ACTIONS_TYPE.STOP_UPDATE, table:storeTable, id:key})}, 200)
     if(r) return r;
 }
 
 
-//EXAMPLE
-export async function getExampleAttachementTypesWithIdExternal(navigation, context, id_external){
+
+/*--------------------
+ *
+ *    Example
+ * 
+ -------------------*/
+
+export async function getExampleAttachementTypesWithIdExternal(navigation, store, context, id_external){
     
     let json = null
     let params = {}
@@ -252,10 +284,16 @@ export async function getExampleAttachementTypesWithIdExternal(navigation, conte
         params.context = context
         params.module_api = 'get_attachments'
         
-        let response = await queryWS(navigation, params)
+        let response = await queryWS(navigation,store ,params)
         return response;
         //json = await response.json()
     }catch(e){
        return Promise.reject(e)
     }
+}
+
+
+export async function loadCustomTable(navigation, store,forceUpdate = false){
+    
+    return await loadTableWithCheckSync(navigation, store, null,  "custom",['stock','companies', "deliveries"], forceUpdate)
 }

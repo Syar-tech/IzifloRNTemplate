@@ -24,11 +24,15 @@ export async function disconnect(navigation, dispatch,locale){
             footerButtons:[{
                 image:icon_back,
                 text:locale.Global.back,
+                isBackButton:true
             },{
                 image:icon_validate,
                 text:locale.Global.confirm,
                 onPress : async () => {
                     await dispatch({type:ACTIONS_TYPE.USER_DISCONNECT})
+                    navigation.reset({
+                        routes:[{name:'Login'}]
+                    })
                     navigation.navigate("Login");
                 }
             }]
@@ -37,6 +41,9 @@ export async function disconnect(navigation, dispatch,locale){
     await dispatch({type:ACTIONS_TYPE.USER_DISCONNECT})
     if(navigation) {
         console.log('navigate to login')
+        navigation.reset({
+            routes:[{name:'Login'}]
+        })
         navigation.navigate("Login");
     }
 }

@@ -29,7 +29,7 @@ function MenuModal({ visible, onPress, children,bottomMargin }) {
                     onPress={onPress}
                 >
                     <View
-                    style={{flex:1,marginBottom:bottomMargin+(hasNotch() ? 35:0),backgroundColor:'rgba(0,0,0,0.3)', justifyContent:'flex-end', alignItems:'flex-end' }}>
+                    style={{flex:1,marginBottom:bottomMargin+(hasNotch() ? 35:35),backgroundColor:'rgba(0,0,0,0.3)', justifyContent:'flex-end', alignItems:'flex-end' }}>
                         {children}
                     </View>
                     

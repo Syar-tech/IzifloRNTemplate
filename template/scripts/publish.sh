@@ -2,7 +2,6 @@
 # publish apk with env
 # example of use 'yarn p dev android'
 
-
 source ./scripts/apply_config.sh $1 $2
 
 case $2 in
@@ -11,75 +10,72 @@ case $2 in
     #
     #   build apk
     #
-        echo 'Assemble sur Android'
+        echo -e "\033[1;4;46m Assemble sur Android \033[0m"
         
         cd android
         ./gradlew incrementVersionCode 
-        ENVFILE=".env.${IZI_ENV}" ./gradlew app:assembleRelease 
+        if [ -z "$3" ]
+        then
+            VAR='store'
+            echo  -e "\033[1;4;46m Build standard apk \033[0m"
+        else
+            VAR=$3
+            echo  -e "\033[1;4;46m Build apk for variant : $VAR \033[0m"
+        fi
+
+        # capitalize
+        VAR="$(tr '[:lower:]' '[:upper:]' <<< ${VAR:0:1})${VAR:1}"
+
+        ENVFILE=".env.${IZI_ENV}" ./gradlew app:assemble${VAR}Release 
         cd ../
-        open android/app/build/outputs/apk/release
+        open android/app/build/outputs/apk/${VAR}/release
         ;;
     store)
     #
     #   build bundle
     #
-        echo 'Bundle sur Android'
+        echo -e "\033[1;4;46m Bundle sur Android \033[0m"
         
         cd android 
         ./gradlew incrementVersionCode 
-        ENVFILE=".env.p.${IZI_ENV}" ./gradlew bundleRelease 
+
+        if [ -z "$3" ]
+        then
+            VAR='store'
+            echo -e "\033[1;4;46m Build standard bundle \033[0m"
+        else
+            VAR=$3
+            echo -e "\033[1;4;46m Build bundle for variant : $VAR \033[0m"
+        fi
+
+        # capitalize
+        VAR="$(tr '[:lower:]' '[:upper:]' <<< ${VAR:0:1})${VAR:1}"
+
+        ENVFILE=".env.p.${IZI_ENV}" ./gradlew bundle${VAR}Release 
         cd ../
 
-        open android/app/build/outputs/bundle/release
+        open android/app/build/outputs/bundle/${VAR}/release
         ;;
     install)
-    #
-    #   INSTALL apk to device
-    #
-        echo 'Assemble sur Android and install'
-        
-        cd android
-        echo 'Get package name ...'
-        APP_ID=`./gradlew -q getAppId | tail -n 1`
-        echo "    Package : ${APP_ID}"
-
-        echo 'Increment build number...'
-        VERSION=`./gradlew -q incrementVersionCode | tail -n 1`
-        echo "    Version : ${VERSION}"
-
-        echo "Build Apk ..."
-        ENVFILE=".env.${IZI_ENV}" ./gradlew app:assembleRelease 
-        cd ../
-        
-        FULLNAME="${APP_ID}.${IZI_ENV}-${VERSION}-release.apk"
-        echo "Apk name : ${FULLNAME}"
-
-        echo "install apk ..."
-        FILE="android/app/build/outputs/apk/release/${FULLNAME}"
-        if test -f "$FILE";then
-            adb install -r $FILE
-            
-            echo "Start App"
-            adb shell monkey -p $PACKAGE -c android.intent.category.LAUNCHER 1 &> /dev/null
-        else 
-            echo "Le fichier ${FILE} est introuvable."
-            exit 1
-        fi;
-
+    
+        if [ -z "$3" ]
+        then
+            VAR='store'
+            echo -e "\033[1;4;46m Build standard install \033[0m"
+        else
+            VAR=$3
+            echo -e "\033[1;4;46m Build install for variant : $VAR \033[0m"
+        fi
+        ENVFILE=".env.${IZI_ENV}" yarn run android ${SUFFIX_PARAMS} $4 --variant=${VAR}Release
         ;;
     ios)
     #
     #   Non géré 
     #
-        echo 'Publication sur iOS'
-        cd ios
-        echo "Pod install"
-        pod install
-        echo "Run fastlane"
-        fastlane $IZI_ENV
+        echo -e "\033[1;4;43m Publication sur iOS \033[0m"
         ;;
     *)
-        echo 'Commande non reconnu, essayez parmis : apk , store, ios'
+        echo -e "\033[1;4;41m Commande non reconnu, essayez parmis : install, apk , store, ios \033[0m"
         exit 1
         ;;
 esac

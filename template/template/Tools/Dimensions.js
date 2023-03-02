@@ -2,7 +2,7 @@
 import { PixelRatio} from 'react-native'
 
 export class IziDimensions {
-    static dimensionsOrder = [420,552, 600, 720];
+    static dimensionsOrder = [420,552,600, 720];
     static getDimension(window,dimensions, name = null){
         const sw = Math.min(window.width, window.height)
         const isLandscape = window.height < window.width

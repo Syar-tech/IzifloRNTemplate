@@ -37,7 +37,6 @@ export function useLanguage(withFocus=true) {
     },[isFocused, user])
 
     const getLocaleIdentifier = (usr = user) => {
-
         if(usr?.settings?.language)
             return usr.settings.language
 

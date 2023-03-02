@@ -7,7 +7,8 @@ import { TOKEN_TYPE } from "../Types/LoginTypes";
 import MSALConnect from '../API/MSALConnectApi'
 import { ACTIONS_TYPE } from "../../Store/ReduxStore";
 import deviceInfoModule from "react-native-device-info";
-import { Platform } from "react-native";
+import { Linking, Platform } from "react-native";
+import { getVersionCheckName } from "../Tools/Tools";
 
 export function searchServers(email){
   var params = {
@@ -16,12 +17,80 @@ export function searchServers(email){
     app_type:isDemo(email) ? demo_flavor :  Config.FLAVOR,
     core_version:Config.CORE_VERSION
   }
+  console.log(Config.DEV_SERVER+"/ws/get_izi_app.php", params)
   return Api.get(Config.DEV_SERVER+"/ws/get_izi_app.php",params)
+      .then((response) => {
+          return response.json()
+      })
+      .catch((error) => console.error("catch search server",error))
+}
+
+/** ------------------
+ * 
+ *  app Update
+ * 
+ -------------------*/
+
+ export const getVersionAndBuild = () =>{
+    let currentVersion = deviceInfoModule.getVersion();// VersionCheck.getCurrentVersion()
+    //check version on dev server
+    const endIndex = currentVersion.indexOf("-")
+    if(endIndex >=0) currentVersion = currentVersion.substring(0, endIndex)
+    currentVersion = currentVersion + '.' + deviceInfoModule.getBuildNumber()
+    return currentVersion
+ }
+
+export function getVersionCheck(versionCheckName){
+
+  var params = {
+    izi_app:versionCheckName,
+    izi_os:Platform.OS,
+    izi_apkMode: Config.IS_BUNDLE  == 'true' ? 'STORE' : 'APK',
+    app_code:izi_api_app_code,
+    app_type: Config.FLAVOR,
+    core_version:Config.CORE_VERSION
+  }
+  /*Api.get(Config.DEV_SERVER+"/ws/get_izi_app_version.php",params)
+  .then((response) => {
+      return response.text()
+  }).then(res=>console.log('response text',Config.DEV_SERVER,res))
+  return undefined*/
+  return Api.get(Config.DEV_SERVER+"/ws/get_izi_app_version.php",params)
       .then((response) => {
           return response.json()
       })
       .catch((error) => console.error(error))
 }
+
+export function getMandatoryUpdateVersion(idIziApiServer){
+  return Api.get(Config.DEV_SERVER+"/ws/get_izi_min_version.php",{
+    app_code:izi_api_app_code,
+    id_izi_api_server:idIziApiServer
+  })
+  .then((response) => {
+      return response.json()
+  })
+  .catch((error) => console.error(error))
+}
+
+export const openUpdateUrl = async () => {
+  let versionCode = await getVersionCheckName()
+  // Apk mode, sprint recette, or P23
+  let currentVersion = deviceInfoModule.getVersion()
+  const endIndex = currentVersion.indexOf("-")
+  if(endIndex >=0) currentVersion = currentVersion.substring(0, endIndex)
+  currentVersion = currentVersion+'.'+deviceInfoModule.getBuildNumber()
+  getVersionCheck(versionCode).then(version =>{
+      Linking.openURL(version.url)
+  })
+}
+
+/** ------------------
+ * 
+ *  Settings
+ * 
+ -------------------*/
+
 
 export async function getSettings(idInstance,server, email, token, tokenType){
   var params = await getCommonParams();
@@ -33,14 +102,12 @@ export async function getSettings(idInstance,server, email, token, tokenType){
   params.privileges = Array.isArray(privileges) ? privileges.join(',') : privileges
 
   try{
-    console.log("get_settings",getWSBaseUrl(server), params)
     const response = await Api.post(getWSBaseUrl(server),params)
     return await response.json()
   }catch(e){
     console.log(e)
     return false
   }
-  
 }
 
 export const loadSettings = async (dispatch,user) =>{
@@ -51,11 +118,11 @@ export const loadSettings = async (dispatch,user) =>{
                 let usr = {...user, settings:json.data}
                 try{
                   dispatch({type:ACTIONS_TYPE.USER_SET, value:usr});
-              } catch (error) {
-                  console.log("Something went wrong", error);
-              }
+                } catch (error) {"lang"
+                    console.log("Something went wrong", error);
+                }
               }else{
-                console.log(`settings are empty ${json}`)
+                console.log(`settings are empty ${JSON.stringify(json)}`)
               }
             }
         )
@@ -127,13 +194,21 @@ export async function checkToken( user, navigation, store){
       }
       case TOKEN_TYPE.MICROSOFT:
         let msal = await getMSALConnect();
-        console.log(msal);
         if(msal.isInit()){
           const params = {
               scopes: ["User.Read"],
             };
             const result = await msal.acquireTokenSilent(params)
-            .catch((e)=>{console.log("msal : "+ JSON.stringify(e, null, 2)); return e});
+            .catch((e)=>{
+             console.log("msal : "+ JSON.stringify(e,null,2)); 
+              return e
+            });
+
+            if(result?.userInfo === null){
+              //The userInfo is null when the token has expired
+              //We need to disconnect the user
+              return disconnect(navigation, store.dispatch)
+            }
             
             if(result && result.idToken){
                 let externalToken = {
@@ -151,7 +226,7 @@ export async function checkToken( user, navigation, store){
                 store.dispatch({type:ACTIONS_TYPE.USER_SET, value:usr})
               
                 return Promise.resolve(usr);
-              }
+            }
           }
         break;
       case TOKEN_TYPE.GOOGLE:

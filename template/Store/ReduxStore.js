@@ -13,6 +13,7 @@ const persistConfig = {
 
 const MainReducer = combineReducers({
     _template:BaseReducer,
+    //add app specific reducers
 })
 const store = createStore (persistReducer(persistConfig, MainReducer))
 export default store
@@ -22,4 +23,5 @@ export const persistor = persistStore(store);
 export const ACTIONS_TYPE = {
   ...BASE_ACTIONS,
   ...TABLE_ACTIONS,
+  //add app specific actions
 }

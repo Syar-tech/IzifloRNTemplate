@@ -14,7 +14,12 @@
     "pod": "cd ios && pod install && cd ../",
     "playstore": "./scripts/playstore.sh",
     "dev": "yarn r dev android",
-    "sprint": "yarn p sprint install"
+    "sprint": "yarn p sprint apk",
+    "maint": "yarn p maint apk",
+    "trunk": "yarn p trunk apk",
+    "recette": "yarn p recette apk",
+    "prod": "yarn p prod bundle",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@haskkor/react-native-pincode": "^1.22.6",
@@ -27,7 +32,10 @@
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
     "@types/react": "^17",
+    "date-fns": "^2.25.0",
+    "icon-set-creator": "^1.1.5",
     "move": "^0.4.9",
+    "patch-package": "^6.4.7",
     "prop-types": "^15.7.2",
     "react": "17.0.1",
     "react-localization": "^1.0.16",
@@ -53,6 +61,7 @@
     "react-native-svg": "^12.1.1",
     "react-native-touch-id": "^4.4.1",
     "react-native-vector-icons": "^8.1.0",
+    "react-native-version-check": "^3.4.2",
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
     "redux-persist-filesystem-storage": "^4.1.0",

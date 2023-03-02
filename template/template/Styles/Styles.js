@@ -20,12 +20,16 @@ export const colors={
     dark:{
         backgroundColor:'#272727',
         textDefaultColor:'#EFEFEF',
+        textGray:'#ADADAD',
+        placeholderDefaultColor:'#AAAAAA',
         svgColor:'#EFEFEF',
         listOverlay:"black"
     },
     light:{
         backgroundColor:'#EFEFEF',
         textDefaultColor:'#272727',
+        textGray:'#919191',
+        placeholderDefaultColor:null,
         svgColor:'#272727',
         listOverlay:"white"
     }

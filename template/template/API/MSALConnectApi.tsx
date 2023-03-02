@@ -11,9 +11,9 @@ export default class MSALConnect {
         auth: {
           clientId: Config.MICROSOFT_CLIENT_ID,
           redirectUri: Platform.select({
-           android: 'msauth://'+ getBundleId() +'/'+ encodeURIComponent(Config.SIGNATURE_HASH), // ex: "msauth://com.package/Xo8WBi6jzSxKDVR4drqm84yr9iU%3D"
-           default: undefined,
-         }),
+            android: 'msauth://'+ getBundleId() +'/'+ encodeURIComponent(Config.SIGNATURE_HASH), // ex: "msauth://com.package/Xo8WBi6jzSxKDVR4drqm84yr9iU%3D"
+            default: undefined,
+          }),
           //authority: getBundleId()+"/default_msal_authority"
         },
       };

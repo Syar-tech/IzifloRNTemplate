@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'kotlin-android'
 //react_native_config
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
@@ -203,6 +204,12 @@ android {
             keyAlias "syartec"
             keyPassword "syartec"
             ext.enableCrashlytics = project.env.get("PACKAGE_SUFFIX") == ""
+        }
+    }
+    flavorDimensions 'device'
+    productFlavors {
+        store {
+            signingConfig signingConfigs.prod
         }
     }
     buildTypes {

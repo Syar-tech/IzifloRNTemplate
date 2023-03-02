@@ -93,7 +93,7 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
                             throw new Error(data)
                     }
                 }else if(data?.data){
-                    console.log("data", data?.data);
+                    //console.log("data", data?.data);
                     data.data.forEach((instance) => {
                         instance.value=instance.id_instance,
                         instance.label=instance.instance_code + ' - ' + instance.instance_name

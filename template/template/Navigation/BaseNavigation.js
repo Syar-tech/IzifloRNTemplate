@@ -1,10 +1,11 @@
 // Navigation/Navigations.js
 
 import React, {useEffect, useRef, useState} from 'react';
-import  { View, TouchableOpacity, DeviceEventEmitter, StyleSheet, Text} from 'react-native';
+import  { View, TouchableOpacity, DeviceEventEmitter, StyleSheet, Text, NativeModules, Linking, AppState} from 'react-native';
 import { createStackNavigator} from '@react-navigation/stack'
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
-import Navigation, {CustomDrawers} from '../../Navigation/Navigation'
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, useIsDrawerOpen} from '@react-navigation/drawer'
+import Navigation from '../../Navigation/Navigation'
+import {CustomDrawers} from '../../Navigation/Navigation'
 import Corner from '../Components/CornerLabel'
 import LoginScene from '../Scenes/LoginScene'
 import ServerInfoModal from '../Modal/ServerInfoModal'
@@ -26,9 +27,11 @@ import ErrorScene from '../Scenes/ErrorScene';
 import { CommonActions } from '@react-navigation/routers';
 import ColorSchemeItem from '../Components/ColorSchemeItem';
 import { useLanguage } from '../Locales/locales'
-import VersionCheck from 'react-native-version-check'
 import {versionCompare} from '../Tools/StringTools'
 import { useDispatch, useSelector } from 'react-redux';
+import {  getVersionAndBuild, getVersionCheck, openUpdateUrl } from '../API/LoginApi';
+import { getVersionCheckName } from '../Tools/Tools';
+
 
 const MainStack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -43,6 +46,7 @@ export const hamburgerMenu = navigation => (
   )
 
 function MainStackScreen({navigation, user, colorScheme}) {
+
   
   return (
       <MainStack.Navigator>
@@ -123,49 +127,64 @@ const DrawerScreen = (props)=>{
   let scheme = useSelector((state)=>state._template.colorScheme)
   let dispatch = useDispatch()
 
-
   const {locale} = useLanguage(false);
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
-  useEffect(
-    ()=> {
-      DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal())
-      if(Config.FLAVOR=="P" && !__DEV__ && Config.APP_ID){
-        VersionCheck.getLatestVersion()
-        .then(latestVersion => {
-          const currentVersion = VersionCheck.getCurrentVersion()
-          if(versionCompare(latestVersion,currentVersion) === 1){
-            setNewVersion(true)
-          }else{
-            setNewVersion(false)
-          }
-        }).catch(e => console.log(e));
-      }
-    },
-    []
-  )
 
-    const storeUrl = async url => {
-      const supported = await Linking.canOpenURL(url)
-      if(supported)
-          await Linking.openURL(url)
+
+  const user = useSelector(state => state._template.user)
+
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+
+    checkVersion()
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        checkVersion()
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const checkVersion  = async ()=>{
+    let versionCode = await getVersionCheckName()
+    console.log("versionCode",versionCode)
+    DeviceEventEmitter.removeAllListeners("izi.event.showBoutModal")
+    DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal())
+    if(true/*!__DEV__*/){
+        let currentVersion = getVersionAndBuild()
+        console.log(currentVersion)
+        getVersionCheck(versionCode).then(version =>{
+            if(version?.error){
+              console.log("check version error", version.error, versionCode, Platform.OS, Config.IS_BUNDLE)
+            }
+            if(version?.version){
+            if(versionCompare(version.version,currentVersion) === 1){
+                setNewVersion(version)
+              } else{
+                setNewVersion(false)
+              }
+            }
+        })
     }
+  }
+
 
 
 
   const extraOptions = {showModal:showModal, drawerContent:props.drawerContent,useScheme:props.useScheme};
   return (
     <SafeAreaView style={{flex:1, overflow:'hidden'}}>
-            {newVersion && <TouchableOpacity style={{height:40,width:'100%',backgroundColor:colors.iziflo_blue,justifyContent:'center',alignItems:'center'}} onPress={() => {
-        if(Platform.OS === 'android'){
-          VersionCheck.getPlayStoreUrl().then(url => storeUrl(url))
-        }else{
-          VersionCheck.getAppStoreUrl({
-            appID:Config.APP_ID
-          }).then(url => storeUrl(url))
-            .catch(e => console.log(e))
-        }
-      }}>
+            {newVersion && <TouchableOpacity style={{height:40,width:'100%',backgroundColor:colors.iziflo_blue,justifyContent:'center',alignItems:'center'}} onPress={openUpdateUrl}>
         <Text style={{color:'white',fontWeight:'bold',textDecorationLine:'underline'}}>
           {locale._template.new_update_available}
         </Text>

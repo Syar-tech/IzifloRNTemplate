@@ -244,6 +244,7 @@ const LoginScene = ({navigation, route }) => {
                 footerButtons:[{
                     image:icon_back,
                     text:locale.Global.back,
+                    isBackButton:true
                 },{
                     image:icon_validate,
                     text:locale.Global.confirm,

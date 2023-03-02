@@ -13,6 +13,8 @@ import { useIsFocused } from '@react-navigation/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadSettings } from '../API/LoginApi'
 import IziLoader from '../Components/IziLoader'
+import { ScrollView } from 'react-native-gesture-handler'
+import { ACTIONS_TYPE } from '../../Store/ReduxStore'
 
 
 function AboutScene({navigation,route}){
@@ -46,25 +48,11 @@ function AboutScene({navigation,route}){
                 })
             })
         }
+        dispatch({type:ACTIONS_TYPE.CLEAR_ALL_CACHE});
         Alert.alert(locale._template.clearCache,locale._template.cacheHasBeenCleared)
     }
 
-    useEffect(() => {
-        console.log("locale", localeIdentifier)
-        if(Config.APP_ID){
-            VersionCheck.getLatestVersion()
-                .then(latestVersion => {
-                    const currentVersion = VersionCheck.getCurrentVersion()
-
-                    if(versionCompare(latestVersion,currentVersion) === 1){
-                        setNewVersion(true)
-                    }else{
-                        setNewVersion(false)
-                    }
-            }).catch(e => console.log(e));
-        }
-    },[])
-
+    
     useEffect(()=>{
         if(isFocused){
         navigation.setOptions(
@@ -98,6 +86,7 @@ function AboutScene({navigation,route}){
 
     return (
         <View style={styles.container}>
+            <ScrollView>
             <View>
                 <View style={styles.textContainer}>
                     <Text style={styles.modalText}><Text style={styles.title}>{locale._template.app}</Text> : {getBundleId()} ({getReadableVersion()})</Text>
@@ -122,6 +111,7 @@ function AboutScene({navigation,route}){
                 </View>
                 
             </View>
+            </ScrollView>
             <View>
                 {newVersion && <TouchableOpacity onPress={async () => {
                     
@@ -152,6 +142,7 @@ function AboutScene({navigation,route}){
 const styles = StyleSheet.create({
     container:{
         padding:20,
+        paddingTop:0,
         flex:1,
         justifyContent:'space-between'
     },
@@ -167,7 +158,7 @@ const styles = StyleSheet.create({
     button:{
         width:'50%',
         alignSelf:'center',
-        marginBottom:20
+        marginBottom:5
     },
     textContainer:{
         borderBottomColor:colors.iziflo_dark_gray,

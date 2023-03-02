@@ -19,6 +19,12 @@ case $1 in
     sprint | "p.sprint")
         SUFFIX_PARAMS="--appIdSuffix \"sprint\"";
         ;;
+    maint | "p.maint")
+        SUFFIX_PARAMS="--appIdSuffix \"maint\"";
+        ;;
+    trunk | "p.trunk")
+        SUFFIX_PARAMS="--appIdSuffix \"trunk\"";
+        ;;
     "dev.screen")
         #nothing to do
         ;;

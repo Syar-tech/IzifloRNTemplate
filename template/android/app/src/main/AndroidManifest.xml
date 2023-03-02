@@ -15,6 +15,7 @@
       android:theme="@style/AppTheme"
       tools:replace="android:label"
       android:installLocation="auto"
+      android:extractNativeLibs="true"
       android:usesCleartextTraffic="@string/CLEARTEXT">
       <activity
         android:name=".MainActivity"

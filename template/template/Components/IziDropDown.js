@@ -183,6 +183,7 @@ export default function IziDropdown(props){
                                 flex: 1,
                                 fontSize: 18,
                                 textAlign,
+                                maxWidth:props.multiple ? '80%' : '100%',
                                 marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
                             >
                                 {text}

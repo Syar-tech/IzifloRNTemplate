@@ -84,12 +84,13 @@ export function versionCompare(v1, v2, options) {
   }
 
   export function formatDateForDisplay(date, settings){
-    if(!date || date == null || !date.getTime()) return ''
+    console.log("format", date)
+    if(!date || date == null || !date.getTime || !date.getTime()) return ''
     return  format(date, settings.dateFormat?.replaceAll('D','d')?.replaceAll('Y','y'))
   }
 
   export function formatDateAndTimeForDisplay(date, settings){
-    if(!date || date == null || !date.getTime()) return ''
+    if(!settings || !date || date == null || !date.getTime || !date.getTime()) return ''
     return  format(date, settings.dateFormat?.replaceAll('D','d')?.replaceAll('Y','y') + ' HH:mm')
   }
 

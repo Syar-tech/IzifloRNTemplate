@@ -37,7 +37,6 @@ export default function(tableName, secondaryKeys = [], flagModificationFromParen
                 
                 return !shouldRemove
             });
-
             
             if(flagModificationFromParents){
                 //look for parents items (ie created, updated and deleted from parents)
@@ -50,6 +49,21 @@ export default function(tableName, secondaryKeys = [], flagModificationFromParen
                     return localData
                     
                 })
+
+                
+                if(tableName === 'shipments'){
+                    state.local_data?.map(localData => {
+                        let isDeleted = localData._toDelete?.some(toDelete => {
+                            return !action.value.some(e => e?.id === toDelete?.id)
+                        })
+                        if(!isDeleted && localData?.id)
+                            isDeleted = !action.value.some(e => e?.id === localData?.id)
+        
+                        localData.areParentsDeleted = isDeleted
+                        return localData
+                    })
+                }
+
             }
 
             return {
@@ -57,7 +71,8 @@ export default function(tableName, secondaryKeys = [], flagModificationFromParen
                 local_data:(updated ? updated : DEFAULT_DATA.local_data),
                 ts:action.ts === undefined ? DEFAULT_DATA.ts : action.ts,
                 i_id:action.i_id ? action.i_id : DEFAULT_DATA.i_id,
-                secondaryKeys:secondaryKeys
+                secondaryKeys:secondaryKeys,
+                lastTableSet:Date.now()
             }
             
                 //-----------------
@@ -73,7 +88,6 @@ export default function(tableName, secondaryKeys = [], flagModificationFromParen
                         console.log("Error saving in "+ tableName +": No value supplied");
                         return state
                     }
-
                     const values = !Array.isArray(action.value) ? [action.value] : action.value;
                     let updated = [...state.local_data];
                     values.forEach(item => {
@@ -178,7 +192,6 @@ export const useDataWithLocal = (tableName, transformFun = (tableArray)=>{return
         tbl = tbl ? tbl : [];
         return tbl;
     })
-    
     return table
 }
 
@@ -216,7 +229,7 @@ export const useModifiedDataOnly = (tableName, transformFun = (tableArray)=>{ret
 }
 
 
-const DEFAULT_DATA={ data: [],local_data: [],ts:-1,i_id:0, secondaryKeys:[]}
+const DEFAULT_DATA={ data: [],local_data: [],ts:-1,i_id:0, secondaryKeys:[],lastTableSet:0}
 
 
 export const TABLE_ACTIONS = {

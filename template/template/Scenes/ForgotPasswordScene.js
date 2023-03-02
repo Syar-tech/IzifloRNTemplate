@@ -36,11 +36,7 @@ export default function ForgotPasswordScene({navigation}){
         navigation.navigate('ErrorScene',{
             errorMessage: message,
             icon:json.success ? 'validate' : 'warning',
-            callback:() => {
-                setTimeout(() => {
-                    navigation.navigate(json.error ? 'ForgotPassword' : 'Login',{})
-                },3000)
-            }
+            closeDelay:{delay:3000, callback: () =>{ navigation.navigate(json.error ? 'ForgotPassword' : 'Login',{})}}
         })
     }
 

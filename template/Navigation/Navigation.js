@@ -4,15 +4,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 import DemoScene from '../template/Scenes/DemoScene';
 import {colors} from '../template/Styles/Styles'
 import {hamburgerMenu} from '../template/Navigation/BaseNavigation'
-import { DrawerItem } from '@react-navigation/drawer';
-import { SvgXml } from 'react-native-svg';
-import { useUserAndLanguage } from '../template/Locales/locales';
-import { useSelector } from 'react-redux';
+import { useLanguage } from '../template/Locales/locales';
+import { useDispatch, useSelector } from 'react-redux';
+import { useIsDrawerOpen } from '@react-navigation/drawer';
 
 const Stack = createStackNavigator();
 
 const headerStyle = {
-    backgroundColor:colors.lightGray
+    backgroundColor:colors.lightGray,
+    shadowOpacity: 0,
+    shadowColor: "#000",
+    elevation:0,
+    borderBottomWidth:1,
+    borderBottomColor:'#aaaaaa'
 }
 
 if(Platform.OS === 'android')
@@ -49,6 +53,16 @@ const styles = StyleSheet.create({
 })
 
 function RootStack() {
+    const dispatch = useDispatch()
+
+    const isDrawerOpen = useIsDrawerOpen()
+
+
+    useEffect(()=>{
+        if(isDrawerOpen)
+            Keyboard.dismiss()
+    }, [isDrawerOpen])
+  
     return (
       <Stack.Navigator
         initialRouteName="ScanScene"
@@ -72,16 +86,14 @@ export const CustomDrawers= (props)=>{
 
 
     let scheme = useSelector((state)=>state._template.colorScheme)
+    const {locale} = useLanguage(false);
     const user = useSelector(state => state._template_user)
-    const {locale} = useUserAndLanguage(false);
 
-    const [privileges,setPrivileges] = useState([])
-    useEffect(()=>{
-        if(user){
-            const p = {}
+    const privileges =  useSelector((state)=>{
+        const p = {}
 
-            if(Array.isArray(user.settings.privileges))
-                user.settings.privileges.forEach(privilege => {
+            if(Array.isArray(state._template.user?.settings?.privileges))
+                state._template.user.settings.privileges.forEach(privilege => {
                     for(let prop in privilege)
                         if(privilege.hasOwnProperty(prop))
                             p[prop] = privilege[prop]
@@ -91,17 +103,14 @@ export const CustomDrawers= (props)=>{
                     if(p[prop])
                         array.push(prop)
                 }
-            setPrivileges(array)
-        }
-        },
-        [props.user]
-    )
-    console.log("ici", scheme, colors)
+                return array;
+    })
 
     return (
         <>
             {// Add here custom DrawerItem
             }
+            
         </>
     )
 }

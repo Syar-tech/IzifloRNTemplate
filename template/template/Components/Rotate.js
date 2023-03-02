@@ -15,7 +15,7 @@ const Rotate = (props) =>{
     const width = useSharedValue(undefined);
     const height = useSharedValue(undefined);
     const transY = useSharedValue(0);
-
+/*
     const animatedStyles = useAnimatedStyle(() => {
         if(props.rotate)
             return {
@@ -23,9 +23,8 @@ const Rotate = (props) =>{
                 height: height.value ? height.value : "100%",
                 transform: [{ rotate:(angle.value + "deg")} , {translateY:transY.value}],
             }
-	else
             return {}
-    }); 
+    }); */
 
     useEffect(()=>{
         if(viewDim)Orientation.getDeviceOrientation(animate)
