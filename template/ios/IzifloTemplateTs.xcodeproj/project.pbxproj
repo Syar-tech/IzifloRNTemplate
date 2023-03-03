@@ -39,6 +39,7 @@
 		00E356EE1AD99517003FC87E /* IzifloTemplateTsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IzifloTemplateTsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* IzifloTemplateTsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IzifloTemplateTsTests.m; sourceTree = "<group>"; };
+		0707951329B24B450052E805 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		073C637D26720F9E00DE3926 /* IziTempUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IziTempUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		073C637F26720F9E00DE3926 /* IziTempUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IziTempUITests.swift; sourceTree = "<group>"; };
 		073C638126720F9E00DE3926 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -168,6 +169,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0707951329B24B450052E805 /* GoogleService-Info.plist */,
 				07A9CCB7260CCFD200B9B3D7 /* Config.xcconfig */,
 				13B07FAE1A68108700A75B9A /* IzifloTemplateTs */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -238,6 +240,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "IzifloTemplateTs" */;
 			buildPhases = (
+				0707951C29B262050052E805 /* ShellScript */,
 				857C7D6B4EDC3C7E60FCDD91 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
@@ -340,6 +343,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		0707951C29B262050052E805 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\npDir=${PROJECT_DIR}\ncd $pDir \nyarn appicon ${ENV_TYPE} ios\n";
 		};
 		1B8EE89BED4F72A395F46422 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

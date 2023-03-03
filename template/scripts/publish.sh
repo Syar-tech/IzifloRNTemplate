@@ -4,6 +4,18 @@
 
 source ./scripts/apply_config.sh $1 $2
 
+
+//generate icons
+case $2 in
+    ios)
+
+        yarn appicon $1 ios
+        ;;
+    *)
+        yarn appicon $1 android
+        ;;
+esac
+
 case $2 in
 
     apk)
@@ -71,8 +83,9 @@ case $2 in
     ios)
     #
     #   Non géré 
-    #
+    #   
         echo -e "\033[1;4;43m Publication sur iOS \033[0m"
+        platform="ios"
         ;;
     *)
         echo -e "\033[1;4;41m Commande non reconnu, essayez parmis : install, apk , store, ios \033[0m"

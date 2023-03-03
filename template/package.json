@@ -19,7 +19,8 @@
     "trunk": "yarn p trunk apk",
     "recette": "yarn p recette apk",
     "prod": "yarn p prod bundle",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "appicon" : "./scripts/appicon.sh"
   },
   "dependencies": {
     "@haskkor/react-native-pincode": "^1.22.6",
@@ -44,7 +45,6 @@
     "react-native-config": "^1.4.2",
     "react-native-device-info": "^8.0.6",
     "react-native-dropdown-picker": "^5.1.4",
-    "react-native-env": "^0.0.6",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-keychain": "^6.2.0",
@@ -75,6 +75,7 @@
     "@types/react-test-renderer": "^16.9.2",
     "babel-jest": "^26.6.3",
     "eslint": "^7.14.0",
+    "icon-set-creator": "^1.1.5",
     "jest": "^26.6.3",
     "metro-react-native-babel-preset": "^0.64.0",
     "react-test-renderer": "17.0.1",

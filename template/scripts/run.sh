@@ -12,7 +12,10 @@ else
         VAR=$3
         echo -e "\033[1;4;46m Build Debug for variant : $VAR \033[0m"
 fi
-ENVFILE=".env.${IZI_ENV}" yarn run $2 ${SUFFIX_PARAMS} $4 --variant=${VAR}Debug
+
+yarn appicon $1 $2
+
+#ENVFILE=".env.${IZI_ENV}" yarn run $2 ${SUFFIX_PARAMS} $4 --variant=${VAR}Debug
 
 exit 0
 
