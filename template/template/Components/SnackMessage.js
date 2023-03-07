@@ -8,7 +8,7 @@ import Animated, {Easing, EasingNode, useAnimatedStyle, useSharedValue, withSpri
 import { Button } from 'react-native-share'
 import { SvgXml } from 'react-native-svg'
 import { useSelector } from 'react-redux'
-import TopShadowOverlay from '../../Components/TopShadowOverlay'
+import TopShadowOverlay from '../Components/TopShadowOverlay'
 import icon_cancel from '../../res/img/icon_cancel'
 
 import { colors } from '../../style/style'

@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>7053510804-chldiavremis1ddqgn2aciqkcolhbnu4.apps.googleusercontent.com</string>
+	<string>472483917207-cqnb2m7hk89fq4qksjta1ool6sbvt0ca.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.7053510804-chldiavremis1ddqgn2aciqkcolhbnu4</string>
+	<string>com.googleusercontent.apps.472483917207-cqnb2m7hk89fq4qksjta1ool6sbvt0ca</string>
 	<key>API_KEY</key>
-	<string>AIzaSyATbeaErglKsFIxW0aKfoMtklfzCQz1jAw</string>
+	<string>AIzaSyBQNf5awiA1kXfKcIU3rKDvegcfygTpEao</string>
 	<key>GCM_SENDER_ID</key>
-	<string>7053510804</string>
+	<string>472483917207</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.com.zlogistics</string>
+	<string>com.iziflotemplatets</string>
 	<key>PROJECT_ID</key>
-	<string>zlogistics-ed0d2</string>
+	<string>iziflo-template</string>
 	<key>STORAGE_BUCKET</key>
-	<string>zlogistics-ed0d2.appspot.com</string>
+	<string>iziflo-template.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:7053510804:ios:5a734380dee3b1acd0cc81</string>
+	<string>1:472483917207:ios:8f309f96f2ee2f68c468d2</string>
 </dict>
 </plist>

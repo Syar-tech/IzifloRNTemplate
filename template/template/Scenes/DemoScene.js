@@ -10,7 +10,6 @@ import ActionsFooter from '../Components/Footers/ActionsFooter'
 import icon_logout from '../res/img/icon_logout'
 import Rotate from '../Components/Rotate'
 import { useDispatch, useSelector } from 'react-redux'
-import { RNCamera } from 'react-native-camera'
 
 
 const DemoScene=({navigation})=>{
@@ -23,18 +22,7 @@ const DemoScene=({navigation})=>{
     return (
         <SafeAreaView
         style={styles.main_container}>
-            <Text>RNCamera.</Text>
-            <View style={styles.centeredView}>
-                <RNCamera style={[{flex:1,width:'100%'}]}
-                    onTextRecognized={obj => {
-                      obj.textBlocks.forEach(e => {
-                          if(e?.value)
-                              console.log(e.value)
-                      })
-                    }}
-                    captureAudio={false}
-                />
-            </View>
+            
 
             <ActionsFooter
                 items={[{title:"Action", key:1}, {title:locale._template.disconnect_upper, key:99, icon:icon_logout},{title:"Action 2", key:2},{title:"Action 3", key:5},{title:"Action 4", key:1100},]}

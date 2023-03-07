@@ -30,7 +30,7 @@ import { TOKEN_TYPE } from "../Types/LoginTypes";
 import store, { ACTIONS_TYPE } from '../../Store/ReduxStore'
 import IziButton from '../Components/IziButton'
 import { useModifiedDataOnly } from '../store/CommonDownReducer'
-import icon_back from '../../res/img/icon_back'
+import icon_back from '../res/img/icon_back'
 import icon_validate from '../res/img/icon_validate'
 
 const LoginScene = ({navigation, route }) => {
@@ -52,12 +52,7 @@ const LoginScene = ({navigation, route }) => {
     const [showInstances, setShowInstances] = useState(false)
     const [msal] = useState(new MSALConnect())
     const [dropdownOpen, setDropdownOpen] = useReducer((state, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
-    
-    const currentInventories = useModifiedDataOnly("inventories", (tableData)=>{
-        return tableData.filter(inventory=>{
-            return inventory.state !== 2
-        }).length
-    })
+
 
     //data
     const [user, setUser] = useState(undefined)
@@ -239,15 +234,15 @@ const LoginScene = ({navigation, route }) => {
     function _disconnect(isFromInstanceChoise = false){
         if(!isFromInstanceChoise)
             return navigation.navigate('ErrorScene',{
-                errorMessage: <Text>{locale.MainMenuScene.inventoryInProgress +"\n"}<B>{locale.ErrorScene.confirm}</B></Text>,
+                errorMessage: <Text>{locale._template.dataInProgress +"\n"}<B>{locale._template.doYouConfirm}</B></Text>,
                 icon:'warning',
                 footerButtons:[{
                     image:icon_back,
-                    text:locale.Global.back,
+                    text:locale._template.back,
                     isBackButton:true
                 },{
                     image:icon_validate,
-                    text:locale.Global.confirm,
+                    text:locale._template.confirm,
                     onPress : async () => {
                         _resetUser()
                         setServer(undefined)

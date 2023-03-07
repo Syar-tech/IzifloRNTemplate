@@ -16,9 +16,13 @@ public class IzifloCommonPackage implements ReactPackage {
         return Collections.emptyList();
     }
 
-    @Override public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        List<NativeModule> modules = new ArrayList<>();
-        modules.add(IzifloCommonModule.initKeyEventModule(reactContext));
-        return modules;
-    }
+    @Override
+   public List<NativeModule> createNativeModules(
+           ReactApplicationContext reactContext) {
+       List<NativeModule> modules = new ArrayList<>();
+
+       modules.add(new IzifloCommonModule(reactContext));
+
+       return modules;
+   }
 }

@@ -34,6 +34,10 @@ export default {
         darkMode:'Mode sombre',
         more:"Plus",
         cacheHasBeenCleared:'Le cache a été vidé.',
+        dataInProgress:"Des données sont peut-être en cours de traitement et peuvent être perdues.",
+        "doYouConfirm": "Confirmez-vous cette action ?",
+        "confirm": "Confirmer",
+        "back": "Retour",
         pincode:{
             title_choose:"1 - Entrez un code PIN",
             title_confirm:"2 - Confirmez votre code PIN",

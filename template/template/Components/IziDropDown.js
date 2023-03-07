@@ -7,7 +7,7 @@ import {
 import { loginStyles, colors, sizes ,filterObject} from '../Styles/Styles'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Checkbox from '../../Components/Checkbox'
+import Checkbox from '../Components/Checkbox'
 import { useLanguage } from '../Locales/locales'
 
 

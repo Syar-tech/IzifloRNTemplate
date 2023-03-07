@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "472483917207",
+    "project_id": "iziflo-template",
+    "storage_bucket": "iziflo-template.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472483917207:android:eafb6dacc6754fe2c468d2",
+        "android_client_info": {
+          "package_name": "com.iziflotemplatets"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472483917207-9vjseihh5uh2luqmhijrcecpv6e73f9q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7O87kRK3HA5txYI2KVGkil_9EA7DMOgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472483917207-9vjseihh5uh2luqmhijrcecpv6e73f9q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

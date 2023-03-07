@@ -15,7 +15,7 @@ fi
 
 yarn appicon $1 $2
 
-#ENVFILE=".env.${IZI_ENV}" yarn run $2 ${SUFFIX_PARAMS} $4 --variant=${VAR}Debug
+ENVFILE=".env.${IZI_ENV}" yarn run $2 ${SUFFIX_PARAMS} $4 --variant=${VAR}Debug
 
 exit 0
 

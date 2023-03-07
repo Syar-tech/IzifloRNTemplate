@@ -1,4 +1,4 @@
-package iziflotemplatets;
+package com.iziflotemplatets;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,15 +24,15 @@ import java.util.HashMap;
 import javax.annotation.Nullable;
 
 public class IzifloCommonModule extends ReactContextBaseJavaModule {
-    private static long[] sVIBRATE_OK_TIMING = new long[]{0, 100, 100, 100};
-    private static long[] sVIBRATE_KO_TIMING = new long[]{0, 400, 100,100, 200, 400};
-    private static long[] sVIBRATE_SCAN_TIMING = new long[]{0, 100, 100, 100};
-
 
     private static IzifloCommonModule instance = null;
 
     IzifloCommonModule(ReactApplicationContext context) {
         super(context);
+    }
+    @Override
+    public String getName() {
+        return "IzifloCommonModule";
     }
 
     public static IzifloCommonModule initKeyEventModule(ReactApplicationContext reactContext) {
@@ -61,9 +61,5 @@ public class IzifloCommonModule extends ReactContextBaseJavaModule {
     }
 
 
-    @Override
-    public String getName() {
-        return "IzifloCommonModule";
-    }
 
 }

@@ -11,6 +11,11 @@ then
 else
         ext=$3
 fi
+if [ "$1" = "all" ]; then
+    envs=(dev sprint maint trunk recette recette2 prod)
+else
+    envs=($1)
+fi
 
 case $2 in
     android)
@@ -20,18 +25,23 @@ case $2 in
         params="-I";
         ;;
     *)
-        IZI_ENV=""
         ;;
 esac
-icon="./icon/icon.$ext" 
-if test -f "./icon/icon.$1.$ext"; then
-    icon="./icon/icon.$1.$ext" 
-fi
+
+for env in "${envs[@]}"; do
+    icon="./icon/icon.$ext" 
+    if test -f "./icon/icon.$env.$ext"; then
+        icon="./icon/icon.$env.$ext" 
+    fi
+
+    #ios only
+    if [ "$2" = "ios" ]; then
+        params="$params --flavor $env"
+    fi
 
 
-
-echo -e "\033[1;4;46;46mGenerate icon from $icon for platform $params\033[0m"
-yarn iconset create $params $icon 
-
+    echo -e "\033[1;4;46;46mGenerate icon from $icon for platform $params and env $env\033[0m"
+    yarn iconset create $params $icon 
+done
 exit 0
 

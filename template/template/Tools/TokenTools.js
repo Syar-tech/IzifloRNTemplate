@@ -7,7 +7,7 @@ import deviceInfoModule, {getReadableVersion, getUniqueId} from 'react-native-de
 import {izi_api_client_id} from "../../config/iziConfig"
 import { ACTIONS_TYPE } from '../../Store/ReduxStore';
 import NetInfo from "@react-native-community/netinfo";
-import icon_back from '../../res/img/icon_back';
+import icon_back from '../res/img/icon_back';
 import icon_validate from '../res/img/icon_validate';
 import { B } from '../Styles/Styles';
 
@@ -19,15 +19,15 @@ export async function disconnect(navigation, dispatch,locale){
     console.log("disconnect", navigation.navigate)
     if(navigation && locale)
         return navigation.navigate('ErrorScene',{
-            errorMessage: <Text>{locale.MainMenuScene.inventoryInProgress +"\n"}<B>{locale.ErrorScene.confirm}</B></Text>,
+            errorMessage: <Text>{locale._template.dataInProgress +"\n"}<B>{locale._template.doYouConfirm}</B></Text>,
             icon:'warning',
             footerButtons:[{
                 image:icon_back,
-                text:locale.Global.back,
+                text:locale._template.back,
                 isBackButton:true
             },{
                 image:icon_validate,
-                text:locale.Global.confirm,
+                text:locale._template.confirm,
                 onPress : async () => {
                     await dispatch({type:ACTIONS_TYPE.USER_DISCONNECT})
                     navigation.reset({

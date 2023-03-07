@@ -181,6 +181,7 @@ android {
         resValue "string", "msal_host", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
         resValue "string", "variant_name", project.env.get("VARIANT_APP_NAME")
         resValue "string", "manifest_signature_hash", "/"+project.env.get("SIGNATURE_HASH")
+        resValue "string", "version_check_mode", (project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX"))
     }
     splits {
         abi {
@@ -191,13 +192,6 @@ android {
         }
     }
     signingConfigs {
-        debug {
-            storeFile file("$rootDir/keystore/key_signed_pass_syartec")
-            storePassword "syartec"
-            keyAlias "syartec"
-            keyPassword "syartec"
-            ext.enableCrashlytics = project.env.get("PACKAGE_SUFFIX") == ""
-        }
         prod {
             storeFile file("$rootDir/keystore/key_signed_pass_syartec")
             storePassword "syartec"
@@ -213,17 +207,19 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.prod
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.prod
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
 
             setProperty("archivesBaseName", project.android.defaultConfig.applicationId+ project.env.get("PACKAGE_SUFFIX")+"-" + defaultConfig.versionCode)
+        }
+        debug {
+
+            initWith release
+            debuggable true
+            zipAlignEnabled false
         }
     }
 
@@ -268,11 +264,11 @@ dependencies {
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
     }
-
+    
     if (enableHermes) {
-        def hermesPath = "../../node_modules/hermes-engine/android/";
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+       implementation("com.facebook.react:hermes-engine:+") {
+           exclude group:'com.facebook.fbjni'
+       }
     } else {
         implementation jscFlavor
     }

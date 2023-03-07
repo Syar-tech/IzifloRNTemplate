@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {TouchableOpacity,Text, StyleSheet, useWindowDimensions, View} from 'react-native'
 import { SvgXml } from 'react-native-svg';
-import TopShadowOverlay from '../../../Components/TopShadowOverlay';
 import icon_home from '../../res/img/icon_home';
 import { colors } from '../../Styles/Styles';
 import { IziDimensions } from '../../Tools/Dimensions';

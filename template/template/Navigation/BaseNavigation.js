@@ -191,7 +191,6 @@ const DrawerScreen = (props)=>{
       </TouchableOpacity>}
         <View style={{flex:1, overflow:'hidden'}}>
           <Drawer.Navigator 
-          drawerContentOptions={extraOptions}
           drawerContent={(props) => CustomDrawerContent({...props, ...extraOptions},locale,scheme, dispatch)} 
           screenOptions={{ gestureEnabled: true, headerShown:false,drawerContent:props.drawerContent}}>
             {props.children}
