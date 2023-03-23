@@ -31,6 +31,7 @@ import {versionCompare} from '../Tools/StringTools'
 import { useDispatch, useSelector } from 'react-redux';
 import {  getVersionAndBuild, getVersionCheck, openUpdateUrl } from '../API/LoginApi';
 import { getVersionCheckName } from '../Tools/Tools';
+import UpdateScene from '../Scenes/UpdateScene';
 
 
 const MainStack = createStackNavigator();
