@@ -38,6 +38,14 @@ export default {
         "doYouConfirm": "Confirmez-vous cette action ?",
         "confirm": "Confirmer",
         "back": "Retour",
+
+        "UpdateScene": {
+            "mandatoryUpdateTitle": "Une mise à jour doit être effectuée",
+            "mandatoryUpdateDescription": "Veuillez télécharger la nouvelle mise à jour pour pouvoir utiliser l'application",
+            "mandatoryTooBigVersionTitle": "Votre application est trop récente pour ce serveur",
+            "mandatoryTooBigVersionDescription": "Veuillez patienter. La mise à jour devrait avoir lieu dans les jours à venir.",
+            "update": "METTRE À JOUR"
+        },
         pincode:{
             title_choose:"1 - Entrez un code PIN",
             title_confirm:"2 - Confirmez votre code PIN",

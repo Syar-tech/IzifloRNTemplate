@@ -72,6 +72,8 @@ export const getCommonParams = async (user = null, addInstance = true) =>  {
         params.email = user.email
         params.token = user.token.token
         params.login_type = user.token.tokenType
+        params.model_name = deviceInfoModule.getBrand() + ' ' + deviceInfoModule.getModel()
+        params.os_version = Platform.OS + ' ' + Platform.Version
         if(addInstance) params.id_instance = user.server.instance.id_instance
     }
     return params;

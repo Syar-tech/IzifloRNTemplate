@@ -30,7 +30,8 @@ export default {
         aboutIziflo:"About Iziflo",
         disconnect:"Log out",
         an_email_was_sent_with_a_new_password:'An email containing your new password has been sent to you',
-        "confirm": "Do you confirm ?",
+        "dataInProgress": "some data processing may be pending and may be lost.",
+        "doYouConfirm": "Do you confirm ?",
         "confirm": "Confirm",
         "back": "Back",
         cacheHasBeenCleared:'The cache has been cleared.',
@@ -38,6 +39,14 @@ export default {
         home:'Home',
         darkMode:'Dark theme',
         more:"More",
+
+        "UpdateScene": {
+            "mandatoryUpdateTitle": "A mandatory update is available",
+            "mandatoryUpdateDescription": "Please download the new update to be able to use the app",
+            "update": "UPDATE",
+            "mandatoryTooBigVersionTitle": "Your app is too recent for the server",
+            "mandatoryTooBigVersionDescription": "Please wait for the server to be updated soon."
+        },
         pincode:{
             title_choose:"1 - Enter a PIN code",
             title_confirm:"2 - Confirm your PIN code",

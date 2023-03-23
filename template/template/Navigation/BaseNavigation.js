@@ -114,6 +114,14 @@ const RootStackScreen = (props) =>{
               options={{ headerShown: false,
               headerLeft:() => null }}
             />
+            <RootStack.Screen
+                name="UpdateScene"
+                component={UpdateScene}
+                options={({navigation}) => ({
+                    headerLeft:() => hamburgerMenu(navigation),
+                    headerRight:() => <View style={{width:30,height:30}}></View>,
+                })}
+            />
           </RootStack.Navigator>
            {_displayCorner()}
       </View>
@@ -131,8 +139,6 @@ const DrawerScreen = (props)=>{
   const infoModal = useRef(undefined)
   const showModal = ()=>{if(infoModal?.current) infoModal?.current.show()}
 
-
-  const user = useSelector(state => state._template.user)
 
   const appState = useRef(AppState.currentState);
 
@@ -160,7 +166,7 @@ const DrawerScreen = (props)=>{
     console.log("versionCode",versionCode)
     DeviceEventEmitter.removeAllListeners("izi.event.showBoutModal")
     DeviceEventEmitter.addListener("izi.event.showBoutModal", () => showModal())
-    if(true/*!__DEV__*/){
+    if(!__DEV__){
         let currentVersion = getVersionAndBuild()
         console.log(currentVersion)
         getVersionCheck(versionCode).then(version =>{

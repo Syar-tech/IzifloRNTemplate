@@ -5,7 +5,7 @@
 source ./scripts/apply_config.sh $1 $2
 
 
-//generate icons
+#generate icons
 case $2 in
     ios)
 

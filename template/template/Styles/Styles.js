@@ -16,6 +16,8 @@ export const colors={
     iziflo_orange:"#E58B3E",
     lightGray:'#EFEFEF',
     lightBlack:'#272727',
+    orange:'#FAA542',
+    yellowOrange:'#F9B42E',
     white:'#FFF',
     dark:{
         backgroundColor:'#272727',

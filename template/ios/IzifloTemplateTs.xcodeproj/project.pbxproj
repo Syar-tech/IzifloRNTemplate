@@ -804,7 +804,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3402ED8DF2B26BADE03CB54F /* Pods-IzifloTemplateTs.dev.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-prod;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-$(ENV_TYPE)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = IzifloTemplateTs/IzifloTemplateTs.entitlements;
 				CURRENT_PROJECT_VERSION = 8;
@@ -821,7 +821,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PACKAGE_NAME)$(PACKAGE_SUFFIX)";
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = IzifloTemplateTs;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -922,7 +922,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C5C1946ECD4DFC0CF5D7FE8B /* Pods-IzifloTemplateTs.dev.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-prod;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-$(ENV_TYPE)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = IzifloTemplateTs/IzifloTemplateTs.entitlements;
 				CURRENT_PROJECT_VERSION = 8;
@@ -938,7 +938,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PACKAGE_NAME)$(PACKAGE_SUFFIX)";
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = IzifloTemplateTs;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -975,7 +975,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EF4B7067E97DB8D0193A032A /* Pods-IzifloTemplateTs.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-prod;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-$(ENV_TYPE)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = IzifloTemplateTs/IzifloTemplateTs.entitlements;
 				CURRENT_PROJECT_VERSION = 8;
@@ -992,7 +992,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PACKAGE_NAME)$(PACKAGE_SUFFIX)";
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = IzifloTemplateTs;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1005,7 +1005,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 48D52727B795F7F527B04363 /* Pods-IzifloTemplateTs.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-prod;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-$(ENV_TYPE)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = IzifloTemplateTs/IzifloTemplateTs.entitlements;
 				CURRENT_PROJECT_VERSION = 8;
@@ -1021,7 +1021,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "$(PACKAGE_NAME)$(PACKAGE_SUFFIX)";
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = IzifloTemplateTs;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

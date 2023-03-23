@@ -4,18 +4,87 @@ import Button ,{IziButtonStyle} from "../Components/IziButton"
 import {disconnect} from "../Tools/TokenTools"
 import { useLanguage } from "../Locales/locales"
 import {getExampleAttachementTypesWithIdExternal} from '../API/WSApi'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useIsFocused } from '@react-navigation/native'
+import { getMandatoryUpdateVersion, getVersionAndBuild } from '../API/LoginApi'
+import { versionCompare } from '../Tools/StringTools'
 
 
 const MainScene=({navigation})=>{
     const {locale} = useLanguage()
     const [attachments,setAttachments] = useState<string|undefined>(undefined)
+    const isFocused = useIsFocused()
+
+    const user = useSelector(state => state._template.user)
 
     const getAttachments = () =>{
         getExampleAttachementTypesWithIdExternal(navigation, 'document', 510809)
         .then((data) =>setAttachments(data));
     }
 
+    const redirectToUpdateScreen = (deviceType, allowUpdate = true) => {
+        navigation.navigate('UpdateScene',{
+            deviceType,
+            allowUpdate
+      })
+    }
+
+
+    useEffect(() =>{
+        //loadDeliveries(navigation,store,true)
+        if(isFocused){
+            checkMandatoryVersion()
+
+            if(dispatch && user){
+                loadSettings(dispatch,user)
+            }
+            tryLoadingData()
+        }
+    }, [isFocused])
+
+  const checkMandatoryVersion = async () =>{
+    
+    const data = await getMandatoryUpdateVersion(user.server.id)
+    console.log("checkMandatory",data)
+    const currentVersion = getVersionAndBuild()
+
+    //MAX version
+    if(data?.p23_version_max && Platform.OS === 'android' && false /*&& await hasUHF()*/){
+      if(versionCompare(currentVersion,data.p23_version_max) === 1){
+          //UPDATE NEEDED
+          redirectToUpdateScreen('p23', false)
+      }
+    }else if(Platform.OS === 'android' && true /*&& !await hasUHF()*/ && data.app_version_max){
+        if(versionCompare(currentVersion,data.app_version_max) === 1){
+            //UPDATE NEEDED
+            redirectToUpdateScreen('android', false)
+        }
+    }else if(Platform.OS === 'ios' && data.ios_version_max){
+        console.log("mand3",versionCompare(currentVersion,data.ios_version_max),currentVersion,data.ios_version_max)
+
+        if(versionCompare(currentVersion,data.ios_version_max) === 1){
+            //UPDATE NEEDED
+            redirectToUpdateScreen('ios', false)
+        }
+    }
+    //min version
+    if(data?.p23_version_min && Platform.OS === 'android' && false /*&& await hasUHF()*/){
+        if(versionCompare(currentVersion,data.p23_version_min) === -1){
+            //UPDATE NEEDED
+            redirectToUpdateScreen('p23')
+        }
+    }else if(Platform.OS === 'android' && true /*&& !await hasUHF()*/ && data.app_version_min){
+        if(versionCompare(currentVersion,data.app_version_min) === -1){
+            //UPDATE NEEDED
+            redirectToUpdateScreen('android')
+        }
+    }else if(Platform.OS === 'ios' && data.ios_version_min){
+        if(versionCompare(currentVersion,data.ios_version_min) === -1){
+            //UPDATE NEEDED
+            redirectToUpdateScreen('ios')
+        }
+    }
+  }
     return (
         <SafeAreaView
         style={styles.main_container}>

@@ -17,7 +17,7 @@ export function searchServers(email){
     app_type:isDemo(email) ? demo_flavor :  Config.FLAVOR,
     core_version:Config.CORE_VERSION
   }
-  console.log(Config.DEV_SERVER+"/ws/get_izi_app.php", params)
+  
   return Api.get(Config.DEV_SERVER+"/ws/get_izi_app.php",params)
       .then((response) => {
           return response.json()
