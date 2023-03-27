@@ -189,15 +189,6 @@ export const loginStyles = {
             alignItems:'center',
             marginBottom:0,
             justifyContent:"center",
-
-        dropContainer: {
-            flex: 1,
-            flexDirection:'row',
-            justifyContent:'center',
-            height:'100%',
-            flexDirection:'column',
-            alignItems:'center',
-        },
         },
         title:{
             fontSize:13,

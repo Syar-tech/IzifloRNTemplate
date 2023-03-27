@@ -143,11 +143,11 @@ export default function IziDropdown(props){
     return(
         <View style={[getStyle()]} >
             <Text style={ getStyle().title }>{props.title}</Text>
-            <View style={{alignItems:'stretch', flexDirection:'column', justifyContent:'center', flex:1}}>
+            <View style={{alignItems:'stretch', flexDirection:'column', justifyContent:'center', flex:1,}}>
 
                 <SelectDropdown
                     ref={dropdown}
-                    style={{flex:1}}
+                    style={{flex:1, width:"100%"}}
                     data={props.items}
                     defaultButtonText={getLabel()}
                     defaultValue={props.value}
@@ -159,11 +159,8 @@ export default function IziDropdown(props){
                     buttonTextAfterSelection={(selectedItem, index) => {
                         return selectedItem.label;
                     }}
-                    buttonStyle={[getButtonStyle(), {width:props.dropdownWidth,}]}
+                    buttonStyle={{...getButtonStyle(), width:"100%",}}
                     buttonTextStyle={getButtonTextStyle()}
-                    rowTextForSelection={(item, index) => {
-                        return item.label;
-                    }}
                     renderDropdownIcon={() => {
                         return  (props.showArrow 
                             ? (<Icon style={getStyle().secureImage} name={"caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? colors.lightGray : colors.iziflo_blue}/> )
@@ -186,19 +183,21 @@ export default function IziDropdown(props){
                                 maxWidth:props.multiple ? '80%' : '100%',
                                 marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
                             >
-                                {text}
+                                {text.label}
                             </Text>
                         )
                         if(props.multiple){
                             return (
-                                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-between',height:'100%'}} onPress={() => onCheckChange(index)}>
+                                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-between',height:'100%', width:"100%"}} onPress={() => onCheckChange(index)}>
                                     <DefaultTextTag textAlign="left"/>
                                     <Checkbox selected={selectedCheckboxes.indexOf(index) !== -1} style={{marginRight:10}} rounded={false} onChange={() => onCheckChange(index)} />
                                 </TouchableOpacity>
                             )
                         }
+                        console.log("text", text)
                         return (
                             <DefaultTextTag/>
+
                         )
 
                     }}/>
