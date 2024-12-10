@@ -24,6 +24,8 @@ export default function ErrorScene(props){
 
     let icon = null
 
+    let timeout = undefined
+
     const window = useWindowDimensions()
 
     useEffect(()=>{
@@ -38,7 +40,9 @@ export default function ErrorScene(props){
 
     const backAction = () => {
         const button = params.footerButtons?.find(e => e.isBackButton)
-        typeof button?.onPress === 'function' && button.onPress()
+        if (timeout) clearTimeout(timeout)
+        if(typeof button?.onPress === 'function') button.onPress(props.navigation)
+        else props.navigation.goBack()
         return true
     }
 
@@ -66,15 +70,13 @@ export default function ErrorScene(props){
     }
 
 
-    typeof params.callback === 'function' && params.callback()
     useEffect(()=>{
-        let timeout = undefined
         if(params.closeDelay && params.closeDelay.delay && typeof params.closeDelay.callback === 'function'){
-            timeout = setTimeout(() =>{params.closeDelay.callback()},params.closeDelay.delay)
+            timeout = setTimeout(() =>{props.navigation.goBack();params.closeDelay.callback()},params.closeDelay.delay)
         }else if(params.redirect){
             timeout = setTimeout(() =>props.navigation.navigate(params.redirect),3000)
         }
-        return ()=>{clearTimeout(timeout)} 
+        return ()=>{timeout && clearTimeout(timeout)} 
     }, [])
 
     return (
