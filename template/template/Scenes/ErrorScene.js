@@ -16,6 +16,8 @@ const isAndroid = Platform.OS === 'android'
 
 export default function ErrorScene(props){
 
+    let [timeoutID, setTimeoutID] = useState(undefined)
+
     const params = props.route.params
 
     const errorMessage = params.errorMessage
@@ -24,26 +26,47 @@ export default function ErrorScene(props){
 
     let icon = null
 
-    let timeout = undefined
-
     const window = useWindowDimensions()
 
     useEffect(()=>{
-          
         const backHandler = BackHandler.addEventListener(
             "hardwareBackPress",
             backAction
         );
-    
-        return () => backHandler.remove();
+
+        let timeout = undefined
+        if(params.closeDelay && params.closeDelay.delay && typeof params.closeDelay.callback === 'function'){
+            timeout = setTimeout(() =>{
+                setTimeoutID(-1) // Invalid value, used to know that the timeout function has already been triggered
+                props.navigation.goBack()
+                params.closeDelay.callback()
+            },params.closeDelay.delay)
+        }else if(params.redirect){
+            timeout = setTimeout(() => {
+                setTimeoutID(-1) // Invalid value, used to know that the timeout function has already been triggered
+                props.navigation.navigate(params.redirect)
+            },3000)
+        }
+        setTimeoutID(timeout)
+
+        return ()=>{
+            timeoutID && timeoutID !== -1 && clearTimeout(timeoutID) // Clear only pending timeouts
+            backHandler.remove();
+        } 
     }, [])
 
     const backAction = () => {
         const button = params.footerButtons?.find(e => e.isBackButton)
-        if (timeout) clearTimeout(timeout)
-        if(typeof button?.onPress === 'function') button.onPress(props.navigation)
-        else props.navigation.goBack()
+        buttonOnPressHandler(button)
         return true
+    }
+
+    const buttonOnPressHandler = (button) => {
+        if (timeoutID && timeoutID !== -1) clearTimeout(timeoutID) // Clear only pending timeouts
+        if (timeoutID === undefined || timeoutID !== -1) { // Trigger only if no timeout is set or if the timeout has not yet triggered
+            if(typeof button?.onPress === 'function') button.onPress(props.navigation)
+            else props.navigation.goBack()
+        }
     }
 
     //Only during the permission error
@@ -68,16 +91,6 @@ export default function ErrorScene(props){
     const getTextColor = ()=>{
         return props.route.params.textColor || "white"
     }
-
-
-    useEffect(()=>{
-        if(params.closeDelay && params.closeDelay.delay && typeof params.closeDelay.callback === 'function'){
-            timeout = setTimeout(() =>{props.navigation.goBack();params.closeDelay.callback()},params.closeDelay.delay)
-        }else if(params.redirect){
-            timeout = setTimeout(() =>props.navigation.navigate(params.redirect),3000)
-        }
-        return ()=>{timeout && clearTimeout(timeout)} 
-    }, [])
 
     return (
         <View style={{...styles.container, backgroundColor:getBackColor()}}>
@@ -111,7 +124,7 @@ export default function ErrorScene(props){
                 {params.footerButtons.map((button, index) => (
                     <FooterControl
                      key={index} 
-                     onPress={() => {button.onPress ? button.onPress(props.navigation) : props.navigation.goBack()}} 
+                     onPress={() => {buttonOnPressHandler(button)}}
                      image = {{height:footerStyle.iconHeight, xml:button.image,color:button.tint || '#272727',}}
                      text={{text:button.text,color:button.tint || '#272727', style:{marginTop:footerStyle.iconMarginTop}}}/>
                 ))}
