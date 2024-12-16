@@ -9,6 +9,7 @@ import { ACTIONS_TYPE } from "../../Store/ReduxStore";
 import deviceInfoModule from "react-native-device-info";
 import { Linking, Platform } from "react-native";
 import { getVersionCheckName } from "../Tools/Tools";
+import { __debug } from "../Tools/DevTools";
 
 export function searchServers(email){
   var params = {
@@ -92,10 +93,10 @@ export const openUpdateUrl = async () => {
  -------------------*/
 
 
-export async function getSettings(idInstance,server, email, token, tokenType){
+export async function getSettings(server, email, token, tokenType, isWorkshop = false){
   var params = await getCommonParams();
   params.module_api='get_settings'
-  params.id_instance = idInstance
+  params.id_instance = server.instance.id_instance
   params.email=email
   params.token=token
   params.login_type=tokenType
@@ -112,13 +113,13 @@ export async function getSettings(idInstance,server, email, token, tokenType){
 
 export const loadSettings = async (dispatch,user) =>{
   if(user?.server?.instance?.id_instance && user?.token){
-    getSettings(user.server.instance.id_instance,user.server,user.email, user.token?.token, user.token?.tokenType)
+    getSettings(user.server,user.email, user.token?.token, user.token?.tokenType)
       .then(json => {
               if(json?.data){
                 let usr = {...user, settings:json.data}
                 try{
                   dispatch({type:ACTIONS_TYPE.USER_SET, value:usr});
-                } catch (error) {"lang"
+                } catch (error) {
                     console.log("Something went wrong", error);
                 }
               }else{
@@ -147,7 +148,6 @@ export async function resetPassword(server, email){
   const params = await getCommonParams()
   params.module_api = 'forgot_password'
   params.email = email
-
   try{
     return await Api.post(getWSBaseUrl(server),params).then(response => response.json())
     
@@ -160,11 +160,17 @@ export async function resetPassword(server, email){
 }
 
 //request token
-export async function requestToken(server, email, password){
+export async function requestToken(server, email, password,forceAuthCode = undefined, doubleAuthCode = undefined, localeIdentifier = undefined){
   const params = await getCommonParams();
   params.module_api='request_token'
   params.email=email
   params.password=password
+  if(forceAuthCode)
+    params.auth_code_reset = 1
+  if(doubleAuthCode !== undefined)
+    params.auth_code = doubleAuthCode
+  if(localeIdentifier !== undefined)
+    params.locale_identifier = localeIdentifier
 
   return Api.post(getWSBaseUrl(server),params)
     .then((response) => {
@@ -189,7 +195,7 @@ export async function checkToken( user, navigation, store){
         var promise = Api.post(getWSBaseUrl(user.server),params)
           .then((response) => response.json())
           .then(tokenHandler(navigation,store,  user))
-          .catch((error) => {console.error(error); Promise.reject(error)})
+          .catch((error) => {console.error("checktoken",error); return Promise.reject(error)})
         return promise;
       }
       case TOKEN_TYPE.MICROSOFT:
@@ -258,7 +264,7 @@ export async function checkToken( user, navigation, store){
         default:
             //TODO 
           console.log("token invalid : "+ JSON.stringify(json.token))
-          disconnect(navigation, store.dispatch)
+          disconnect(navigation, store.dispatch,undefined, true)
           Promise.reject(json);
           break;
       }

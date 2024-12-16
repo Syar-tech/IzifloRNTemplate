@@ -87,6 +87,15 @@ export default function IziDropdown(props){
 
         return filterObject(st, ([key, value])=> ["enabled","disabled"].indexOf(key)<0)
     }
+    const getDropdownSubTextStyle = ()=>{
+        const st = {...getStyle().dropdown.sublabel, 
+            ...(props.disabled 
+            ? {...getStyle().dropdown.sublabel.disabled , ...props.dropdownSubTextStyleDisabled}
+            : {...getStyle().dropdown.sublabel.enabled, ...props.dropdownSubTextStyle})
+        }
+
+        return filterObject(st, ([key, value])=> ["enabled","disabled"].indexOf(key)<0)
+    }
 
     const getDropDownStyle = ()=>{
         return {...getStyle().dropdown, 
@@ -95,8 +104,6 @@ export default function IziDropdown(props){
             : {...getStyle().dropdown.enabled, ...props.dropdownStyle})
         }
     }
-
-
 
     /*---------------------------
     -
@@ -151,28 +158,44 @@ export default function IziDropdown(props){
                     data={props.items}
                     defaultButtonText={getLabel()}
                     defaultValue={props.value}
+                    dropdownDirection={props.dropdownDirection}
                     onSelect={(selectedItem, index) => {
                     _setValue(selectedItem)
                     }}
                     disabled={props.disabled}
 
                     buttonTextAfterSelection={(selectedItem, index) => {
-                        return selectedItem.label;
+                        return (selectedItem.shortlabel ? selectedItem.shortlabel : selectedItem.label )
+                        + (!!selectedItem.sublabel ? " - " + selectedItem.sublabel : "");
                     }}
-                    buttonStyle={{...getButtonStyle(), width:"100%",}}
-                    buttonTextStyle={getButtonTextStyle()}
-                    renderDropdownIcon={() => {
+                    buttonStyle={{...getButtonStyle(), width:"100%"}}
+                    buttonTextStyle={{...getButtonTextStyle()}}
+                    renderDropdownIcon={ () => {
                         return  (props.showArrow 
-                            ? (<Icon style={getStyle().secureImage} name={"caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? colors.lightGray : colors.iziflo_blue}/> )
+                            ? (props.renderDropdownIcon ? props.renderDropdownIcon() : <Icon style={getStyle().secureImage} name={"caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? colors.lightGray : colors.iziflo_blue}/> )
                            : undefined)
                         ;
                     }}
-
                     dropdownIconPosition={"right"}
                     dropdownStyle={getDropDownStyle()}
                     rowTextStyle={getDropdownTextStyle()}
                     renderCustomizedRowChild={(text, index)=>{
                         const DefaultTextTag = ({textAlign = 'center'}) => (
+                            <View style={{flexDirection:'column',}}>
+                            <Text
+                            numberOfLines={1}
+                            allowFontScaling={false}
+                            style={{...{
+                                flex: 1,
+                                fontSize: 18,
+                                textAlign,
+                                fontWeight:text.sublabel == undefined ?'normal' : 'bold',
+                                maxWidth:props.multiple ? '80%' : '100%',
+                                marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
+                            >
+                                {text.label}
+                            </Text>
+                            {!!text.sublabel && 
                             <Text
                             numberOfLines={1}
                             allowFontScaling={false}
@@ -181,10 +204,11 @@ export default function IziDropdown(props){
                                 fontSize: 18,
                                 textAlign,
                                 maxWidth:props.multiple ? '80%' : '100%',
-                                marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
+                                marginHorizontal: 8,},...getDropdownSubTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
                             >
-                                {text.label}
-                            </Text>
+                                {text.sublabel}
+                            </Text>}
+                            </View>
                         )
                         if(props.multiple){
                             return (
@@ -194,7 +218,6 @@ export default function IziDropdown(props){
                                 </TouchableOpacity>
                             )
                         }
-                        console.log("text", text)
                         return (
                             <DefaultTextTag/>
 

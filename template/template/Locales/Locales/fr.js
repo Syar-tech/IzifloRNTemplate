@@ -16,6 +16,7 @@ export default {
         back:'RETOUR',
         forgotten_pass:'Mot de passe oublié ?',
         forgotten_pass_title:'Mot de passe oublié',
+        "or_connect_with":"Ou connectez vous avec",
         an_email_was_sent_with_a_new_password:'Un email contenant votre nouveau mot de passe vous a été envoyé',
         user_not_found:'Utilisateur inconnu',
         legal_text:'© iziflo - Développé par Syartec',
@@ -33,11 +34,25 @@ export default {
         home:'Accueil',
         darkMode:'Mode sombre',
         more:"Plus",
+        "connection_not_allowed":"Impossible de se connecter",
+        "connection_retry_message":"Veuillez réessayer.",
+        "connection_not_allowed_message":"Veuillez vérifier vos identifiants.",
+        "iziflo_connect_not_allowed_message":"Vous n'êtes pas autorisé à utiliser ce mode de connexion. Veuillez vous identifier via Office.",
         cacheHasBeenCleared:'Le cache a été vidé.',
         dataInProgress:"Des données sont peut-être en cours de traitement et peuvent être perdues.",
         "doYouConfirm": "Confirmez-vous cette action ?",
         "confirm": "Confirmer",
         "back": "Retour",
+        "lastSyncMessage": "Dernière synchronisation :",
+        "double_auth_title":"Vérification de l'identité",
+        "double_auth_message":"Un code de vérification a été envoyé à l'adresse suivante :",
+        "double_auth_email_not_received":"Vous n'avez pas reçu d'e-mail ?",
+        "double_auth_email_send_again":"Renvoyer",
+        "double_auth_error_WRONG_CODE":"Code invalide",
+        "double_auth_error_TOO_MANY_TRIES":"Nombre de tentatives autorisées atteint. Veuillez demander un nouveau code en cliquant sur sur le bouton Renvoyer.",
+        "double_auth_error_CODE_EXPIRED":"Le code a expiré. Veuillez demander un nouveau code en cliquant sur sur le bouton Renvoyer.",
+        "double_auth_error_ERROR_WHILE_SENDING_MAIL":"Une erreur inconnue a eu lieu. Veuillez réessayer.",
+        "double_auth_error_USED_CODE":"Code déjà utilisé.",
 
         "UpdateScene": {
             "mandatoryUpdateTitle": "Une mise à jour doit être effectuée",
@@ -68,6 +83,10 @@ export default {
         password_input:{
             title: 'MOT DE PASSE',
             placeholder:'Saisissez votre mot de passe'
+        },
+        double_auth_code_input:{
+            title: 'CODE',
+            placeholder:'Saisissez le code reçu'
         },
         dropdown_server:{
             placeholder:"-- Choisissez un serveur --",

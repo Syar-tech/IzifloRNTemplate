@@ -16,6 +16,7 @@ export default {
         back:'BACK',
         forgotten_pass:'Forgotten password ?',
         forgotten_pass_title: 'Forgotten password',
+        "or_connect_with":"Or sign-in with",
         legal_text:'© iziflo - Developped by Syartec',
         user_not_found:'Unknown user',
         unknown_external_account_title:'Unknown {0} account on iziflo',
@@ -30,22 +31,34 @@ export default {
         aboutIziflo:"About Iziflo",
         disconnect:"Log out",
         an_email_was_sent_with_a_new_password:'An email containing your new password has been sent to you',
-        "dataInProgress": "some data processing may be pending and may be lost.",
-        "doYouConfirm": "Do you confirm ?",
-        "confirm": "Confirm",
-        "back": "Back",
+        dataInProgress: "Data could be pending and may be lost.",
+        doYouConfirm: "Do you confirm ?",
+        confirm: "Confirm",
+        back: "Back",
         cacheHasBeenCleared:'The cache has been cleared.',
-        doYouConfirm:"Data could be pending and may be lost.",
         home:'Home',
         darkMode:'Dark theme',
         more:"More",
-
-        "UpdateScene": {
-            "mandatoryUpdateTitle": "A mandatory update is available",
-            "mandatoryUpdateDescription": "Please download the new update to be able to use the app",
-            "update": "UPDATE",
-            "mandatoryTooBigVersionTitle": "Your app is too recent for the server",
-            "mandatoryTooBigVersionDescription": "Please wait for the server to be updated soon."
+        lastSyncMessage: "Last sync:",
+        "connection_not_allowed":"Unable to sign-in",
+        "connection_retry_message":"Please try again.",
+        "connection_not_allowed_message":"Please check your login and password.",
+        "iziflo_connect_not_allowed_message":"You are not allowed to sign-in this way. Please use Office to sign-in.",
+        "double_auth_title":"Identity check",
+        "double_auth_message":"An e-mail has been sent to you with a code at the adress:",
+        "double_auth_email_not_received":"E-mail not received ?",
+        "double_auth_email_send_again":"Send again",
+        "double_auth_error_WRONG_CODE":"Code invalid",
+        "double_auth_error_TOO_MANY_TRIES":"You have reached the maximum number of tries. Ask for a new code by clicking on the 'Send Again' button.",
+        "double_auth_error_CODE_EXPIRED":"Your code as expired. Ask for a new code by clicking on the 'Send Again' button.",
+        "double_auth_error_ERROR_WHILE_SENDING_MAIL":"An unknown error occured. PLease try again.",
+        "double_auth_error_USED_CODE":"Already used code.",
+        UpdateScene: {
+            mandatoryUpdateTitle: "A mandatory update is available",
+            mandatoryUpdateDescription: "Please download the new update to be able to use the app",
+            update: "UPDATE",
+            mandatoryTooBigVersionTitle: "Your app is too recent for the server",
+            mandatoryTooBigVersionDescription: "Please wait for the server to be updated soon."
         },
         pincode:{
             title_choose:"1 - Enter a PIN code",
@@ -69,6 +82,10 @@ export default {
         password_input:{
             title: 'PASSWORD',
             placeholder:'Please enter your password'
+        },
+        double_auth_code_input:{
+            title: 'CODE',
+            placeholder:'Please enter the received code'
         },
         dropdown_server:{
             placeholder:"-- Choose a server --",

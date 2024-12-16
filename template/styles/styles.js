@@ -1,9 +1,21 @@
 export const colors = {
+    ...templateColors,
+    ...{
     //app specific colors
-    dark:{
+        dark:{
+            ...templateColors.dark,
+            ...commonScheme,
+            ...{
         //specific colors in dark mode
-    },
-    light:{
-        //specific colors in light mode
+
+            }
+        },
+        light:{
+            ...templateColors.light,
+            ...commonScheme,
+            ...{
+                //specific colors in light mode
+            }
+        }
     }
 }

@@ -27,6 +27,7 @@ export const ACTIONS_TYPE = {
     USER_SET:"user.set",
     USER_PIN_SET:"user.pin.set",
     USER_DISCONNECT:"user.disconnect",
+    USER_DISCONNECT_KEEP_DATA:"user.disconnect_with_data",    
     COLOR_SCHEME_DARK:"dark",
     COLOR_SCHEME_LIGHT:"light",
     NETWORK_STATE:"networkState"

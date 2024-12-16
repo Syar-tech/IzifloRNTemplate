@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import {Alert, Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Alert, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import Button ,{IziButtonStyle} from "../Components/IziButton"
 import { getBundleId, getReadableVersion } from 'react-native-device-info'
 import Config from "react-native-config"
 import { useLanguage } from '../Locales/locales'
 import RNFS from 'react-native-fs'
-import { colors } from '../Styles/Styles'
 import {disconnect } from "../Tools/TokenTools"
 import VersionCheck from 'react-native-version-check'
 import { versionCompare } from '../Tools/StringTools'
@@ -13,8 +12,8 @@ import { useIsFocused } from '@react-navigation/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadSettings } from '../API/LoginApi'
 import IziLoader from '../Components/IziLoader'
-import { ScrollView } from 'react-native-gesture-handler'
 import { ACTIONS_TYPE } from '../../Store/ReduxStore'
+import { colors } from '../../styles/styles'
 
 
 function AboutScene({navigation,route}){
@@ -22,6 +21,7 @@ function AboutScene({navigation,route}){
     const [newVersion,setNewVersion] = useState(false)
 
     const dispatch = useDispatch()
+    const colorScheme = useSelector((state) =>state._template.colorScheme);
     
     const {locale,localeIdentifier} = useLanguage()
     const user = useSelector(state => state._template.user)
@@ -57,10 +57,12 @@ function AboutScene({navigation,route}){
         if(isFocused){
         navigation.setOptions(
             {
-                title:locale._template.aboutIziflo
+                title:locale._template.aboutIziflo,
+                headerStyle:{backgroundColor:colors[colorScheme].headerBackColor},
+                headerTintColor:colors[colorScheme].headerTextColor
             })
         }
-    },[locale, isFocused])
+    },[locale, isFocused, colorScheme])
 
     const onDisconnect = () => {
         disconnect(navigation, dispatch,locale)
@@ -85,29 +87,29 @@ function AboutScene({navigation,route}){
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor:colors[colorScheme].backgroundColor}]}>
             <ScrollView>
             <View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.app}</Text> : {getBundleId()} ({getReadableVersion()})</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.app}</Text> : {getBundleId()} ({getReadableVersion()})</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.environment}</Text> : {Config.FLAVOR_NAME}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.environment}</Text> : {Config.FLAVOR_NAME}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.server}</Text> : {user?.server?.name}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.server}</Text> : {user?.server?.name}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.instance}</Text> : {user?.server?.instance?.instance_name}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.instance}</Text> : {user?.server?.instance?.instance_name}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.user}</Text> : {user?.email}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.user}</Text> : {user?.email}</Text>
                 </View>
-                <View style={styles.textContainer}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.language}</Text> : {convertLanguage(localeIdentifier)}. {locale._template.infoEditLanguage}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.language}</Text> : {convertLanguage(localeIdentifier)}. {locale._template.infoEditLanguage}</Text>
                 </View>
-                <View style={[styles.textContainer,{borderBottomWidth:0}]}>
-                    <Text style={styles.modalText}><Text style={styles.title}>{locale._template.token_expires}</Text> : {user?.token?.expirationDate}</Text>
+                <View style={[styles.textContainer,{borderBottomColor:colors[colorScheme].textColor,borderBottomWidth:0}]}>
+                    <Text style={[styles.modalText,{color:colors[colorScheme].textColor}]}><Text style={styles.title}>{locale._template.token_expires}</Text> : {user?.token?.expirationDate}</Text>
                 </View>
                 
             </View>
@@ -161,7 +163,6 @@ const styles = StyleSheet.create({
         marginBottom:5
     },
     textContainer:{
-        borderBottomColor:colors.iziflo_dark_gray,
         borderStyle:'solid',
         borderBottomWidth:1
     }

@@ -73,7 +73,7 @@ const Rotate = (props) =>{
     }
 
     return ( <View style={{...props.style, alignItems:'center', justifyContent:"center"}} onLayout={(e)=>{setViewDim(e.nativeEvent.layout)}}>
-                <Animated.View style={animatedStyles}>
+                <Animated.View style={/*animatedStyles*/{}}>
                     {props.children}
                 </Animated.View>
                 

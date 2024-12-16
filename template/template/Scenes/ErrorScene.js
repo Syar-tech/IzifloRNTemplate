@@ -8,8 +8,8 @@ import icon_validate from '../res/img/icon_validate';
 import FooterControl from '../Components/Footers/FooterControl';
 import { IziDimensions } from '../Tools/Dimensions';
 import { useIsFocused } from '@react-navigation/native';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { toUint8Array } from 'pdf-lib';
+import { ScrollView } from 'react-native';
 
 const isAndroid = Platform.OS === 'android'
 
@@ -120,10 +120,11 @@ export default function ErrorScene(props){
             </View>
 
 
-            {!!params?.footerButtons?.length && <View style={IziDimensions.getDimension(window,footerStyle.footerContainer)}>
+            {!!params?.footerButtons?.length && <View style={[IziDimensions.getDimension(window,footerStyle.footerContainer), params.footerStyle?.footerContainer ||{}]}>
                 {params.footerButtons.map((button, index) => (
                     <FooterControl
                      key={index} 
+                     frontColor={params.footerStyle?.frontColor}
                      onPress={() => {buttonOnPressHandler(button)}}
                      image = {{height:footerStyle.iconHeight, xml:button.image,color:button.tint || '#272727',}}
                      text={{text:button.text,color:button.tint || '#272727', style:{marginTop:footerStyle.iconMarginTop}}}/>

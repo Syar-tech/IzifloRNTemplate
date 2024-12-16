@@ -45,7 +45,7 @@ const MainScene=({navigation})=>{
   const checkMandatoryVersion = async () =>{
     
     const data = await getMandatoryUpdateVersion(user.server.id)
-    console.log("checkMandatory",data)
+    
     const currentVersion = getVersionAndBuild()
 
     //MAX version
@@ -86,7 +86,7 @@ const MainScene=({navigation})=>{
     }
   }
     return (
-        <SafeAreaView
+        <View
         style={styles.main_container}>
             <Text>Request content:</Text>
             <Text style={styles.text_detail}>{JSON.stringify(attachments, null, 2)}</Text>
@@ -96,7 +96,7 @@ const MainScene=({navigation})=>{
                 <Button style={styles.button} title="Clear" iziStyle={IziButtonStyle.connection} onPress={()=> setAttachments(undefined) }/>
             </View>
             <Button style={styles.button_disconnect} title={locale._template.disconnect_upper} iziStyle={IziButtonStyle.orange} onPress={()=>disconnect(navigation, useDispatch(),locale)}/>
-        </SafeAreaView>
+        </View>
     )
 }
 

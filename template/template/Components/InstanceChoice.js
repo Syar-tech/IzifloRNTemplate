@@ -13,6 +13,7 @@ import { useLanguage } from '../Locales/locales'
 import IziDropdown from './IziDropDown'
 import IziServerDropDown from './IziServerDropDown'
 import { getSettings, requestInstances } from '../API/LoginApi';
+import { log_to_company } from '../../config/iziConfig';
 
 
 const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
@@ -35,7 +36,7 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
         if(serverInfo?.server && serverInfo.instances?.selectedInstance){
             let server = serverInfo.server
             server.instance = serverInfo.instances.selectedInstance
-            getSettings(serverInfo.instances.selectedInstance.id_instance,server,user.email, user.token?.token, user.token?.tokenType).then(json => {console.log(json);return onInstanceChoosen(server,json.data)})
+            getSettings(server,user.email, user.token?.token, user.token?.tokenType).then(json => {return onInstanceChoosen(server,json.data)})
         }
     }
 
@@ -55,18 +56,19 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
     const _requestInstances = async (server)=>{
         //TODO load instance
         if(server){
+            setErrorMessage(undefined)
             let promise = requestInstances(server, user.email, user.token?.token, user.token?.tokenType)
             
             promise.then((data)=>{
                 if(data?.error){
                     switch (data.error.code) {
                         case ERROR_CODE.UNKNOWN_USER:
-                            let account = ''
+                            let account = TOKEN_TYPE.IZIFLO
                             if(user.token?.tokenType == TOKEN_TYPE.MICROSOFT)
                                 account = locale._template.office_365
                             if(user.token?.tokenType == TOKEN_TYPE.GOOGLE)
                                 account = locale._template.google
-                            console.log("account" + account)
+                            console.log("account" + account, data)
                             setErrorMessage(
                                 {
                                     title:locale.formatString(locale._template.unknown_external_account_title, account).toString(),
@@ -93,14 +95,32 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
                             throw new Error(data)
                     }
                 }else if(data?.data){
-                    //console.log("data", data?.data);
-                    data.data.forEach((instance) => {
-                        instance.value=instance.id_instance,
+                    //data.data.sort((i1, i2 => alphabeticallyCompare(i1.instance_name, i2.instance_name)))
+                    if(log_to_company){
+                        //log into companies
+                        list = data.data.reduce((arr, instance) =>{
+                            instance.companies?.reduce((arr2, company) => {
+                                arr2.push({...instance, company:company, value:instance.id_instance})
+                                return arr2
+                            }
+                            ,arr)
+                            return arr
+                        }, [])
+                    }else{
+                        //isntance only
+                        list = data.data
+                    }
+                    list.forEach((instance) => {
+                        instance.value=instance.id_instance + (log_to_company ? "-"+instance.company.id_company : ""),
                         instance.label=instance.instance_code + ' - ' + instance.instance_name
+                        if(log_to_company) {
+                            instance.label= instance.instance_name
+                            instance.shortlabel = instance.instance_code
+                            instance.sublabel = instance.company.company_name
+                        }
                     });
-
-                    console.log("afterdata");
-                    setServerInfo({server:server,instances:{list:data.data}});
+                    
+                    setServerInfo({server:server,instances:{list}});
                 } else{
                     throw new Error(data)
                 }
@@ -147,7 +167,7 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
                             style={{marginTop:12}}
                             email={user.email ? user.email : user.token?.email} 
                             value={serverInfo?.server} 
-                            setValue={(item:ServerType)=>{onServerSelected(item)}}/>
+                            setValue={(item)=>{onServerSelected(item)}}/>
             )
         }else return undefined
     }
@@ -163,7 +183,9 @@ const InstanceChoice  = ({user,password, onLogout, onInstanceChoosen}) => {
             return (
                 <View style={{ width:'100%'}}>
                 <IziDropdown
-                    items={serverInfo?.instances?.list ? serverInfo.instances.list : []}
+                    items={serverInfo?.instances?.list 
+                        ? serverInfo.instances.list
+                        : []}
                     title={locale._template.dropdown_instance.title}
                     placeholder={serverInfo?.instances?.list && serverInfo.instances.list.length > 0 ? locale._template.dropdown_instance.placeholder :  locale._template.dropdown_instance.empty_placeholder}
                     nothingToShow={locale._template.dropdown_instance.nothing_to_show}

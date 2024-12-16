@@ -7,10 +7,11 @@ import { useLanguage } from '../Locales/locales'
 import { colors } from '../Styles/Styles'
 import { useIsFocused } from '@react-navigation/core'
 import { connect, useSelector, useStore} from 'react-redux'
-import { ScrollView, Switch } from 'react-native-gesture-handler'
+import { ScrollView, Switch, TextInput } from 'react-native-gesture-handler'
 import {useNetInfo} from "@react-native-community/netinfo";
 import { ACTIONS_TYPE } from '../../Store/ReduxStore'
 import { useModifiedDataOnly } from '../store/CommonDownReducer'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 function SyncTestDev({navigation,route,
@@ -46,11 +47,14 @@ function SyncTestDev({navigation,route,
 
     },[locale, isFocused])
 
- 
+    
     return (
         <View style={{...styles.container, backgroundColor:colors[colorScheme].backgroundColor}}>
-            <View style={{flex:1, backgroundColor:'red'}}>
-                <Button title={(showMessage && <Text>PResta 111</Text>)  || <Text>PResta 222</Text> } onPress={()=> setShowMessage(!showMessage)}></Button>
+            <View style={{flex:1, backgroundColor:'white'}}>
+            <KeyboardAwareScrollView style={{flex:1, width:'100%',backgroundColor:colors[colorScheme].tabsBackgroundColor}} keyboardShouldPersistTaps='handled' contentContainerStyle={{backgroundColor:colors[colorScheme].tabsBackgroundColor}}>
+               
+                    {[...Array(20).keys()].map(i =>(<TextInput style={{borderColor:(i%2)==0 ? 'red' :'gray', borderWidth:1, marginBottom:20, height:40}} editable={(i%2)==0}/>) )}
+               </KeyboardAwareScrollView>
                 
             </View>
             <View>

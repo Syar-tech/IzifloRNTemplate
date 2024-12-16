@@ -19,10 +19,10 @@ fi
 
 case $2 in
     android)
-        params="-A ic_launcher"
+        initParams="-A ic_launcher"
         ;;
     ios)
-        params="-I";
+        initParams="-I";
         ;;
     *)
         ;;
@@ -30,6 +30,7 @@ esac
 
 for env in "${envs[@]}"; do
     icon="./icon/icon.$ext" 
+    params="$initParams"
     if test -f "./icon/icon.$env.$ext"; then
         icon="./icon/icon.$env.$ext" 
     fi

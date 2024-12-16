@@ -1,8 +1,8 @@
-import React ,{useState, useEffect, useReducer, useCallback} from 'react'
+import React ,{useState, useEffect, useReducer, useCallback, useRef} from 'react'
 import {
     View, Text,Image, Alert,BackHandler, Keyboard,TouchableWithoutFeedback,TouchableOpacity, KeyboardAvoidingView,
 } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import Button ,{IziButtonStyle}from '../Components/IziButton'
 import InstanceChoice from '../Components/InstanceChoice'
 import Loader from '../Components/IziLoader'
@@ -21,17 +21,18 @@ import {useLanguage } from '../Locales/locales'
 import {loadSettings, requestToken} from '../API/LoginApi'
 import {__SInfoConfig} from '../Tools/Prefs';
 import {  TOKEN_STATE, disconnect} from '../Tools/TokenTools';
-import {isEmpty, isEmailValid} from '../Tools/StringTools';
+import {isEmpty, isEmailValid, formatDateToYmdHs} from '../Tools/StringTools';
 //types
 import PINCode from '@haskkor/react-native-pincode'
 import MSALConnect from '../API/MSALConnectApi'
 import { IziDimensions } from '../Tools/Dimensions';
 import { TOKEN_TYPE } from "../Types/LoginTypes";
-import store, { ACTIONS_TYPE } from '../../Store/ReduxStore'
-import IziButton from '../Components/IziButton'
-import { useModifiedDataOnly } from '../store/CommonDownReducer'
+import { ACTIONS_TYPE } from '../../Store/ReduxStore'
 import icon_back from '../res/img/icon_back'
 import icon_validate from '../res/img/icon_validate'
+import { __debug } from '../Tools/DevTools'
+import DoubleAuthModal, { ERROR_ON_AUTH_CODE } from '../Modal/DoubleAuthModal'
+
 
 const LoginScene = ({navigation, route }) => {
 
@@ -41,7 +42,7 @@ const LoginScene = ({navigation, route }) => {
     -
     ----------------------------*/
     //local
-    const {locale} = useLanguage()
+    const {locale, localeIdentifier} = useLanguage()
     const storedUser = useSelector(state=>state._template?.user)
     const window = useWindowDimensions()
     const focused = useIsFocused();
@@ -53,6 +54,11 @@ const LoginScene = ({navigation, route }) => {
     const [msal] = useState(new MSALConnect())
     const [dropdownOpen, setDropdownOpen] = useReducer((state, action)=>{return {...state, ...action}},{server:false, server2:false, instances:false})
 
+    const [doubleAuthCode, setDoubleAuthDataCode] = useState(undefined)
+    const [doubleAuthDate,  setDoubleAuthDataDate] = useState(undefined)
+
+    const doubleAuthModal = useRef()
+
 
     //data
     const [user, setUser] = useState(undefined)
@@ -62,20 +68,24 @@ const LoginScene = ({navigation, route }) => {
 
     useEffect(()=>{
         _initOffice()
+        checkInitialDoubleAuthCode()
     }, [])
+    
     useEffect(()=>{
+        let timeout = undefined
         if(focused){
-            _loadUser()
+            timeout = setTimeout(() => _loadUser(), 200) // too let time to system to disconnect user if necessary
         }
         else setUser(undefined)
         
+        return () => timeout ? clearTimeout(timeout) : undefined
     }, [focused])
 
     useEffect(()=>{
-        if(_isLoggedIn())
+        if(_isLoggedIn()){
             loadSettings(dispatch,user)
+        }
     }, [user])
-
 
 
     /*---------------------------
@@ -88,6 +98,19 @@ const LoginScene = ({navigation, route }) => {
             await msal.init()
         }
         
+    }
+
+    const checkInitialDoubleAuthCode = () => {
+        
+        if(storedUser?.double_auth_date && !storedUser?.disconnected && storedUser?.token?.tokenType == TOKEN_TYPE.IZIFLO && !isNaN(parseInt(storedUser?.settings?.userCodeDelay))){
+            //check double auth validity
+
+            __debug("check double auth")
+            if(new Date().getTime() > (new Date(storedUser?.double_auth_date+'Z').getTime() + storedUser?.settings?.userCodeDelay* 1000*60*60*24)){
+                __debug("disconnect on start")
+                disconnect(navigation, dispatch, null, true)
+            }
+        }
     }
 
     /*---------------------------
@@ -151,8 +174,9 @@ const LoginScene = ({navigation, route }) => {
     const _loadUser = async ()=>{
         try {
             await setLoading(true)
-            setUser(storedUser)
-            if(!storedUser) {
+            let usr = storedUser?.disconnected ? false : storedUser
+            setUser(usr)
+            if(!usr) {
                 await setServer(undefined)
             }
           } catch (error) {
@@ -181,9 +205,7 @@ const LoginScene = ({navigation, route }) => {
 
     
 
-    function _connect(){
-
-        setLoading(true);
+    function _connect(forceAuthCode= false, doubleAuthCode = undefined){
         if(server){
             let promise  = null;
             
@@ -191,10 +213,11 @@ const LoginScene = ({navigation, route }) => {
                 //TODO error message : missing data
             }else{
                 //connect to instance
-                promise = requestToken(server, email, password)
+                promise = requestToken(server, email, password, forceAuthCode, doubleAuthCode, localeIdentifier)
             }
 
             if(promise)
+                setLoading(true)
                 promise.then((data)=>{
                     if(data?.success){
                         let usr = {
@@ -210,24 +233,37 @@ const LoginScene = ({navigation, route }) => {
                             server:server
                         }
                         setUser(usr)
+                        if(storedUser?.email && email != storedUser.email){
+                            //reset old user 
+                            disconnect(undefined, dispatch)
+                        }
+                        setDoubleAuthDataCode(undefined)
+                        setDoubleAuthDataDate(formatDateToYmdHs(new Date(), true))
+
                         setShowInstances(true)
                     
                     }else if(data?.error){
-                        //TODO failed
-                        Alert.alert("Impossible de se connecter. Veuillez vérifier vos identifiants") 
-                        console.log("data.error : " +JSON.stringify(data))
+                        if(data.error.code == 'IZIFLO_CONNECT_NOT_ALLOWED'){
+                            Alert.alert(locale._template.connection_not_allowed,locale._template.iziflo_connect_not_allowed_message) 
+                            console.log("data.error (iziflo not allowed) : " +JSON.stringify(data))
+                        }else if(data.error.code == 'ERROR_ON_CODE' && data.error.data?.errorCode){
+                            handleErrorOnCode(data)
+                        }else{
+                            //TODO failed
+                            Alert.alert(locale._template.connection_not_allowed, locale._template.connection_not_allowed_message) 
+                            console.log("data.error4 : " +JSON.stringify(data))
+                        }
                     }else{
                         //TODO error
-                        Alert.alert("Impossible de se connecter. Veuillez réessayer") 
+                            Alert.alert(locale._template.connection_not_allowed,locale._template.connection_retry_message) 
                         console.log("data unknown : " +JSON.stringify(data))
-                    }
-                        
-                })
+                    } 
+                    setLoading(false)
+                }).catch(()=>setLoading(false))
         }else{
             //TODO no server 
                 console.log("no server ")
         }
-        setLoading(false)
     }
 
 
@@ -286,7 +322,6 @@ const LoginScene = ({navigation, route }) => {
 
               }
 
-              console.log(result);
               setUser(usr)
               setShowInstances(true)
             
@@ -298,6 +333,12 @@ const LoginScene = ({navigation, route }) => {
         navigation.navigate('Main')
     }
 
+    const handleErrorOnCode = (data) => {
+        doubleAuthModal?.current?.resetLoaders()
+        setDoubleAuthDataCode(data.error?.data?.errorCode)
+    }
+
+
 
     /*---------------------------
     -
@@ -306,7 +347,10 @@ const LoginScene = ({navigation, route }) => {
     ----------------------------*/
     const _onInstanceChoosen= ( server,settings )=>{
         if(user && user.token){
-            let usr = {email:user.email, token:user.token, server:server,settings}
+            let usr = {email:user.email, token:user.token, server:server,settings, double_auth_date:doubleAuthDate}
+            if(storedUser && (storedUser.server?.id != server?.id || storedUser.server?.instance?.id != server?.instance?.id)){
+                disconnect(undefined, dispatch)
+            }
             _storeUser(usr, true)
         }
     }
@@ -364,7 +408,8 @@ const LoginScene = ({navigation, route }) => {
                         style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
                         title={locale._template.connect_upper} 
                         iziStyle={_getConnectButtonStyle()}
-                        onPress={_connect }/>
+                        loading={loading}
+                        onPress={() => _connect() }/>
                     <View style={loginStyles.forgotten_pass_outer_container}>
                         <TouchableOpacity style={IziDimensions.getDimension(window, loginStyles.forgotten_pass_container)} onPress={() =>_onPasswordForgotten()}>
                             <Text style={loginStyles.forgotten_pass} >{locale._template.forgotten_pass}</Text>
@@ -380,7 +425,7 @@ const LoginScene = ({navigation, route }) => {
                     <View style={IziDimensions.getDimension(window,loginStyles.buttons_container)}>
                         <View style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)}>
                             <View style={loginStyles.connect_with_line}/>
-                            <Text style={loginStyles.connect_with}>Ou connectez vous avec</Text>
+                            <Text style={loginStyles.connect_with}>{locale._template.or_connect_with}</Text>
                         </View>
                         <Button style={{...IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin), display:'none'}} imgSrc={require(("../res/logo-google.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToGoogle}/>
                         <Button style={IziDimensions.getDimension(window, loginStyles.connect_container_inter_margin)} imgSrc={require(("../res/logo-office.png"))} iziStyle={IziButtonStyle.connection} onPress={_connectToOffice}/>
@@ -480,8 +525,14 @@ const LoginScene = ({navigation, route }) => {
     return(
             <TouchableWithoutFeedback style={{height:"100%", width:"100%"}} onPress={()=>{_closeAll()}}>
                 <KeyboardAvoidingView style={{height:'100%'}} behavior=''>
-                    <View style={{flex:1}}>
+                    <View style={{flex:1, backgroundColor:'white'}}>
                         {_displayContent()}
+                        <DoubleAuthModal 
+                        ref={doubleAuthModal} 
+                        errorCode={doubleAuthCode} 
+                        email={email}
+                        resetError={() => setDoubleAuthDataCode(undefined)}
+                        onSendAgain ={( code) =>_connect(code === undefined,code)}/>
                     </View> 
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>

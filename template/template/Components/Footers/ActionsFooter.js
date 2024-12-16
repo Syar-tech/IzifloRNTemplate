@@ -44,8 +44,8 @@ const ActionsFooter = ({items,footerStyle, rotate, onPress,buttonWidth,textStyle
                     if(onPress) {
                     onPress(item.key)
                   }}}
-                  image = {{height:item.iconHeight ? item.iconHeight : 25,width:item.iconWidth ? item.iconWidth : 25, xml:item.icon}}
-                  text={{text:item.title, style:{marginTop:5, ...textStyle}}}
+                  image = {{height:item.iconHeight ? item.iconHeight : 25,width:item.iconWidth ? item.iconWidth : 25, xml:item.icon, color:item.tint}}
+                  text={{text:item.title, style:{marginTop:5, ...textStyle, ...(item.tint ? {color:item.tint}: {})}}}
                   disabled={item.disabled}
                   rotate={rotate}
                   frontColor={frontColor}

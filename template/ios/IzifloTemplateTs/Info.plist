@@ -47,8 +47,8 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to your the face detector to unlock this app without using the code.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

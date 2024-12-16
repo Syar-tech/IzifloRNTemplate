@@ -7,32 +7,72 @@
  *
  * @format
  */
-
-import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-reanimated'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
  import {
-   StyleSheet, View, NativeModules
+   StyleSheet, View, NativeModules, SafeAreaView, StatusBar
  } from 'react-native';
 
  import BaseNavigation from './template/Navigation/BaseNavigation'
- import { Provider, useDispatch } from 'react-redux'
+ import { Provider, useDispatch, useSelector } from 'react-redux'
  import Store, {persistor} from './Store/ReduxStore'
 import { PersistGate } from 'redux-persist/integration/react';
-import { ACTIONS_TYPE } from './Store/reducers/UHFConfigReducer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from './styles/styles';
  
- const App = () => {
-
+const CustomStatusBar = (
+  {
+    children //add more props StatusBar
+  }
+) => { 
+   
+    const colorScheme = useSelector((state) =>state._template.colorScheme);
+   const insets = useSafeAreaInsets();
    return (
-      <Provider store={Store}>
-        <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
-            <BaseNavigation useExample={true} useScheme={true}/>
-          {
-            // Populate Navigation.js with useExample={false}/>
-          }
-        </NavigationContainer>
-       </PersistGate>
-      </Provider>
+    <>
+      <View style={{ height: insets.top, backgroundColor:colors[colorScheme].backgroundColor }}>
+        <StatusBar
+          animated={true}
+          backgroundColor={colors[colorScheme].backgroundColor}
+          barStyle={colorScheme == 'dark' ? 'light-content' : 'dark-content'} />
+      </View>
+      <SafeAreaView style={{flex:1, overflow:'hidden', backgroundColor:colors[colorScheme].backgroundColor}}>
+        {children}
+      </SafeAreaView>
+    </>
+   );
+}
+
+
+ const App = () => {
+  const MyTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+        background: colors.lightGray
+    },
+  };
+  //StatusBar.setBarStyle('dark-content')
+   return (
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{flex:1}}>
+        <Provider store={Store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <CustomStatusBar>
+                          <NavigationContainer theme={MyTheme}>
+                              <BaseNavigation useScheme={true}/>
+                            {
+                              // Populate Navigation.js with useExample={false}/>
+                            }
+                          </NavigationContainer>
+            </CustomStatusBar>
+
+          </PersistGate>
+        </Provider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
    );
  };
 

@@ -4,7 +4,7 @@ import {Platform, Text} from 'react-native'
 import {__SInfoConfig} from '../Tools/Prefs';
 import Config from "react-native-config";
 import deviceInfoModule, {getReadableVersion, getUniqueId} from 'react-native-device-info'
-import {izi_api_client_id} from "../../config/iziConfig"
+import {is_workshop, izi_api_client_id, log_to_company} from "../../config/iziConfig"
 import { ACTIONS_TYPE } from '../../Store/ReduxStore';
 import NetInfo from "@react-native-community/netinfo";
 import icon_back from '../res/img/icon_back';
@@ -15,9 +15,9 @@ export async function storeUser(user){
     await SInfo.setItem("loginState",user,  __SInfoConfig);
 }
 
-export async function disconnect(navigation, dispatch,locale){
-    console.log("disconnect", navigation.navigate)
-    if(navigation && locale)
+export async function disconnect(navigation, dispatch,locale, keepData = false){
+    let action = keepData ? ACTIONS_TYPE.USER_DISCONNECT_KEEP_DATA : ACTIONS_TYPE.USER_DISCONNECT
+    if(navigation && locale){
         return navigation.navigate('ErrorScene',{
             errorMessage: <Text>{locale._template.dataInProgress +"\n"}<B>{locale._template.doYouConfirm}</B></Text>,
             icon:'warning',
@@ -29,7 +29,7 @@ export async function disconnect(navigation, dispatch,locale){
                 image:icon_validate,
                 text:locale._template.confirm,
                 onPress : async () => {
-                    await dispatch({type:ACTIONS_TYPE.USER_DISCONNECT})
+                    await dispatch({type:action})
                     navigation.reset({
                         routes:[{name:'Login'}]
                     })
@@ -37,8 +37,9 @@ export async function disconnect(navigation, dispatch,locale){
                 }
             }]
         })
-    
-    await dispatch({type:ACTIONS_TYPE.USER_DISCONNECT})
+    }
+    //else 
+    await dispatch({type:action})
     if(navigation) {
         console.log('navigate to login')
         navigation.reset({
@@ -66,7 +67,8 @@ export const getCommonParams = async (user = null, addInstance = true) =>  {
         os_version: Platform.OS + ' ' + Platform.Version,
         network: (await NetInfo.fetch())?.type,
         model_name: deviceInfoModule.getBrand() + ' ' + deviceInfoModule.getModel(),
-        app_version: getReadableVersion()
+        app_version: getReadableVersion(),
+        is_workshop : is_workshop ? 1 : 0
     }
     if(user){
         params.email = user.email
@@ -74,7 +76,12 @@ export const getCommonParams = async (user = null, addInstance = true) =>  {
         params.login_type = user.token.tokenType
         params.model_name = deviceInfoModule.getBrand() + ' ' + deviceInfoModule.getModel()
         params.os_version = Platform.OS + ' ' + Platform.Version
-        if(addInstance) params.id_instance = user.server.instance.id_instance
+        if(addInstance){
+            params.id_instance = user.server.instance.id_instance
+            if(log_to_company){
+                params.id_company = user.server.instance.company.id_company
+            }
+        }
     }
     return params;
 }

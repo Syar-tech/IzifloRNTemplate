@@ -7,6 +7,7 @@ import { useLanguage } from '../Locales/locales';
 import { IziDimensions } from '../Tools/Dimensions';
 import { isEmailValid, isEmpty } from '../Tools/StringTools';
 import IziServerDropdown from '../Components/IziServerDropDown';
+import IziLoader from '../Components/IziLoader';
 
 
 export default function ForgotPasswordScene({navigation}){
@@ -19,8 +20,12 @@ export default function ForgotPasswordScene({navigation}){
 
     const [server, setServer] = useState(undefined)
 
+    const [loading, setLoading] = useState(false)
+
     const onButtonPressed = async () => {
+        setLoading(true)
         const json = await resetPassword(server, email)
+        setLoading(false)
         let message = locale._template.an_email_was_sent_with_a_new_password
         if(json.error){
             switch(json.error){
@@ -63,11 +68,12 @@ export default function ForgotPasswordScene({navigation}){
                     title={locale._template.back}
                     onPress={() => navigation.goBack()}/>
 
-                <Button 
+                {loading && <View style={{marginTop:10, height:40}}><IziLoader/></View>}
+                {!loading && <Button 
                     style={IziDimensions.getDimension(window, loginStyles.connect_button)} 
                     title={locale._template.forgotten_pass_title} 
                     iziStyle={_getConnectButtonStyle()}
-                    onPress={onButtonPressed}/>
+                    onPress={onButtonPressed}/>}
 
                 <IziServerDropdown 
                     open={dropdownOpen.server}

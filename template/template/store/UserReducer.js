@@ -7,6 +7,9 @@ export default (state=false, action) =>{
             else return false
         case "user.disconnect": 
             return false
+        case "user.disconnect_with_data": 
+        if(state) return {...state, disconnected:true}
+        else return false
     }
     return state;
 }

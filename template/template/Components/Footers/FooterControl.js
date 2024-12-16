@@ -14,7 +14,7 @@ export default function FooterControl({
     disabled=false,
     onPress=()=>{},
     text={text:"", style:{}, color:'gray'},
-    badge=undefined,//{value=2,offset:{top:5, left:5}}
+    badge=undefined,//{value=2,offset:{top:5, left:5}, colors:{text:'white', back:'red'; border:'white'}}
 }){
 
     const [isLandscape, setIsLandscape] = useState(false)
@@ -61,12 +61,12 @@ export default function FooterControl({
                     justifyContent:"center",
                     left:(footerControlText.width/2 + (badge?.offset?.left  || 0 )),
                     top:(badge?.offset?.top  || 0 ),
-                    backgroundColor:"red", 
+                    backgroundColor:badge.colors?.back || "red", 
                     alignItems:'center', 
                     justifyContent:'center', 
                     borderWidth:1, 
-                    borderColor:'white'}}>
-                        {!!badge.value && <Text style={{fontSize:10, color:"white", fontWeight:'bold'}} >{badge.value}</Text>}
+                    borderColor:badge.colors?.border || 'white'}}>
+                        {!!badge.value && <Text style={{fontSize:10, color:badge.colors?.text || "white", fontWeight:'bold'}} >{badge.value}</Text>}
                     </View>
                 }
                 <Text style={[

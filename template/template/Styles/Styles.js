@@ -5,8 +5,6 @@ import {
     StyleSheet,
     Text,
 } from 'react-native'
-import { baseProps } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlers'
-import { white } from 'react-native-paper/lib/typescript/styles/colors'
 
 export const colors={
     iziflo_blue:"#5483AC",
@@ -14,7 +12,7 @@ export const colors={
     iziflo_dark_gray:"#606060",
     iziflo_green:"#A9D14E",
     iziflo_orange:"#E58B3E",
-    lightGray:'#EFEFEF',
+    lightGray:'#f1f1f1',
     lightBlack:'#272727',
     orange:'#FAA542',
     yellowOrange:'#F9B42E',
@@ -101,6 +99,11 @@ export const loginStyles = {
             borderTopLeftRadius:textinput_height/2,
             borderBottomRightRadius:textinput_height/2,
             borderBottomLeftRadius:textinput_height/2,
+        },
+        textinput_disabled:{
+            color:colors.light.textGray,
+            borderColor:colors.light.textGray,
+            backgroundColor:colors.lightGray,
         },
         secureImageContainer:{
             position:'absolute',
@@ -247,6 +250,19 @@ export const loginStyles = {
                 borderColor:'lightgray',
             },
             label:{
+                fontSize:16,
+                alignSelf:"center",
+                height:"auto",
+                flex:0,
+                enabled:{
+                    color:colors.iziflo_dark_gray,
+                },
+        
+                disabled:{
+                    color:'lightgray',
+                },
+            },
+            sublabel:{
                 fontSize:16,
                 alignSelf:"center",
                 height:"auto",

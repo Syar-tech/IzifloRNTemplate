@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import { View,StyleSheet, Platform, Image, Text } from 'react-native'
+import React, { cloneElement, useEffect, useState } from 'react'
+import { View,StyleSheet, Platform, Image, Text, Keyboard, TouchableOpacity } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import DemoScene from '../template/Scenes/DemoScene';
-import {colors} from '../template/Styles/Styles'
+import {colors} from '../styles/styles'
 import {hamburgerMenu} from '../template/Navigation/BaseNavigation'
 import { useLanguage } from '../template/Locales/locales';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIsDrawerOpen } from '@react-navigation/drawer';
+import { DrawerItem, useDrawerStatus } from '@react-navigation/drawer';
+import icon_back from '../template/res/img/icon_back';
+import { SvgXml } from 'react-native-svg';
+import icon_warning from '../template/res/img/icon_warning';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import icon_sync from '../res/img/icon_sync';
 
 const Stack = createStackNavigator();
 
 const headerStyle = {
-    backgroundColor:colors.lightGray,
-    shadowOpacity: 0,
-    shadowColor: "#000",
-    elevation:0,
-    borderBottomWidth:1,
-    borderBottomColor:'#aaaaaa'
+    elevation:0
+
 }
 
 if(Platform.OS === 'android')
@@ -48,14 +49,17 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     textTwoLines:{
-        textAlign:'center'
+        textAlign:'center',
+        fontSize:18
     }
 })
 
 function RootStack() {
     const dispatch = useDispatch()
+    let scheme = useSelector((state)=>state._template.colorScheme)
+    const user = useSelector(state => state._template.user)
 
-    const isDrawerOpen = useIsDrawerOpen()
+    const isDrawerOpen = useDrawerStatus() =="open"
 
 
     useEffect(()=>{
@@ -89,22 +93,7 @@ export const CustomDrawers= (props)=>{
     const {locale} = useLanguage(false);
     const user = useSelector(state => state._template_user)
 
-    const privileges =  useSelector((state)=>{
-        const p = {}
-
-            if(Array.isArray(state._template.user?.settings?.privileges))
-                state._template.user.settings.privileges.forEach(privilege => {
-                    for(let prop in privilege)
-                        if(privilege.hasOwnProperty(prop))
-                            p[prop] = privilege[prop]
-                })
-                const array = []
-                for(let prop in p){
-                    if(p[prop])
-                        array.push(prop)
-                }
-                return array;
-    })
+    const privileges = useSelector(privilegesSelector)
 
     return (
         <>

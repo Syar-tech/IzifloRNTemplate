@@ -1,17 +1,16 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import LocalizedStrings from 'react-localization'
-import { RefreshControl, View , Text, TouchableOpacity} from "react-native"
+import { RefreshControl, View , Text, TouchableOpacity, useAnimatedValue} from "react-native"
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import Animated, {Easing, EasingNode } from 'react-native-reanimated'
+import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import { SvgXml } from 'react-native-svg'
 import { useSelector } from 'react-redux'
-import icon_cancel from '../../res/img/icon_cancel'
 
-import { colors } from '../../style/style'
-import { useLanguage } from '../Locales/locales'
-import {B, colors as templateColors} from '../Styles/Styles'
 import { formatDateAndTimeForDisplay } from '../Tools/StringTools'
+import icon_cancel from '../res/img/icon_cancel'
+import { useLanguage } from '../Locales/locales'
+import { colors } from '../../styles/styles'
 
 
 export const MESSAGE_TYPE = {
@@ -46,7 +45,9 @@ const IziSyncMessage = (
 
     const [displayMessage, setDisplayMessage] = useState(null)
     
-    const height = useState(new Animated.Value(0))[0]
+    const height = useSharedValue(0)
+
+    const animatedStyle = useAnimatedStyle(() => ({height:height.value}), [])
 
     const lastSync =  useSelector((state)=> table ? state[table]?.lastTableSet : undefined) 
 
@@ -56,40 +57,34 @@ const IziSyncMessage = (
 
     useEffect(()=>{
         if(displayMessage){
-            //console.log("animateheight", displayMessage.title || displayMessage.bottomMessage,displayMessage.buttons?.length,(displayMessage.title || displayMessage.bottomMessage ?  45 : 35) + (displayMessage.buttons?.length ? 20 : 0 ))
-        Animated.timing(
-            height,
-            {
-                toValue: (displayMessage.title || displayMessage.bottomMessage ?  45 : 35) + (displayMessage.buttons?.length ? 20 : 0 ) ,
-                duration: 400,
-                easing: EasingNode.out(EasingNode.back(1)),
-                useNativeDriver: true
-            }
-        ).start()
-        circleRef.current?.reAnimate(100,0, 5000 )
-    }
-
-        
-     
+            height.value = withTiming(
+                (displayMessage.title || displayMessage.bottomMessage ?  45 : 35) + (displayMessage.buttons?.length ? 20 : 0 ),
+                {
+                    duration: 400,
+                    easing: Easing.out(Easing.back(1)),
+                    useNativeDriver: true
+                }
+            )
+            circleRef.current?.reAnimate(100,0, 5000 )
+        }
     }, [displayMessage])
 
 
     const cancelMessage = () =>{
 
-            Animated.timing(
-                height,
+            height.value = withTiming(
+                0,
                 {
-                    toValue: 0,
                     duration: 400,
-                    easing: EasingNode.in(EasingNode.back(1)),
+                    easing: Easing.in(Easing.back(1)),
                     useNativeDriver: true
                 }
-            ).start()
+            )
     }
 
     return (
         <View style={{width:'100%',position:"absolute",elevation:100, zIndex:100}}>
-            {<Animated.View style={{height:height,  overflow:'hidden', flexDirection:'row'}}>
+            {<Animated.View style={[{  overflow:'hidden', flexDirection:'row'}, animatedStyle]}>
             
                 <View style={[{height:'100%', width:"100%", borderWidth:1, flexDirection:'column', paddingStart:10,},, displayMessage && styles.scanTypes[displayMessage.type]  ]}>
                     <View style={[{flexDirection:'row', width:'100%', flex:1,alignItems:'center'}]}>

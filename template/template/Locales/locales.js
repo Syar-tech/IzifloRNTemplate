@@ -24,7 +24,7 @@ export function useLanguage(withFocus=true) {
 
 
 
-    const user = useSelector(state => {return state._template.user ? state._template.user : undefined})
+    const user = useSelector(state => {return state._template.user  && !state._template.user?.disconnected ? state._template.user : undefined})
 
     const isFocused = !withFocus ? true : useIsFocused()
 
@@ -37,7 +37,7 @@ export function useLanguage(withFocus=true) {
     },[isFocused, user])
 
     const getLocaleIdentifier = (usr = user) => {
-        if(usr?.settings?.language)
+        if(!usr?.disconnected && usr?.settings?.language)
             return usr.settings.language
 
         let localeStr = "fr_FR"

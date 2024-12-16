@@ -4,12 +4,12 @@ def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs')
 buildscript {
     ext {
         buildToolsVersion = "33.0.0"
-        minSdkVersion = 21
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        minSdkVersion = 26
+        compileSdkVersion = 34
+        targetSdkVersion = 34
         // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
-        kotlin_version = '1.5.10'
+        kotlin_version = '1.7.20'
 
     }
     repositories {
@@ -40,7 +40,7 @@ allprojects {
         maven {
             url 'https://pkgs.dev.azure.com/MicrosoftDeviceSDK/DuoSDK-Public/_packaging/Duo-SDK-Feed/maven/v1'
         }
-
+        jcenter()
 /*
         jcenter()
         maven { url 'https://www.jitpack.io' }

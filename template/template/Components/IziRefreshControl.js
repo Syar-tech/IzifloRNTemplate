@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { RefreshControl } from "react-native"
 import { FlipInEasyX } from 'react-native-reanimated'
 
-import { colors } from '../../style/style'
+import { colors } from '../../styles/styles'
 import {B, colors as templateColors} from '../Styles/Styles'
 
 
@@ -14,8 +14,8 @@ export default IziRefreshControl = (
         children,
         refreshing,
         onRefresh,
+        colors=[templateColors.iziflo_blue, templateColors.iziflo_back_blue]
     }) => {
-
 
 
     return (
@@ -24,8 +24,8 @@ export default IziRefreshControl = (
         style={style}
         refreshing={refreshing}
         onRefresh={onRefresh}
-        tintColor={colors.blue}
-        colors={[colors.blue, templateColors.iziflo_blue]}
+        tintColor={colors[0]}
+        colors={colors}
         progressBackgroundColor={"white"}/>
     )
 }

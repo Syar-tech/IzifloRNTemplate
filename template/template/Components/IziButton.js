@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text, Image, TouchableOpacity} from 'react-native'
+import {View,Text, Image, TouchableOpacity, ActivityIndicator} from 'react-native'
 import {loginStyles as styles} from '../Styles/Styles'
 
 export const IziButtonStyle = {
@@ -44,7 +44,7 @@ export default function IziButton(props){
      
     return(
         <TouchableOpacity style={getButtonStyle()} onPress={props.onPress}>
-            {displayText()}
+            {props.loading ? <ActivityIndicator color='white' size='small'/> : displayText()}
             {props.children}
         </TouchableOpacity>
     )

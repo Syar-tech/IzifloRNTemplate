@@ -2,6 +2,7 @@ import { getDate } from "date-fns";
 import { useSelector } from "react-redux";
 import { formatDateToYmdHs } from "../Tools/StringTools";
 import { ACTIONS_TYPE } from "./BaseReducer";
+import { createSelector } from "@reduxjs/toolkit";
 
 
 export default function(tableName, secondaryKeys = [], flagModificationFromParents= false){
@@ -172,10 +173,22 @@ const dataMatchSecondaryKeys = (el1, el2 , secondaryKeys)=>{
     return secondaryKeys && !secondaryKeys.some(key => !el1[key] || !el2[key] || el1[key] != el2[key]) // some return true if one secondary does not correspond => exists  = ! some(...)
 }
 
-export const useDataWithLocal = (tableName, transformFun = (tableArray)=>{return tableArray}) => {
+
+/**
+ * Export merged data both from distant and local source, from a specific table table. An extra transformation function can be called, which should match the pattern (data, ...args) => {}
+ * @param {*} tableName name of the table to extract
+ * @param {*} transformFun transform function that match the number of args +1 
+ * @param {*} args optionnal, Extra arguments that may change during the lifecycle
+ * @returns shallow copy array of filtered data
+ */
+export const useDataWithLocal = (tableName, transformFun = undefined, args = []) => {
     
-    const table =  useSelector((state)=>{
-        const data = state[tableName];
+    const selector = createSelector(
+        [
+            state => state[tableName],
+            ...args.map(arg => (() => arg))
+        ], 
+        (data, ...argsList)=>{
         
         let tbl = []
         if(!data) {
@@ -183,51 +196,74 @@ export const useDataWithLocal = (tableName, transformFun = (tableArray)=>{return
             return 
         }
         if(data.data){
-             tbl = data.data.filter(el=> !data.local_data.some(el2 => el.id === el2.id || dataMatchSecondaryKeys(el, el2, state.secondaryKeys)))
+             tbl = data.data.filter(el=> !data.local_data.some(el2 => el.id === el2.id || dataMatchSecondaryKeys(el, el2, secondaryKeys)))
             tbl.push(...data.local_data);
         }
         if(transformFun){
-            tbl =  transformFun(tbl)
+            tbl =  transformFun(tbl, ...argsList)
         }
         tbl = tbl ? tbl : [];
         return tbl;
     })
-    return table
+    return useSelector(state => selector(state, ...args))
 }
 
-export const useDistantDataOnly = (tableName, transformFun = (tableArray)=>{return tableArray}) => {
+
+/**
+ * Export data from distant source only, from a specific table table. An extra transformation function can be called, which should match the pattern (data, ...args) => {}
+ * @param {*} tableName name of the table to extract
+ * @param {*} transformFun transform function that match the number of args +1 
+ * @param {*} args optionnal, Extra arguments that may change during the lifecycle
+ * @returns shallow copy array of filtered data
+ */
+export const useDistantDataOnly = (tableName, transformFun = undefined, args = []) => {
     
-    const table =  useSelector((state)=>{
-        const data = state[tableName];
+    const selector = createSelector(
+        [
+            state => state[tableName],
+            ...args.map(arg => (() => arg))
+        ], 
+        (data, ...argsList)=>{
+        
         
         let tbl = [...(!!data.data ? data.data :[])]
         
         if(transformFun){
-            tbl =  transformFun(tbl)
+            tbl =  transformFun(tbl,...argsList)
         }
         tbl = tbl ? tbl : [];
         return tbl;
     })
     
-    return table
+    return useSelector(state => selector(state, ...args))
 }
 
-export const useModifiedDataOnly = (tableName, transformFun = (tableArray)=>{return tableArray}) => {
+/**
+ * Export data from local source only, from a specific table table. An extra transformation function can be called, which should match the pattern (data, ...args) => {}
+ * @param {*} tableName name of the table to extract
+ * @param {*} transformFun transform function that match the number of args +1 
+ * @param {*} args optionnal, Extra arguments that may change during the lifecycle
+ * @returns shallow copy array of filtered data
+ */
+export const useModifiedDataOnly = (tableName, transformFun = undefined, args = []) => {
     
-    const table =  useSelector((state)=>{
-        const data = state[tableName];
+    const selector = createSelector(
+        [
+            state => state[tableName],
+            ...args.map(arg => (() => arg))
+        ], 
+        (data, ...argsList)=>{
 
         let tbl = [...(!!data.local_data ? data.local_data :[])]
         if(transformFun){
-            tbl =  transformFun(tbl)
+            tbl =  transformFun(tbl, ...argsList)
         }
         tbl = tbl ? tbl : [];
         return tbl;
     })
     
-    return table
+    return useSelector(state => selector(state, ...args))
 }
-
 
 const DEFAULT_DATA={ data: [],local_data: [],ts:-1,i_id:0, secondaryKeys:[],lastTableSet:0}
 
