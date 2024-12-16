@@ -1,3 +1,9 @@
+import {colors as templateColors} from '../template/Styles/Styles'
+
+
+const commonScheme={
+}
+
 export const colors = {
     ...templateColors,
     ...{

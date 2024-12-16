@@ -1,17 +1,13 @@
-import React, { cloneElement, useEffect, useState } from 'react'
-import { View,StyleSheet, Platform, Image, Text, Keyboard, TouchableOpacity } from 'react-native'
+import React, { useEffect } from 'react'
+import { View,StyleSheet, Platform, Keyboard, } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack';
 import DemoScene from '../template/Scenes/DemoScene';
 import {colors} from '../styles/styles'
 import {hamburgerMenu} from '../template/Navigation/BaseNavigation'
 import { useLanguage } from '../template/Locales/locales';
 import { useDispatch, useSelector } from 'react-redux';
-import { DrawerItem, useDrawerStatus } from '@react-navigation/drawer';
-import icon_back from '../template/res/img/icon_back';
-import { SvgXml } from 'react-native-svg';
-import icon_warning from '../template/res/img/icon_warning';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import icon_sync from '../res/img/icon_sync';
+import {  useDrawerStatus } from '@react-navigation/drawer';
+import { privilegesSelector } from '../Store/ReduxSelectors';
 
 const Stack = createStackNavigator();
 
@@ -77,7 +73,7 @@ function RootStack() {
           component={DemoScene}
           options={({navigation}) => ({
             headerStyle,
-            headerLeft:() => hamburgerMenu(navigation),
+            headerLeft:() => hamburgerMenu(navigation, scheme),
             headerRight:() => <View style={{width:30,height:30}}></View>
         })}
         />

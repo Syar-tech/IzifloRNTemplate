@@ -34,6 +34,7 @@ import { getVersionCheckName } from '../Tools/Tools';
 import UpdateScene from '../Scenes/UpdateScene';
 import { useLanguage } from '../Locales/locales';
 import icon_warning from '../res/img/icon_warning';
+import { __debug } from '../Tools/DevTools';
 
 
 const MainStack = createStackNavigator();
@@ -41,16 +42,19 @@ const RootStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 export const hamburgerMenu = (navigation, scheme) => (
-    <TouchableOpacity onPress={() => {
+    <TouchableOpacity 
+      hitSlop={5} 
+      onPress={() => {
+        __debug("burger clicked")
         navigation.toggleDrawer()
-    }} style={{paddingLeft:20}}>
+    }} 
+    style={{paddingLeft:20}}>
       <SvgXml xml={icon_hamburger_menu} height={20} width={20} fill={colors[scheme].headerTextColor} />
     </TouchableOpacity>
   )
 
 function MainStackScreen({navigation, user, colorScheme}) {
 
-  
   return (
       <MainStack.Navigator>
         <MainStack.Screen name="Example" component={MainScene} 

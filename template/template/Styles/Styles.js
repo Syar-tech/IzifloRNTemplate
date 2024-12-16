@@ -23,7 +23,8 @@ export const colors={
         textGray:'#ADADAD',
         placeholderDefaultColor:'#AAAAAA',
         svgColor:'#EFEFEF',
-        listOverlay:"black"
+        listOverlay:"black",
+        headerTextColor:'black'
     },
     light:{
         backgroundColor:'#EFEFEF',
@@ -31,7 +32,8 @@ export const colors={
         textGray:'#919191',
         placeholderDefaultColor:null,
         svgColor:'#272727',
-        listOverlay:"white"
+        listOverlay:"white",
+        headerTextColor:'black'
     }
 }
 

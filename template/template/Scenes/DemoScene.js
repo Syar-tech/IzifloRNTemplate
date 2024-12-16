@@ -22,6 +22,9 @@ const DemoScene=({navigation})=>{
     return (
         <SafeAreaView
         style={styles.main_container}>
+          <View
+            style={{flex:1}}>
+          </View>
             
 
             <ActionsFooter
@@ -41,7 +44,6 @@ const styles = StyleSheet.create({
     main_container:{
         flex:1,
         justifyContent:'center',
-        backgroundColor:'white',
         backgroundColor:colors.lightGray
     },
     button_disconnect:{
