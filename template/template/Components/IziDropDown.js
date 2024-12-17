@@ -2,20 +2,25 @@ import React ,{useState, useEffect, useRef} from 'react'
 import {
     View,
     Text,
-    StyleSheet, ScrollView, TouchableOpacity
+    TouchableOpacity
 } from 'react-native'
 import { loginStyles, colors, sizes ,filterObject} from '../Styles/Styles'
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Checkbox from '../Components/Checkbox'
 import { useLanguage } from '../Locales/locales'
+import { useSelector } from 'react-redux'
 
+const INDEX_SELECT_ALL = 0 // Do not update without updating the effective index of the item with ID 'SelectAll'
 
 export default function IziDropdown(props){
 
     const [selectedCheckboxes,setSelectedCheckboxes] = useState([]) 
 
     const {locale} = useLanguage()
+    const colorScheme = useSelector((state) => state._template.colorScheme);
+
+    const [items, setItems] = useState([...(props.multiple && props.hasSelectAll && Array.isArray(props.items) && props.items.length ? [{label: locale._template.dropdown.selectAll, selected: false, id: 'SelectAll'}] : []), ...props.items] || [])
 /*
     useEffect(() => {
         if(props.multiple && selectedCheckboxes.length){
@@ -23,21 +28,32 @@ export default function IziDropdown(props){
         }
     },[props.items])
 */
-    useEffect(() => {
 
-        if(props.multiple && props.items && Array.isArray(props.value)){
+    useEffect(() => {
+        if (props.multiple && props.hasSelectAll && Array.isArray(props.items)) {
+            setItems([{label: locale._template.dropdown.selectAll, selected: false, id: 'SelectAll'}, ...props.items])
+        } else {
+            setItems(props.items || [])
+        }
+    }, [props.items])
+
+    useEffect(() => {
+        if(props.multiple && items && Array.isArray(props.value)){
             const selected  = []
-            props.items.forEach((item,key) => {
+            items.forEach((item,key) => {
                 if(props.value.some(el => el.id == item.id) && selected.findIndex(el => el == key)<0)
                     selected.push(key)
             })
-            //_setValue(selected)
+
+            if (props.hasSelectAll) {
+                toggleSelectAll(selected)
+            }
+
             setSelectedCheckboxes(selected)
         }
 
     },[props.value])
 
-    
     const dropdown = useRef(null);
     if(props.value == null)
     dropdown?.current?.reset()
@@ -87,6 +103,7 @@ export default function IziDropdown(props){
 
         return filterObject(st, ([key, value])=> ["enabled","disabled"].indexOf(key)<0)
     }
+
     const getDropdownSubTextStyle = ()=>{
         const st = {...getStyle().dropdown.sublabel, 
             ...(props.disabled 
@@ -111,6 +128,16 @@ export default function IziDropdown(props){
     -
     ----------------------------*/
 
+    const toggleSelectAll = (checkboxes) => {
+        // Toggle 'selected' for id: 'SelectAll'
+        if (checkboxes.findIndex(i => i === INDEX_SELECT_ALL) === -1) { // id: 'SelectAll' not yet selected
+            if (items.length - 1 === checkboxes.length) { // All other elements are selected
+                checkboxes.unshift(INDEX_SELECT_ALL)
+            }
+        } else { // id: 'SelectAll' is selected
+            checkboxes.shift()
+        }
+    }
 
     /*---------------------------
     -
@@ -123,42 +150,54 @@ export default function IziDropdown(props){
             props.setValue(val,unchecked)
     }
 
-    const onCheckChange = (index) => {
+    const onCheckChange = (index, item) => {
         const checkboxes = [...selectedCheckboxes]
         const i = checkboxes.indexOf(index)
-        if(i === -1)
-            checkboxes.push(index)
-        else
-            checkboxes.splice(i,1)
-        _setValue(checkboxes.map(e => props.items[e]),i !== -1 && props.items[index] || null)
+        if (props.hasSelectAll && item?.id === 'SelectAll') {
+            checkboxes.length = 0 // Empty the array to prevent duplicates
+            if (i === -1) {
+                for (let i = 1; i < items.length; i++) checkboxes.push(i);
+            }
+        } else {
+            if(i === -1)
+                checkboxes.push(index)
+            else
+                checkboxes.splice(i,1)
+        }
+
+        _setValue(checkboxes.filter(e => items[e].id !== 'SelectAll').map(e => items[e]),i !== -1 && items[index] || null)
+
+        if (props.hasSelectAll) {
+            toggleSelectAll(checkboxes)
+        }
+
         setSelectedCheckboxes(checkboxes)
     }
 
     const getLabel = () => {
         if(props.multiple){
-            if(selectedCheckboxes.length === 1 && props.items[selectedCheckboxes[0]])
-                return props.items[selectedCheckboxes[0]].label
+            if(selectedCheckboxes.length === 1 && items[selectedCheckboxes[0]])
+                return items[selectedCheckboxes[0]].label
             else if(selectedCheckboxes.length)
-                return selectedCheckboxes.length === props.items.length && props.allSelectionLabel || locale.formatString(locale._template.dropdown.nSelectedElements,{
+                return selectedCheckboxes.length === items.length && props.allSelectionLabel || locale.formatString(locale._template.dropdown.nSelectedElements,{
                     items:selectedCheckboxes.length
                 })
         }
-        
+
         return props.placeholder
     }
-    
+
     return(
         <View style={[getStyle()]} >
             <Text style={ getStyle().title }>{props.title}</Text>
-            <View style={{alignItems:'stretch', flexDirection:'column', justifyContent:'center', flex:1,}}>
+            <View style={{alignItems:'stretch', flexDirection:'column', justifyContent:'center', flex:1}}>
 
                 <SelectDropdown
                     ref={dropdown}
                     style={{flex:1, width:"100%"}}
-                    data={props.items}
+                    data={items}
                     defaultButtonText={getLabel()}
                     defaultValue={props.value}
-                    dropdownDirection={props.dropdownDirection}
                     onSelect={(selectedItem, index) => {
                     _setValue(selectedItem)
                     }}
@@ -168,11 +207,11 @@ export default function IziDropdown(props){
                         return (selectedItem.shortlabel ? selectedItem.shortlabel : selectedItem.label )
                         + (!!selectedItem.sublabel ? " - " + selectedItem.sublabel : "");
                     }}
-                    buttonStyle={{...getButtonStyle(), width:"100%"}}
-                    buttonTextStyle={{...getButtonTextStyle()}}
-                    renderDropdownIcon={ () => {
+                    buttonStyle={{...getButtonStyle(), width:'100%'}}
+                    buttonTextStyle={getButtonTextStyle()}
+                    renderDropdownIcon={() => {
                         return  (props.showArrow 
-                            ? (props.renderDropdownIcon ? props.renderDropdownIcon() : <Icon style={getStyle().secureImage} name={"caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? colors.lightGray : colors.iziflo_blue}/> )
+                            ? (props.renderDropdownIcon ? props.renderDropdownIcon() : <Icon style={getStyle().secureImage} name={props.dropdownArrowIcon || "caret-down-outline"} size={sizes.password.image.height} color={props.disabled ? getDropDownStyle().arrowColor || colors.lightGray : getDropDownStyle().arrowColor || colors.iziflo_blue}/> )
                            : undefined)
                         ;
                     }}
@@ -181,7 +220,13 @@ export default function IziDropdown(props){
                     rowTextStyle={getDropdownTextStyle()}
                     renderCustomizedRowChild={(text, index)=>{
                         const DefaultTextTag = ({textAlign = 'center'}) => (
-                            <View style={{flexDirection:'column',}}>
+                            <View
+                            style={{
+                                flex:1,
+                                flexDirection:'column',
+                                marginHorizontal: 8,
+                                justifyContent: 'center'
+                            }}>
                             <Text
                             numberOfLines={1}
                             allowFontScaling={false}
@@ -189,9 +234,12 @@ export default function IziDropdown(props){
                                 flex: 1,
                                 fontSize: 18,
                                 textAlign,
-                                fontWeight:text.sublabel == undefined ?'normal' : 'bold',
                                 maxWidth:props.multiple ? '80%' : '100%',
-                                marginHorizontal: 8,},...getDropdownTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
+                               },
+                               ...getDropdownTextStyle(),
+                               ...(index == items.indexOf(props.value) ? {color:colors.iziflo_blue} : {}),
+                               ...(props.hasSelectAll && index === INDEX_SELECT_ALL ? {color: colors[colorScheme].textGray} : {})
+                            }}
                             >
                                 {text.label}
                             </Text>
@@ -204,7 +252,11 @@ export default function IziDropdown(props){
                                 fontSize: 18,
                                 textAlign,
                                 maxWidth:props.multiple ? '80%' : '100%',
-                                marginHorizontal: 8,},...getDropdownSubTextStyle(),...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {})}}
+                            },
+                            ...getDropdownSubTextStyle(),
+                            ...(index == props.items.indexOf(props.value) ? {color:colors.iziflo_blue} : {}),
+                            ...(props.hasSelectAll && index === INDEX_SELECT_ALL ? {color: colors[colorScheme].textGray} : {})
+                        }}
                             >
                                 {text.sublabel}
                             </Text>}
@@ -212,15 +264,14 @@ export default function IziDropdown(props){
                         )
                         if(props.multiple){
                             return (
-                                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-between',height:'100%', width:"100%"}} onPress={() => onCheckChange(index)}>
+                                <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-between',height:'100%'}} onPress={() => onCheckChange(index, text)}>
                                     <DefaultTextTag textAlign="left"/>
-                                    <Checkbox selected={selectedCheckboxes.indexOf(index) !== -1} style={{marginRight:10}} rounded={false} onChange={() => onCheckChange(index)} />
+                                    <Checkbox selected={selectedCheckboxes.indexOf(index) !== -1} indeterminate={props.hasSelectAll && index === INDEX_SELECT_ALL && selectedCheckboxes.length > 0 && selectedCheckboxes.indexOf(INDEX_SELECT_ALL) === -1} style={{marginRight:10}} rounded={false} onChange={() => onCheckChange(index, text)} />
                                 </TouchableOpacity>
                             )
                         }
                         return (
                             <DefaultTextTag/>
-
                         )
 
                     }}/>
