@@ -103,7 +103,8 @@ export default {
             no_instance_message:"Veuillez-vous assurer d'avoir bien accès à cette instance sur ce serveur.",
         },
         dropdown:{
-            nSelectedElements:'{items} éléments sélectionnés'
+            nSelectedElements:'{items} éléments sélectionnés',
+            selectAll: "Tout sélectionner",
         }
     }
 }
