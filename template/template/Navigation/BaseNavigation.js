@@ -226,7 +226,11 @@ const DrawerScreen = (props)=>{
     </SafeAreaView>
   )
 }
+/*
 
+user.name=Syar-tech
+user.email=51356918+Syar-tech@users.noreply.github.com
+*/
 /*
  <DrawerItemList {...props} onPress/>é
 */

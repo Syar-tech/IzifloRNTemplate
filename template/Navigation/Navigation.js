@@ -66,7 +66,7 @@ function RootStack() {
     return (
       <Stack.Navigator
         initialRouteName="ScanScene"
-        screenOptions={{ gestureEnabled: false }}
+        screenOptions={{}}
       >
         <Stack.Screen
           name="Demo"
